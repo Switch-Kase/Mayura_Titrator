@@ -1,0 +1,15 @@
+<component name="ArtifactManager">
+  <artifact type="jar" build-on-make="true" name="Mayura_Analytical_Titrator:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Mayura_Analytical_Titrator_jar</output-path>
+    <properties id="ant-postprocessing">
+      <options enabled="true" />
+    </properties>
+    <root id="archive" name="Mayura_Analytical_Titrator.jar">
+      <element id="module-output" name="Mayura_Analytical_Titrator" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/e-iceblue/spire.pdf.free/3.9.0/spire.pdf.free-3.9.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/javax/xml/bind/jaxb-api/2.3.0/jaxb-api-2.3.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$PROJECT_DIR$/../jSerialComm-2.7.0.jar" path-in-jar="/" />
+      <element id="extracted-dir" path="$MAVEN_REPOSITORY$/com/itextpdf/itextpdf/5.5.13.2/itextpdf-5.5.13.2.jar" path-in-jar="/" />
+    </root>
+  </artifact>
+</component>
