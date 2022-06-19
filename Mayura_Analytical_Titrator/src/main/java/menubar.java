@@ -608,6 +608,7 @@ public class menubar extends JPanel implements ItemListener {
 						fill_dose = fill_dose + ((dose_rate_variable / 60.0) / 10.0);
 						jlabel_ml_Value.setText(String.format("%.3f", fill_dose) + "mL");
 					} else {
+						System.out.println("Dosing Full Value Reached!");
 						try {
 							exec1.shutdown();
 						} catch (NullPointerException dfj) {
@@ -2587,22 +2588,27 @@ public class menubar extends JPanel implements ItemListener {
 				}
 				try {
 					exec4.shutdown();
-				} catch (NullPointerException ervf) {
-				}
+				} catch (NullPointerException ervf) {}
 
 				try {
 					Thread.sleep(300);
 					output.print("<8888>ESCP*");
 					output.flush();
-					stop_dose_counter();
+					fill_dose = 0;
+				//	stop_dose_counter();
 					mb_cur_state = "";
+					btn_fill_mb.setEnabled(true);
+					btn_dose_mb.setEnabled(true);
+					btn_wash_mb.setEnabled(true);
+					btn_rinse_mb.setEnabled(true);
+					btn_open_mb.setEnabled(true);
+					btn_run_mb.setEnabled(true);
+					btn_save_mb.setEnabled(true);
+					btn_refresh_mb.setEnabled(true);
 					ReformatBuffer.current_state = "menubar_stpm";
 				} catch (NullPointerException ex) {
 					JOptionPane.showMessageDialog(null, "Please connect to ComPort!");
-				} catch (InterruptedException wed) {
-
-				}
-
+				} catch (InterruptedException wed) {}
 			}
 		});
 
