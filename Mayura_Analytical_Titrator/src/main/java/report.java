@@ -521,7 +521,9 @@ public class report {
 	            
 	            String[] result_arr = result_rsd.split(":");
 				  
-						if(result_arr.length == 0) {
+	            System.out.println("Result_ARRAY SIZE = "+result_arr.length);
+						if(result_arr.length == 1) {
+							
 							String[] temp_arr0 = result_arr[0].split(",");
 							
 							table3.addCell("Result:   "+temp_arr0[0]);
@@ -602,19 +604,14 @@ public class report {
 		             document.add(table4);
 		            
 		            }
-	            
+	            if(row_number <=3) {
 	            Paragraph p11xcs = new Paragraph(" ",f1);
+	            	addEmptyLine(p11xcs, 1);
+	            	addEmptyLine(p11xcs, 1);
+	           		addEmptyLine(p11xcs, 1);
+	          		document.add(p11xcs);
+	            }
 
-	            addEmptyLine(p11xcs, 1);
-	            addEmptyLine(p11xcs, 1);
-	            addEmptyLine(p11xcs, 1);
-
-	            document.add(p11xcs);
-//	            Paragraph panalyzed= new Paragraph("ANALYSED BY:                                         CERTIFIED BY: ",f1);
-//	            addEmptyLine(panalyzed, 2);
-//	            panalyzed.setIndentationLeft(55.0f);
-
-	          //  document.add(panalyzed);
 	            addFooter(writer);
 
 	            if(graph) {

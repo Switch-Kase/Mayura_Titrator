@@ -3278,7 +3278,7 @@ public class menubar extends JPanel implements ItemListener {
 		});
 		mnNewMenu_5.add(menuItem_device_data);
 
-		menuItem_burette = new JMenuItem("nbh  ");
+		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String[] temp_aa = { "" };
@@ -3286,7 +3286,7 @@ public class menubar extends JPanel implements ItemListener {
 				burette_calibration.port_setup_bc(serial_port1);
 			}
 		});
-		//mnNewMenu_5.add(menuItem_burette);
+		mnNewMenu_5.add(menuItem_burette);
 
 		menu_item_comport = new JMenuItem("ComPort");
 		menu_item_comport.addActionListener(new ActionListener() {
