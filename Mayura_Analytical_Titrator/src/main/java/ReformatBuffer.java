@@ -115,6 +115,7 @@ public class ReformatBuffer {
             else if(current_state.matches("menubar_stpm") && bufferReadToString.contains("OK")) {
 //            	System.out.println("Insidee menubar fill end recieved!");
 //            	menubar.stop_volume_counter();
+            	current_state = "";
             }
             
         	
@@ -155,7 +156,7 @@ public class ReformatBuffer {
             else if(current_state.matches("dg_pot_afil_waiting_ok2") && bufferReadToString.contains("END")) {
             	DrawGraph_pot.afil_end_recieved();
             }
-            else if(current_state.matches("dg_pot_pre_dose_then_dose") && bufferReadToString.contains("OK")) {
+            else if(current_state.matches("dg_pot_pre_dose_then_dose") && bufferReadToString.contains("OK2")) {
             	DrawGraph_pot.dose_ok_recieved();
             }
             else if(current_state.matches("dg_pot_dose") && bufferReadToString.contains("OK")) {

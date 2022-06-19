@@ -15,6 +15,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -67,11 +68,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	static String[] moisture_trial_timings = new String[5];
 	static double[][] kff_arr = new double[5][3];
 	static double[][] moisture_arr = new double[5][3];
-	static String temp_status = "", mv_check_state = "", user_name = "", permission_items = "",roles_list = "", db_report_name = "",
-			db_parameters = "", db_details = "", db_kff_trials = "", db_kff_results = "", db_moisture_trials = "",
-			db_moisture_results = "", metd_name, metd_data, delay_val, stir_time, max_vol, blank_vol, burette_factor,
-			density, kf_factor, end_point, dosage_rate, result_unit, no_of_trials, sop, current_process = "",
-			prev_process = "",result_timings = "";
+	static String temp_status = "", mv_check_state = "", user_name = "", permission_items = "", roles_list = "",
+			db_report_name = "", db_parameters = "", db_details = "", db_kff_trials = "", db_kff_results = "",
+			db_moisture_trials = "", db_moisture_results = "", metd_name, metd_data, delay_val, stir_time, max_vol,
+			blank_vol, burette_factor, density, kf_factor, end_point, dosage_rate, result_unit, no_of_trials, sop,
+			current_process = "", prev_process = "", result_timings = "";
 	static DefaultTableModel model, model3;
 	static PrintWriter output_dg;
 	static ScheduledExecutorService exec_dg_kf_fill, exec_dg_kf_one, exec_dg_kf_dosr;
@@ -83,34 +84,55 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			analysis_conducted = false, kf_done = false, select_column = true;
 
 	static SerialPort sp1;
-	
-	
+	static DecimalFormat df = new DecimalFormat("0.0000");
+
 	public static void reset() {
 		variables = new String[17];
-		temp_status = ""; mv_check_state = ""; user_name = ""; permission_items = "";roles_list = ""; db_report_name = "";
-				db_parameters = ""; db_details = ""; db_kff_trials = ""; db_kff_results = ""; db_moisture_trials = "";
-				db_moisture_results = "";current_process = "";
-				prev_process = "";
-		while (model.getRowCount()>0)
-		{
+		temp_status = "";
+		mv_check_state = "";
+		user_name = "";
+		permission_items = "";
+		roles_list = "";
+		db_report_name = "";
+		db_parameters = "";
+		db_details = "";
+		db_kff_trials = "";
+		db_kff_results = "";
+		db_moisture_trials = "";
+		db_moisture_results = "";
+		current_process = "";
+		prev_process = "";
+		while (model.getRowCount() > 0) {
 			model.removeRow(0);
-		}while (model3.getRowCount()>0)
-		{
+		}
+		while (model3.getRowCount() > 0) {
 			model3.removeRow(0);
 		}
-		j = 1; row = 0; int_mv_val = 0; time = 15; trial_cnt = 0; cur_trial = 0;
+		j = 1;
+		row = 0;
+		int_mv_val = 0;
+		time = 15;
+		trial_cnt = 0;
+		cur_trial = 0;
 		sample_weight = 0;
-		start_checking = true; pre_run_completed = false; sent_cvok = false; pre_run_middle = false;
-		blank_run_conducted = false; std_h20_conducted = false; std_disodium_conducted = false;
-		analysis_conducted = false; kf_done = false; select_column = true;
+		start_checking = true;
+		pre_run_completed = false;
+		sent_cvok = false;
+		pre_run_middle = false;
+		blank_run_conducted = false;
+		std_h20_conducted = false;
+		std_disodium_conducted = false;
+		analysis_conducted = false;
+		kf_done = false;
+		select_column = true;
 		kff_arr = new double[5][3];
 		moisture_arr = new double[5][3];
-		
+
 		kf_trial_timings = new String[5];
 		moisture_trial_timings = new String[5];
 
 		result_timings = "";
-		
+
 	}
 
 	public static void port_setup(SerialPort sp) {
@@ -184,15 +206,14 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			} catch (NullPointerException ee) {
 				JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 			}
-		}
-		else {
+		} else {
 			send_afil();
 		}
 	}
 
 	public static void cvok_ok_received() {
 		sent_cvok = true;
-		//send_afil();
+		// send_afil();
 	}
 
 	public static void send_afil() {
@@ -384,12 +405,12 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						|| mv_check_state.matches("")) {
 					mv_check_state = "timer";
 					try {
-						//Thread.sleep(100);
+						// Thread.sleep(100);
 						output_dg.print("<8888>STPM*");
 						output_dg.flush();
 						ReformatBuffer.current_state = "dg_kf_stmp";
-					} //catch (InterruptedException ex) {
-					//}
+					} // catch (InterruptedException ex) {
+						// }
 					catch (NullPointerException ee) {
 						JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 					}
@@ -427,8 +448,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						update_result_text("Pre-Run Completed!");
 						JOptionPane.showMessageDialog(null, "Pre-Run Completed!");
 						try {
-							audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Pre-Run completed");
-						} catch (ParseException e1) {e1.printStackTrace();}
+							audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Pre-Run completed");
+						} catch (ParseException e1) {
+							e1.printStackTrace();
+						}
 						button_prerun.setEnabled(true);
 						pre_run_completed = true;
 						if (temp_status.matches("bm")) {
@@ -560,8 +583,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 							{
 								exec_tempp.shutdown();
 								JOptionPane.showMessageDialog(null,
-										"mV less than end-point Experiment cannot continue. Please Check!");
-								get_mg();
+										"mV less than End-Point!");
+							//	get_mg();
+								open_timer();
+
 							} else {
 								exec_tempp.shutdown();
 								open_timer();
@@ -572,7 +597,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					}
 				}, 0, 100, TimeUnit.MILLISECONDS);
 
-			} catch (Exception mnmnm) {
+			} catch (Exception mm) {
 
 			}
 		} catch (NullPointerException ne) {
@@ -643,12 +668,14 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			}
 		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Blank Volume: "+String.format("%.3f", dose)+" - Updated to Method File");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+					"Blank Volume: " + String.format("%.3f", dose) + " - Updated to Method File");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	public static void update_kff_metd(Double kff) {
-
 		System.out.println("Inside Update Blank Volume Metd");
 		if (model3.getRowCount() > 0) {
 			for (int i = model3.getRowCount() - 1; i > -1; i--) {
@@ -679,12 +706,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 			}
 		}
-
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		try {
 			String sql = "UPDATE kf_method SET Value = ? WHERE Trial_name = ?";
-
 			ps = con.prepareStatement(sql);
 			ps.setString(1, temp_update);
 			ps.setString(2, metd_name);
@@ -703,8 +728,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			}
 		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"KF Factor: "+String.format("%.2f", kff)+" Updated Successfully to method file");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+					"KF Factor: " + String.format("%.2f", kff) + " Updated Successfully to method file");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 	}
 
 	public static void update_result_scroll(String msg) {
@@ -717,29 +745,29 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void std_h2o_completed(double dosage) {
 		JOptionPane.showMessageDialog(null, "Std. by H2O Trial " + cur_trial + " completed");
-
 		if (trial_cnt > 0) {
 			double result_kff = 0;
-			result_kff = (sample_weight / dosage);
+			if(dosage == 0) {
+				result_kff = 0;
+			}
+			else {
+				result_kff = (Double.parseDouble(df.format(sample_weight)) / Double.parseDouble(df.format(dosage)));
+			}
 			System.out.println("Inside trial_cnt>0 Sample weight = " + sample_weight + " --dosage = " + dosage
 					+ "  --result = " + result_kff);
-
 			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
 					String.format("%.4f", result_kff));
 			update_result_scroll(
 					"\nStd. by H2O - Trial " + cur_trial + " : KFF = " + String.format("%.4f", result_kff));
-
 			update_result_text("KFF = " + String.format("%.4f", result_kff));
-			kff_arr[cur_trial - 1][0] = dosage;
-			kff_arr[cur_trial - 1][1] = sample_weight;
-			kff_arr[cur_trial - 1][2] = result_kff;
-
+			kff_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
+			kff_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
+			kff_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_kff));
 			if (trial_cnt == 1) {
 				std_h20_conducted = true;
 				current_process = "";
 				update_kf_factor.setEnabled(true);
 				double[] tempp_arr = new double[5];
-
 				double avg_kff = 0;
 				for (int i = 0; i < table1.getRowCount(); i++) {
 					avg_kff = avg_kff + kff_arr[i][2];
@@ -748,16 +776,14 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_kff = avg_kff / cur_trial;
-				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+						+ String.format("%.2f", rsd) + "</html>");
 				JOptionPane.showMessageDialog(null, "STD. BY H20 COMPLETED");
 				button_std_by_h2o.setEnabled(false);
-				
 			} else {
-
 				JOptionPane.showMessageDialog(null, "Continue to Trial " + (cur_trial + 1));
-				System.out.println("KF_Timing_Trial [" + (cur_trial)+" ] = "+get_time());
+				System.out.println("KF_Timing_Trial [" + (cur_trial) + " ] = " + get_time());
 				kf_trial_timings[cur_trial] = get_time();
-
 				dose = 0;
 				fill = 0;
 				if (sent_cvok == false) {
@@ -774,7 +800,6 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void std_h20_result() {
-
 		double[] tempp_arr = new double[5];
 		cur_trial--;
 		double avg_kff = 0;
@@ -788,14 +813,16 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					avg_kff = avg_kff + kff_arr[i][2];
 					tempp_arr[g] = kff_arr[i][2];
 					System.out.println("checked = " + checked + " value = " + aa);
-					System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i]+" timings = "+kf_trial_timings[i]);
+					System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i] + " timings = " + kf_trial_timings[i]);
 					g++;
 					db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by H2O - Trial " + g + " : KFF = "
 							+ String.format("%.4f", kff_arr[i][2]) + ",";
 					try {
-						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i] ,user_name,"Std. by H2O - Trial " + g + ": KFF =  "+ String.format("%.4f", kff_arr[i][2]));
-					} catch (ParseException e1) {e1.printStackTrace();}
-					
+						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
+								"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
 					if (g == 1)
 						db_kff_trials = db_kff_trials + table1.getValueAt(i, 2).toString() + ","
 								+ table1.getValueAt(i, 3).toString() + "," + table1.getValueAt(i, 4).toString();
@@ -810,20 +837,21 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			double rsd1 = (rsd / avg_kff) * 100;
 			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
-			
-		} 
-		else {
+		} else {
 			int g = 0;
 			for (int i = 0; i < table1.getRowCount(); i++) {
 				avg_kff = avg_kff + kff_arr[i][2];
 				tempp_arr[i] = kff_arr[i][2];
-				System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i]+" timings = "+kf_trial_timings[i]);
+				System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i] + " timings = " + kf_trial_timings[i]);
 				g++;
 				db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by H2O - Trial " + g + " : KFF = "
 						+ String.format("%.4f", kff_arr[i][2]) + ",";
 				try {
-					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i] ,user_name,"Std. by H2O - Trial " + g + ": KFF =  "+ String.format("%.4f", kff_arr[i][2]));
-				} catch (ParseException e1) {e1.printStackTrace();}
+					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
+							"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				if (g == 1)
 					db_kff_trials = db_kff_trials + table1.getValueAt(i, 1).toString() + ","
 							+ table1.getValueAt(i, 2).toString() + "," + table1.getValueAt(i, 3).toString();
@@ -836,32 +864,37 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			double rsd1 = (rsd / avg_kff) * 100;
 			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
-
 		}
 
 		update_result_scroll("\n\nStd. by H2O - Result KFF = " + String.format("%.4f", avg_kff));
 		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - Result KFF = " + String.format("%.4f", avg_kff)
-				+ " mL,";
+				+ " ,";
 		update_result_scroll("\nStd. by H2O - RSD = " + String.format("%.4f", rsd) + " % \n");
 		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - RSD = " + String.format("%.4f", rsd) + " %,";
-		
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. by H2O - Result KFF =  "+ String.format("%.4f", avg_kff)
-			+ " mL   RSD = "+String.format("%.4f", rsd) + " %");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. by H2O - Result KFF =  "
+					+ String.format("%.4f", avg_kff) + "   RSD = " + String.format("%.4f", rsd) + " %");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. Report: "+ db_report_name+" - Updated to DB");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+					"Std. Report: " + db_report_name + " - Updated to DB");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. By H2O Completed");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. By H2O Completed");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		button_std_by_sodium.setEnabled(false);
 		button_std_by_h2o.setEnabled(false);
-		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+				+ String.format("%.2f", rsd) + "</html>");
 		kf_factor = String.format("%.5f", avg_kff);
 		update_kff_metd(avg_kff);
 		add_kff_to_db("Std. by H2O");
-
 	}
 
 	public static void std_disodium_completed(double dosage) {
@@ -869,16 +902,20 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 		if (trial_cnt > 0) {
 			double result_kff = 0;
-			result_kff = ((sample_weight * 0.1566) / dosage);
+			if(dosage == 0) {
+				result_kff = 0;
+			}
+			else {
+				result_kff = ((Double.parseDouble(df.format(sample_weight)) * 0.1566) / dosage);
+			}
 			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
 					String.format("%.4f", result_kff));
-			update_result_scroll("\nStd. by DST - Trial " + cur_trial + " : KFF = "
-					+ String.format("%.4f", result_kff));
-
+			update_result_scroll(
+					"\nStd. by DST - Trial " + cur_trial + " : KFF = " + String.format("%.4f", result_kff));
 			update_result_text("KFF = " + String.format("%.4f", result_kff));
-			kff_arr[cur_trial - 1][0] = dosage;
-			kff_arr[cur_trial - 1][1] = sample_weight;
-			kff_arr[cur_trial - 1][2] = result_kff;
+			kff_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
+			kff_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
+			kff_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_kff));
 			if (trial_cnt == 1) {
 				current_process = "";
 				std_disodium_conducted = true;
@@ -894,7 +931,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_kff = avg_kff / cur_trial;
-				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+						+ String.format("%.2f", rsd) + "</html>");
 
 				JOptionPane.showMessageDialog(null, "STD. BY DST COMPLETED");
 				button_std_by_sodium.setEnabled(false);
@@ -935,11 +973,14 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					System.out.println("checked = " + checked + " value = " + aa);
 					System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i]);
 					g++;
-					db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by DST - Trial " + g
-							+ " : KFF = " + String.format("%.4f", kff_arr[i][2]) + ",";
+					db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by DST - Trial " + g + " : KFF = "
+							+ String.format("%.4f", kff_arr[i][2]) + ",";
 					try {
-						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i] ,user_name,"Std. by DST - Trial " + g + ": KFF =  "+ String.format("%.4f", kff_arr[i][2]));
-					} catch (ParseException e1) {e1.printStackTrace();}
+						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
+								"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
 					if (g == 1)
 						db_kff_trials = db_kff_trials + table1.getValueAt(i, 2).toString() + ","
 								+ table1.getValueAt(i, 3).toString() + "," + table1.getValueAt(i, 4).toString();
@@ -954,7 +995,6 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 
-
 		} else {
 			int g = 0;
 			for (int i = 0; i < table1.getRowCount(); i++) {
@@ -964,8 +1004,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by DST - Trial " + g + " : KFF = "
 						+ String.format("%.4f", kff_arr[i][2]) + ",";
 				try {
-					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i] ,user_name,"Std. by DST - Trial " + g + ": KFF =  "+ String.format("%.4f", kff_arr[i][2]));
-				} catch (ParseException e1) {e1.printStackTrace();}
+					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
+							"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				if (g == 1)
 					db_kff_trials = db_kff_trials + table1.getValueAt(i, 1).toString() + ","
 							+ table1.getValueAt(i, 2).toString() + "," + table1.getValueAt(i, 3).toString();
@@ -979,28 +1022,34 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 
-
 		}
 
 		update_result_scroll("\n\nStd. by DST - Result KFF = " + String.format("%.4f", avg_kff));
-		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - Result KFF = "
-				+ String.format("%.4f", avg_kff) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - Result KFF = " + String.format("%.4f", avg_kff)
+				+ ",";
 		update_result_scroll("\nStd. by DST - RSD = " + String.format("%.4f", rsd) + " % \n");
-		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - RSD = "
-				+ String.format("%.4f", rsd) + " %,";
+		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - RSD = " + String.format("%.4f", rsd) + " %,";
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. by DST - Result KFF =  "+ String.format("%.4f", avg_kff)
-			+ " mL   RSD = "+String.format("%.4f", rsd) + " %");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. by DST - Result KFF =  "
+					+ String.format("%.4f", avg_kff) + " mL   RSD = " + String.format("%.4f", rsd) + " %");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. Report: "+ db_report_name+" - Updated to DB");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+					"Std. Report: " + db_report_name + " - Updated to DB");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Std. By DST Completed");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. By DST Completed");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		button_std_by_sodium.setEnabled(false);
 		button_std_by_h2o.setEnabled(false);
-		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+				+ String.format("%.2f", rsd) + "</html>");
 		kf_factor = String.format("%.5f", avg_kff);
 		update_kff_metd(avg_kff);
 		add_kff_to_db("Std. by DST");
@@ -1017,18 +1066,23 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			} else if (result_unit.toLowerCase().matches("ppm")) {
 				temp_factor = 1000000;
 			}
-
-			result_moisture = (((dosage - Double.parseDouble(blank_vol)) / sample_weight))
+			if(dosage == 0) {
+				result_moisture = 0;
+			}
+			else {
+				result_moisture = (((Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol)) / Double.parseDouble(df.format(sample_weight))))
 					* (Double.parseDouble(kf_factor)) * (temp_factor);
+			}
 			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
 					String.format("%.4f", result_moisture));
+			System.out.println("Analysis completed = "+kf_factor);
 			update_result_scroll(
 					"\nAnalysis - Trial " + cur_trial + " : Moisture = " + String.format("%.4f", result_moisture));
 
 			update_result_text("Moisture = " + String.format("%.4f", result_moisture));
-			moisture_arr[cur_trial - 1][0] = dosage;
-			moisture_arr[cur_trial - 1][1] = sample_weight;
-			moisture_arr[cur_trial - 1][2] = result_moisture;
+			moisture_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
+			moisture_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
+			moisture_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_moisture));
 			if (trial_cnt == 1) {
 				current_process = "";
 				update_analyze.setEnabled(true);
@@ -1043,12 +1097,13 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_moisture = avg_moisture / cur_trial;
 
-				update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+				update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture) + "<br/>RSD = "
+						+ String.format("%.2f", rsd) + "</html>");
 				JOptionPane.showMessageDialog(null, "ANALYSIS COMPLETED");
 				button_analysis.setEnabled(false);
 			} else {
 				JOptionPane.showMessageDialog(null, "Continue to Trial " + (cur_trial + 1));
-				System.out.println("Analysis_Timing_Trial [" + (cur_trial)+" ] = "+get_time());
+				System.out.println("Analysis_Timing_Trial [" + (cur_trial) + " ] = " + get_time());
 
 				moisture_trial_timings[cur_trial] = get_time();
 
@@ -1080,36 +1135,44 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					String aa = table1.getValueAt(i, 1).toString();
 					avg_moisture = avg_moisture + moisture_arr[i][2];
 					tempp_arr[g] = moisture_arr[i][2];
-					
-					db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + (g+1) + " : Moisture = "
-							+ String.format("%.4f", moisture_arr[i][2]) + ",";
+
+					db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + (g + 1)
+							+ " : Moisture = " + String.format("%.4f", moisture_arr[i][2]) + ",";
 					try {
-						audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i] ,user_name,"Analysis - Trial " + (g+1) + ": Moisture = "+ String.format("%.4f", moisture_arr[i][2]));
-					} catch (ParseException e1) {e1.printStackTrace();}
+						audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i], user_name,
+								"Analysis - Trial " + (g + 1) + ": Moisture = "
+										+ String.format("%.4f", moisture_arr[i][2]));
+					} catch (ParseException e1) {
+						e1.printStackTrace();
+					}
 					if (g == 0)
-						db_moisture_trials = db_moisture_trials + table1.getValueAt(i , 2).toString() + ","
-								+ table1.getValueAt(i , 3).toString() + "," + table1.getValueAt(i , 4).toString();
+						db_moisture_trials = db_moisture_trials + table1.getValueAt(i, 2).toString() + ","
+								+ table1.getValueAt(i, 3).toString() + "," + table1.getValueAt(i, 4).toString();
 					else
-						db_moisture_trials = db_moisture_trials + ":" + table1.getValueAt(i , 2).toString() + ","
-								+ table1.getValueAt(i , 3).toString() + "," + table1.getValueAt(i , 4).toString();
+						db_moisture_trials = db_moisture_trials + ":" + table1.getValueAt(i, 2).toString() + ","
+								+ table1.getValueAt(i, 3).toString() + "," + table1.getValueAt(i, 4).toString();
 					g++;
 				}
 			}
 			rsd = SD(tempp_arr, g) * 100;
 			avg_moisture = avg_moisture / g;
 			double rsd1 = (rsd / avg_moisture) * 100;
-			db_moisture_results = db_moisture_results + String.format("%.4f", avg_moisture) + ","+ String.format("%.2f", rsd);
+			db_moisture_results = db_moisture_results + String.format("%.4f", avg_moisture) + ","
+					+ String.format("%.2f", rsd);
 		} else {
 			int g = 0;
 			for (int i = 0; i < table1.getRowCount(); i++) {
 				avg_moisture = avg_moisture + moisture_arr[i][2];
 				tempp_arr[i] = moisture_arr[i][2];
 				g++;
-				db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + g + " : Moisture = "
-						+ String.format("%.4f", moisture_arr[i][2]) + ",";
+				db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + g
+						+ " : Moisture = " + String.format("%.4f", moisture_arr[i][2]) + ",";
 				try {
-					audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i] ,user_name,"Analysis - Trial " + (g) + ": Moisture = "+ String.format("%.4f", moisture_arr[i][2]));
-				} catch (ParseException e1) {e1.printStackTrace();}
+					audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i], user_name,
+							"Analysis - Trial " + (g) + ": Moisture = " + String.format("%.4f", moisture_arr[i][2]));
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				if (g == 1)
 					db_moisture_trials = db_moisture_trials + table1.getValueAt(g - 1, 1).toString() + ","
 							+ table1.getValueAt(g - 1, 2).toString() + "," + table1.getValueAt(g - 1, 3).toString();
@@ -1130,17 +1193,26 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		update_result_scroll("\nAnalysis - RSD = " + String.format("%.4f", rsd) + " %");
 		db_details = db_details + "[ " + get_time() + " ]  Analysis - RSD = " + String.format("%.4f", rsd) + " %,";
 
-		update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture)+"<br/>RSD = "+String.format("%.2f",rsd)+"</html>");
+		update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture) + "<br/>RSD = "
+				+ String.format("%.2f", rsd) + "</html>");
 
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Analysis - Result Moisture = "+ String.format("%.4f", avg_moisture)+"    RSD = "+String.format("%.4f", rsd) + " %");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Analysis - Result Moisture = "
+					+ String.format("%.4f", avg_moisture) + "    RSD = " + String.format("%.4f", rsd) + " %");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Analysis Report: "+ db_report_name+" - Updated to DB");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+					"Analysis Report: " + db_report_name + " - Updated to DB");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Analyis Completed");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Analyis Completed");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 		String[] temp_print = db_details.split(",");
 
 		for (String ddd : temp_print) {
@@ -1150,23 +1222,23 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		System.out.println("UUUUU KFF Result data = " + db_kff_results);
 		System.out.println("UUUUU Moisture Trial data = " + db_moisture_trials);
 		System.out.println("UUUUU Moisture Result data = " + db_moisture_results);
-		
+
 		String[] temp_trial_cnt = db_moisture_trials.split(":");
-		
+
 		String[] temp_params = db_parameters.split(",");
 		String temp_db_params = "";
-		
-		for(int i=0;i<temp_params.length;i++) {
-			if(i == 0) {
+
+		for (int i = 0; i < temp_params.length; i++) {
+			if (i == 0) {
 				temp_db_params = temp_db_params + temp_params[0];
-			}else if(i == 14) {
-				temp_db_params = temp_db_params +","+temp_trial_cnt.length;
-			}else {
-				temp_db_params = temp_db_params +","+temp_params[i];
+			} else if (i == 14) {
+				temp_db_params = temp_db_params + "," + temp_trial_cnt.length;
+			} else {
+				temp_db_params = temp_db_params + "," + temp_params[i];
 			}
 		}
 		db_parameters = temp_db_params;
-		
+
 		add_moisture_to_db();
 	}
 
@@ -1192,7 +1264,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			standardDeviation = standardDeviation + Math.abs(Math.pow((arr[i] - mean), 2));
 		}
 
-		sq = standardDeviation / (size-1);
+		sq = standardDeviation / (size - 1);
 		res = Math.sqrt(sq);
 		res = res / mean;
 		System.out.println("MMMEEEAAANNNN RESSS : " + res);
@@ -1206,7 +1278,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public DrawGraph_kf() {
 		setLayout(null);
-		//System.out.println("Contructor draw graph");
+		// System.out.println("Contructor draw graph");
 
 		display = new JTextArea();
 		display.setEditable(false);
@@ -1252,23 +1324,22 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		button_home.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				if (mv_check_state.matches("g_hundred")) {
 					exec_dg_kf_dosr.shutdown();
-					//exec_dg_kf_dosr.shutdownNow();
+					// exec_dg_kf_dosr.shutdownNow();
 				}
 				if (mv_check_state.matches("g_one")) {
 					exec_dg_kf_one.shutdown();
 				}
 				if (mv_check_state.matches("timer")) {
 					exec_dg_kf_timer.shutdown();
-				} 
+				}
 				if (mv_check_state.matches("")) {
 					exec_dg_kf_fill.shutdown();
 				}
 				current_process = "";
-				
-				 
+
 				try {
 					Thread.sleep(100);
 					output_dg.print("<8888>DOSR,020*");
@@ -1279,7 +1350,6 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				ReformatBuffer.current_state = "dg_kf_home_dosr";
 
-				
 			}
 		});
 
@@ -1320,7 +1390,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		button_prerun.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
+
 				start_checking = true;
 
 				temp_status = "p";
@@ -1333,9 +1403,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				db_details = db_details + "[ " + get_time() + " ]  Pre-Run Started,";
 				button_prerun.setEnabled(false);
 				try {
-					audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Pre-Run Started");
-				} catch (ParseException e1) {e1.printStackTrace();}
-				
+					audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Pre-Run Started");
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
+
 			}
 		});
 
@@ -1364,8 +1436,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				experiment_performing.setText("Experiment Performing : Blank Run");
 				db_details = db_details + "[ " + get_time() + " ]  Blank-Run Started,";
 				try {
-					audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Blank-Run Started");
-				} catch (ParseException e1) {e1.printStackTrace();}
+					audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Blank-Run Started");
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 			}
 		});
 		button_std_by_h2o = new JButton("Std. by H2O");
@@ -1426,7 +1500,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 		button_std_by_sodium = new JButton("Std. by DST");
 		button_std_by_sodium.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
-		
+
 		button_std_by_sodium.setBounds((int) Math.round(0.32 * wid), (int) Math.round(0.5392 * hei),
 				(int) Math.round(0.0716 * wid), (int) Math.round(0.0392 * hei));
 
@@ -1504,7 +1578,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						Double temp_dose = dose;
 						update_blank_vol_metd(temp_dose);
 						update_blankvol.setEnabled(false);
-						blank_run_conducted = false; 
+						blank_run_conducted = false;
 					} else if (result == JOptionPane.NO_OPTION) {
 						update_blankvol.setEnabled(false);
 						blank_run_conducted = false;
@@ -1623,7 +1697,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		table11.setBounds((int) Math.round(0.0195 * wid), (int) Math.round(0.637 * hei), (int) Math.round(0.214 * wid),
 				(int) Math.round(0.318 * hei));
 
-		//System.out.println("Constructorrrrrr = " + metd_name);
+		// System.out.println("Constructorrrrrr = " + metd_name);
 		model3 = new DefaultTableModel(
 				new Object[][] { { "Metd Name", ":", metd_name, "" }, { "Delay", ":", variables[0], "sec" },
 						{ "Stir time", ":", variables[1], "sec" }, { "Max vol", ":", variables[2], "mL" },
@@ -1713,8 +1787,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		update_analyze.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				
-				
+
 				analysis_result_update();
 				update_analyze.setEnabled(false);
 				viewReport.setEnabled(true);
@@ -1728,7 +1801,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		saveReport.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
 		saveReport.setBounds((int) Math.round(0.585 * wid), (int) Math.round(0.637 * hei),
 				(int) Math.round(0.0781 * wid), (int) Math.round(0.0392 * hei));
-	//	add(saveReport);
+		// add(saveReport);
 		saveReport.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -1812,6 +1885,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 		}
 	}
+
 	public static void kf_home_escp() {
 		String aa[] = new String[1];
 		aa[0] = "aa";
@@ -1819,15 +1893,18 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		ReformatBuffer.current_exp = "main";
 		menubar.enable_all(true);
 		menubar.send_cvol_kfpot();
-		menubar.frame1.setTitle("Mayura Analytical      Logged in as - "+user_name+"      Connected to Comport : "+sp1.getDescriptivePortName());
+		menubar.frame1.setTitle("Mayura Analytical      Logged in as - " + user_name + "      Connected to Comport : "
+				+ sp1.getDescriptivePortName());
 		sent_cvok = false;
-		
+
 		try {
-			audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Returning to Home from KF");
-		} catch (ParseException e1) {e1.printStackTrace();}
+			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Returning to Home from KF");
+		} catch (ParseException e1) {
+			e1.printStackTrace();
+		}
 
 		reset();
-		
+
 		frame1.dispose();
 		frame1 = new JFrame();
 		p = new JPanel();
@@ -1835,8 +1912,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		p.revalidate();
 		p.repaint();
 	}
-	
-	
+
 	public static void add_row_to_five_column(int r, String v1, String w_g, String kff) {
 		if (select_column == true) {
 			model.addRow(new Object[0]);
@@ -1911,31 +1987,32 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		}
 		table1.setRowHeight(25);
 		scrollPane.setViewportView(table1);
-		
-		table1.getSelectionModel().addListSelectionListener(new ListSelectionListener(){
-	        public void valueChanged(ListSelectionEvent event) {
-	        	System.out.println("Clicked clicked");
-	        	if(select_column == true) {
-	        	//	if (trial_cnt > 0) { 
-	        			double[] temp_double = new double[5]; 
-	        			int r=0;
-	        			double temp_res = 0;
-	        			for (int i = 0; i < table1.getRowCount(); i++) {
-	        				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
-	        	        	System.out.println("Clicked clicked checked = "+i);
-	        				if (checked) {
-	        					String aa = table1.getValueAt(i, 4).toString();
-	        					temp_double[r] = Double.parseDouble(aa);
-	        					temp_res+=Double.parseDouble(aa);
-	        					r++;
-	        				}
-	        			}
-	        			temp_res = temp_res/r;
-    					update_result_text("<html>Avg. KFF = " + String.format("%.4f", temp_res)+"<br/>RSD = "+String.format("%.2f",(SD(temp_double, r)*100))+"</html>");
-	        		//codecode}
-	        	}
-	        }
-	    });
+
+		table1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+			public void valueChanged(ListSelectionEvent event) {
+				System.out.println("Clicked clicked");
+				if (select_column == true) {
+					// if (trial_cnt > 0) {
+					double[] temp_double = new double[5];
+					int r = 0;
+					double temp_res = 0;
+					for (int i = 0; i < table1.getRowCount(); i++) {
+						Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
+						System.out.println("Clicked clicked checked = " + i);
+						if (checked) {
+							String aa = table1.getValueAt(i, 4).toString();
+							temp_double[r] = Double.parseDouble(aa);
+							temp_res += Double.parseDouble(aa);
+							r++;
+						}
+					}
+					temp_res = temp_res / r;
+					update_result_text("<html>Avg. KFF = " + String.format("%.4f", temp_res) + "<br/>RSD = "
+							+ String.format("%.2f", (SD(temp_double, r) * 100)) + "</html>");
+					// codecode}
+				}
+			}
+		});
 	}
 
 	public static String get_date() {
@@ -1986,10 +2063,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void add_kff_to_db(String std) {
-		
+
 		String[] temp_trial_cnt = db_kff_trials.split(":");
 
-		
 		String temp_params = "";
 		String[] temp_arr = db_parameters.split(",");
 		for (int i = 0; i < 23; i++) {
@@ -1997,13 +2073,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				temp_params = temp_params + temp_arr[i];
 			} else if (i == 21) {
 				temp_params = temp_params + "," + std;
-			}else if (i == 14) {
+			} else if (i == 14) {
 				temp_params = temp_params + "," + temp_trial_cnt.length;
-			}
-			else if(i == 10) {
+			} else if (i == 10) {
 				temp_params = temp_params + "," + kf_factor;
-			}
-			else {
+			} else {
 				temp_params = temp_params + "," + temp_arr[i];
 			}
 		}
@@ -2040,8 +2114,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		String sql;
 		boolean present = false;
 		try {
-			sql = "UPDATE kf SET moisture_trials = ? , " + "moisture_result = ? , " +"parameters = ? , " + "details = ? "
-					+ "WHERE report_name = ?";
+			sql = "UPDATE kf SET moisture_trials = ? , " + "moisture_result = ? , " + "parameters = ? , "
+					+ "details = ? " + "WHERE report_name = ?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, db_moisture_trials);
 			ps.setString(2, db_moisture_results);
@@ -2136,7 +2210,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					+ density + "," + kf_factor + "," + end_point + "," + dosage_rate + "," + result_unit + ","
 					+ no_of_trials + "," + sop + "," + args[2] + "," + args[3] + "," + args[4] + "," + args[5] + ","
 					+ args[6] + "," + "NA" + "," + "Not Certified";
-			//System.out.println("PARAMETERS : " + args[8]);
+			// System.out.println("PARAMETERS : " + args[8]);
 			db_report_name = args[5];
 			user_name = args[7];
 			permission_items = args[8];
@@ -2147,7 +2221,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		hei = d.height - taskHeight;
 		wid = d.width;
-	//	System.out.println(wid + "   dfvdvdv " + hei);
+		// System.out.println(wid + " dfvdvdv " + hei);
 		frame1.setBounds(0, 0, wid, hei);
 		frame1.add(p);
 		frame1.setExtendedState(Frame.MAXIMIZED_BOTH);
@@ -2157,9 +2231,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		frame1.repaint();
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		frame1.setIconImage(img.getImage());
-		frame1.setTitle("KF        Logged in as "+user_name);
+		frame1.setTitle("KF        Logged in as " + user_name);
 
-		
 		ReformatBuffer.current_exp = "kf";
 		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
@@ -2238,12 +2311,14 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						analysis_conducted = false;
 					}
 				}
-				
+
 				check_details_from_db();
-					
+
 				try {
-					audit_log_push.push_to_audit(get_date(), get_time(),user_name,"KFF closed!");
-				} catch (ParseException e1) {e1.printStackTrace();}
+					audit_log_push.push_to_audit(get_date(), get_time(), user_name, "KFF closed!");
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+				}
 				reset();
 
 				frame1.dispose();
@@ -2255,17 +2330,17 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			}
 		});
 	}
-	
+
 	public static void check_details_from_db() {
 		boolean temp_result = false;
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
-		sql = "SELECT details FROM kf WHERE report_name = '"+db_report_name+"'";
+		sql = "SELECT details FROM kf WHERE report_name = '" + db_report_name + "'";
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			String details = rs.getString("details");			
+			String details = rs.getString("details");
 			if (details.matches("")) {
 				try {
 					sql = "DELETE FROM kf WHERE report_name = ?";
@@ -2275,7 +2350,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				} catch (SQLException e1) {
 					JOptionPane.showMessageDialog(null, e1);
 				}
-			} 
+			}
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -2286,8 +2361,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				System.out.println(e1.toString());
 			}
 		}
-		
+
 	}
-	
-	
+
 }
