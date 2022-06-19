@@ -84,8 +84,6 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	static SerialPort sp1;
 	
-
-
 	
 	public static void reset() {
 		variables = new String[17];
