@@ -63,11 +63,15 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			button_home, button_sop, button_esc, update_analyze, viewReport, saveReport, update_kf_factor,
 			update_blankvol;
 	static String[] variables = new String[17];
+	static String[] kf_trial_timings = new String[5];
+	static String[] moisture_trial_timings = new String[5];
+	static double[][] kff_arr = new double[5][3];
+	static double[][] moisture_arr = new double[5][3];
 	static String temp_status = "", mv_check_state = "", user_name = "", permission_items = "",roles_list = "", db_report_name = "",
 			db_parameters = "", db_details = "", db_kff_trials = "", db_kff_results = "", db_moisture_trials = "",
 			db_moisture_results = "", metd_name, metd_data, delay_val, stir_time, max_vol, blank_vol, burette_factor,
 			density, kf_factor, end_point, dosage_rate, result_unit, no_of_trials, sop, current_process = "",
-			prev_process = "";
+			prev_process = "",result_timings = "";
 	static DefaultTableModel model, model3;
 	static PrintWriter output_dg;
 	static ScheduledExecutorService exec_dg_kf_fill, exec_dg_kf_one, exec_dg_kf_dosr;
@@ -77,14 +81,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	static boolean start_checking = true, pre_run_completed = false, sent_cvok = false, pre_run_middle = false,
 			blank_run_conducted = false, std_h20_conducted = false, std_disodium_conducted = false,
 			analysis_conducted = false, kf_done = false, select_column = true;
-	static double[][] kff_arr = new double[5][3];
-	static double[][] moisture_arr = new double[5][3];
+
 	static SerialPort sp1;
 	
-	static String[] kf_trial_timings = new String[5];
-	static String[] moisture_trial_timings = new String[5];
 
-	static String result_timings = "";
+
 	
 	public static void reset() {
 		variables = new String[17];
