@@ -120,7 +120,7 @@ public class rename_metd_name extends JFrame {
 
 		btn_save = new JButton("Update Method Name");
 		btn_save.setFont(new Font("Times New Roman", Font.BOLD, 18));
-		btn_save.setBounds(140, 180, 250, 37);
+		btn_save.setBounds(120, 180, 250, 37);
 		contentPane.add(btn_save);
 		btn_save.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {

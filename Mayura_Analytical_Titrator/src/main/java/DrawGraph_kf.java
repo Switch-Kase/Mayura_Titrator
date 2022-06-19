@@ -2081,6 +2081,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				temp_params = temp_params + "," + temp_arr[i];
 			}
 		}
+		db_parameters = temp_params;
 
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;

@@ -574,7 +574,6 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		afill_first = false;
 		experiment_started = true;
 
-		if (cur_trial != 1) {
 			for (int x = 0; x < d.length; x++)
 				d[x] = 0;
 			cur_val = new double[20];
@@ -614,8 +613,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			ep_continue2 = 0;
 			ep_continue3 = 0;
 			dossage_speed = 0;
+			db_remarks = "No Remarks";
 			threshold_array.clear();
-		}
+			threshold_array = new Stack<String>();
+		
 
 		if (cur_trial != no_of_trials) {
 			try {
@@ -6499,7 +6500,9 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					ep_continue2 = 0;
 					ep_continue3 = 0;
 					dossage_speed = 0;
+					db_remarks = "No Remarks";
 					threshold_array.clear();
+					threshold_array = new Stack<String>();
 				}
 
 				if ((cur_trial - 1 != no_of_trials)) {

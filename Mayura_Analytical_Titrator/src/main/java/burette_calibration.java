@@ -239,8 +239,8 @@ public class burette_calibration extends JPanel implements ItemListener {
 			@Override
 			public void run() {
 				if (dose_counter < dose) {
-					dose_counter = dose_counter + ((20 / 60.0) / 5);
-					vol_dose.setText("Volume Dosed : " + String.format("%.1f", dose_counter) + "mL");
+					dose_counter = dose_counter + ((20 / 60.0) / 10);
+					vol_dose.setText("Volume Dosed : " + String.format("%.2f", dose_counter) + "mL");
 				} else {
 					dose_counter = 0;
 					exec_bc_dose.shutdown();
@@ -255,7 +255,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 					}
 				}
 			}
-		}, 0, 50, TimeUnit.MILLISECONDS);
+		}, 0, 100, TimeUnit.MILLISECONDS);
 	}
 
 	public static void bc_stpm_ok_received() {
@@ -265,7 +265,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w2 = Double.parseDouble(result);
-			model.setValueAt(w2, row_cnt, 4);
+			model.setValueAt(String.format("%.4f", w2), row_cnt, 4);
 			model.fireTableDataChanged();
 
 			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 3).toString());

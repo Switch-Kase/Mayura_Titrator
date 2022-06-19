@@ -118,7 +118,7 @@ public class save_method extends JFrame {
 			
 			JButton btn_update_data = new JButton("Update Method");
 			btn_update_data.setFont(new Font("Times New Roman", Font.BOLD, 18));
-			btn_update_data.setBounds(170, 350, 180, 37);
+			btn_update_data.setBounds(155, 350, 180, 37);
 			contentPane.add(btn_update_data);
 			btn_update_data.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
