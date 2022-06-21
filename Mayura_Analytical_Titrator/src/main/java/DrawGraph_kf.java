@@ -1654,6 +1654,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		button_esc.setBounds((int) Math.round(0.45 * wid), (int) Math.round(0.5392 * hei),
 				(int) Math.round(0.052 * wid), (int) Math.round(0.0392 * hei));
 		add(button_esc);
+		button_esc.setEnabled(false);
 		button_esc.addActionListener(new ActionListener() {
 
 			@Override

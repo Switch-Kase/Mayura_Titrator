@@ -156,7 +156,7 @@ public class DbConnection {
 		String formula11 = "INSERT OR IGNORE INTO formulas(no,formula) VALUES('11','BiCarbonate= \\frac {V_1*N*F_1*Unit}{W*F_3},Carbonate= \\frac {(V_2-2V_1)*N*F_2*Unit}{W*F_4}')";
 		String formula12 = "INSERT OR IGNORE INTO formulas(no,formula) VALUES('12','Analyte A= \\frac {V_1*N*F_1*Unit}{W*F_3},Analyte B= \\frac {V_2*N*F_2*Unit}{W*F_4}')";
 
-		String set_bf = "INSERT OR IGNORE INTO burette_factor(SlNo,b_factor,permision) VALUES('1','1','true')";
+		String set_bf = "INSERT OR IGNORE INTO burette_factor(SlNo,b_factor,permision) VALUES('1','1,0','true')";
 
 		try{  
             Connection con = DriverManager.getConnection(url);  

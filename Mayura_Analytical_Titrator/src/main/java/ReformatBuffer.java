@@ -54,7 +54,10 @@ public class ReformatBuffer {
         		}
         		else if(current_exp.matches("kf")) {
         			DrawGraph_kf.update_mv_kf(bufferReadToString); 
-        		}        		
+        		}
+        		else if(current_exp.matches("calibrate")) {
+        			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        		}
         	}
         	
         	if(bufferReadToString.contains("N") && !bufferReadToString.contains("END")) {
@@ -66,7 +69,10 @@ public class ReformatBuffer {
         		}
         		else if(current_exp.matches("kf")) {
         			DrawGraph_kf.update_mv_kf(bufferReadToString); 
-        		}        		
+        		}  
+        		else if(current_exp.matches("calibrate")) {
+        			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        		}
         	}
         	
         	if(current_state.matches("mb_start") && bufferReadToString.contains("END")) {
