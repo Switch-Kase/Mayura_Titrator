@@ -3590,6 +3590,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_exit.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
 
 		add(button_exit);
+		button_exit.setEnabled(false);
 
 		button_exit.addActionListener(new ActionListener() {
 			@Override

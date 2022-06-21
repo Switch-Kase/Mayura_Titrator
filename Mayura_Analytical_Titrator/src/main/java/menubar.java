@@ -100,9 +100,6 @@ public class menubar extends JPanel implements ItemListener {
 	SerialPort firstAvailableComPort;
 	String data;
 
-	static JLabel jlabel_mv_Value, jlabel_ml_Value, lblEpSelect, text_blank_vol, lblNewLabel_pot_tendency,
-			lblNewLabel_21, lblNewLabel_22;
-
 	private static JTextField textField_11, textField_12;
 	public static String selected_experiment = "", selected_methodfile = null;
 
@@ -117,7 +114,8 @@ public class menubar extends JPanel implements ItemListener {
 	static JLabel pot_predose, pot_stirtime, pot_maxvol, pot_blankvol, pot_burette, pot_threshold, pot_filter,
 			pot_no_of_trials, pot_tendency, pot_f1, pot_f2, pot_f3, pot_f4, pot_epselect, pot_formulaNo, pot_dosagerate,
 			pot_resultunit, pot_units_predose, pot_units_stirtime, pot_units_maxvol, pot_units_blankvol,
-			pot_units_dosagerate, pot_units_threshold, pot_sop;
+			pot_units_dosagerate, pot_units_threshold, pot_sop,jlabel_mv_Value, jlabel_ml_Value, lblEpSelect, text_blank_vol, lblNewLabel_pot_tendency,
+			lblNewLabel_21, lblNewLabel_22;
 	static JTextField pot_tf_predose, pot_tf_stirtime, pot_tf_maxvol, pot_tf_blankvol, pot_tf_burette, pot_tf_factor1,
 			pot_tf_factor2, pot_tf_factor3, pot_tf_factor4, pot_tf_sop_value;
 	static JComboBox pot_cb_threshold, pot_cb_filter, pot_cb_dosagerate, pot_cb_nooftrials, pot_cb_epselect,
@@ -170,7 +168,7 @@ public class menubar extends JPanel implements ItemListener {
 			menu_item_print_log, menu_item_exit, menu_item_mv_display, menu_item_measure, menu_item_calibrate,
 			menu_item_pot, menu_item_kf, menu_item_ph, menu_item_amp, menu_item_login, menu_item_sa_login,
 			menu_item_view_reports, menu_item_comport, menu_item_logout, menuItem_add_sop, menuItem_custom_formula,
-			menuItem_device_data;
+			menuItem_device_data,menuItem_calibrate_electrode;
 	static JRadioButton rdbtnNewRadioButton, rdbtnNewRadioButton_1, rdbtnNewRadioButton_2, rdbtnNewRadioButton_3;
 	static int u = 0;
 	static int v = 0;
@@ -3277,6 +3275,16 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		mnNewMenu_5.add(menuItem_device_data);
+		
+		menuItem_calibrate_electrode = new JMenuItem("Calibrate Electrode");
+		menuItem_calibrate_electrode.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String[] aa = {user_name};
+				ReformatBuffer.current_exp = "calibrate";
+				calibrate_electrode.main(aa);
+			}
+		});
+		mnNewMenu_5.add(menuItem_calibrate_electrode);
 
 		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
@@ -3518,6 +3526,7 @@ public class menubar extends JPanel implements ItemListener {
 		menuItem_custom_formula.setEnabled(condition);
 		menuItem_device_data.setEnabled(condition);
 		menuItem_burette.setEnabled(condition);
+		menuItem_calibrate_electrode.setEnabled(condition);
 		menu_item_comport.setEnabled(condition);
 		enable_table_items(condition);
 	}
@@ -3623,6 +3632,7 @@ public class menubar extends JPanel implements ItemListener {
 		}
 		if (!items.contains("Burette")) {
 			menuItem_burette.setEnabled(false);
+			menuItem_calibrate_electrode.setEnabled(false);
 		}
 		if (!items.contains("Custom")) {
 			menuItem_custom_formula.setEnabled(false);
