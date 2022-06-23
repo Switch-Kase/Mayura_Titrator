@@ -152,7 +152,7 @@ public class DrawReport_kf extends JPanel {
 				(int) Math.round(0.036 * hei));
 		add(radio_btn_kff);
 
-		radio_btn_moisture = new JRadioButton("Moisture");
+		radio_btn_moisture = new JRadioButton("Sample");
 		radio_btn_moisture.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				five_column_moisture();

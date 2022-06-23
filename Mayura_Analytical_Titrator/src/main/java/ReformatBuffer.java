@@ -57,6 +57,7 @@ public class ReformatBuffer {
         		}
         		else if(current_exp.matches("calibrate")) {
         			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        			menubar.update_mv_main(bufferReadToString);
         		}
         	}
         	
@@ -72,6 +73,7 @@ public class ReformatBuffer {
         		}  
         		else if(current_exp.matches("calibrate")) {
         			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        			menubar.update_mv_main(bufferReadToString);
         		}
         	}
         	
