@@ -14,6 +14,7 @@ import org.scilab.forge.jlatexmath.TeXFormula;
 import org.scilab.forge.jlatexmath.TeXIcon;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.itextpdf.text.DocumentException;
 import com.sun.jdi.connect.Connector.SelectedArgument;
 
 import java.awt.Color;
@@ -170,20 +171,15 @@ public class menubar extends JPanel implements ItemListener {
 			menu_item_view_reports, menu_item_comport, menu_item_logout, menuItem_add_sop, menuItem_custom_formula,
 			menuItem_device_data,menuItem_calibrate_electrode;
 	static JRadioButton rdbtnNewRadioButton, rdbtnNewRadioButton_1, rdbtnNewRadioButton_2, rdbtnNewRadioButton_3;
-	static int u = 0;
-	static int v = 0;
+	static int u = 0,v = 0,formula_cnt = 0;
 	static Double volume;
-	static String mb_cur_state = "";
-	static String math = "", math2 = "", math3 = "";
+	static String mb_cur_state = "",math = "", math2 = "", math3 = "",user_name = "testing", roles_list = "testing", role_items = "testing", admin_user_name = "testing";
 	static TeXFormula formula, formula2, formula3;
 	static TeXIcon ti_formula, ti_formula2, ti_formula3;
 	static BufferedImage b_formula, b_formula2, b_formula3;
 	static JPanel p_formula, p_formula2, p_formula3;
 	static JLabel l_formula, l_formula2, l_formula3, formula_header;
-	int formula_cnt = 0;
-	static String user_name = "testing", roles_list = "testing", role_items = "testing", admin_user_name = "testing";
-
-	static boolean no_update = false;
+	static boolean no_update = false,method_opened = false;
 
 	public static void main(String[] args) {
 
@@ -3106,9 +3102,69 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		menu_file.add(menu_item_view_reports);
+		
+		
 
 		mnNewMenu_7 = new JMenuItem("Print Method");
-	//	menu_file.add(mnNewMenu_7);
+		menu_file.add(mnNewMenu_7);	
+		mnNewMenu_7.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				String experiment = "";
+				String company_details = get_company_details();
+				String parameter = "";
+				String[] company_arr = company_details.split(">");		
+				String company_details_temp = company_arr[1]+">"+company_arr[2];
+				String instrument_id = company_arr[0];
+				try {
+					if(null != selected_methodfile || selected_methodfile.matches("")) {
+						if (selected_experiment.matches("potentiometry")) {
+							experiment = "Potentiometry";
+							parameter = parameter +"Experiment: Potentiometry";
+							parameter = parameter +",Method Name: "+ selected_methodfile;
+							parameter = parameter +",Predose: "+ pot_tf_predose.getText();
+							parameter = parameter +",Stir Time: "+ pot_tf_stirtime.getText();
+							parameter = parameter +",Max Vol: "+ pot_tf_maxvol.getText();
+							parameter = parameter +",Blank Vol: "+ pot_tf_blankvol.getText();
+							parameter = parameter +",Burette Factor: "+ pot_tf_burette.getText();
+							parameter = parameter +",Threshold: "+ pot_cb_threshold.getSelectedItem().toString();
+							parameter = parameter +",Filter: "+ pot_cb_filter.getSelectedItem().toString();
+							parameter = parameter +",Doserate: "+ pot_cb_dosagerate.getSelectedItem().toString();
+							parameter = parameter +",No of Trials: "+ pot_cb_nooftrials.getSelectedItem().toString();
+							parameter = parameter +",Factor1: "+ pot_tf_factor1.getText();
+							parameter = parameter +",Factor2: "+ pot_tf_factor2.getText();
+							parameter = parameter +",Factor3: "+ pot_tf_factor3.getText();
+							parameter = parameter +",Factor4: "+ pot_tf_factor4.getText();
+							parameter = parameter +",EP Select: "+ pot_cb_epselect.getSelectedItem().toString();
+							parameter = parameter +",Formula No: " +pot_cb_formula.getSelectedItem().toString();
+							parameter = parameter +",Tendency: " +pot_cb_tendency.getSelectedItem().toString();
+							parameter = parameter +",Result Unit: "+ pot_cb_resultunit.getSelectedItem().toString();
+							parameter = parameter +",SOP: "+ pot_tf_sop_value.getText();
+						}
+						else if (selected_experiment.matches("karl")) {
+							experiment = "Karl Fischer";
+							parameter = parameter +"Experiment: Karl Fischer";
+							parameter = parameter +",Method Name: "+ selected_methodfile;
+							parameter = parameter +",Delay: "+ kf_tf_delay.getText();
+							parameter = parameter +",Stir Time: "+ kf_tf_stirtime.getText();
+							parameter = parameter +",Max Vol: "+ kf_tf_maxvol.getText();
+							parameter = parameter +",Blank Vol: "+ kf_tf_blankvol.getText();
+							parameter = parameter +",Burette Factor: "+ kf_tf_burette.getText();
+							parameter = parameter +",Density: "+ kf_tf_density.getText();
+							parameter = parameter +",KF Factor: "+ kf_tf_factor.getText();
+							parameter = parameter +",End Point: "+ kf_tf_endpoint.getText();
+							parameter = parameter +",Dosage Rate: "+ kf_cb_dosagerate.getSelectedItem().toString();
+							parameter = parameter +",Result Unit: "+ kf_cb_resultunit.getSelectedItem().toString();
+							parameter = parameter +",No of Trials: "+ kf_cb_nooftrials.getSelectedItem().toString();
+							parameter = parameter +",SOP Value: "+ kf_tf_sop_value.getText();
+						}
+						try {report.generate_method_report(company_details_temp, parameter,experiment,selected_methodfile,instrument_id);} 
+						catch (FileNotFoundException e1) {e1.printStackTrace();} 
+						catch (DocumentException e1) {e1.printStackTrace();}
+					}
+				}
+				catch(NullPointerException npe) {JOptionPane.showMessageDialog(null, "Please select a method file!");}
+			  }
+		});
 
 		menu_item_exit = new JMenuItem("Exit");
 		menu_file.add(menu_item_exit);
@@ -3670,4 +3726,29 @@ public class menubar extends JPanel implements ItemListener {
 		} catch (InterruptedException jb) {
 		}
 	}
+	 public static String get_company_details() {
+			String data = "";
+				Connection con = DbConnection.connect();
+				PreparedStatement ps = null;
+				ResultSet rs = null;
+				String sql;
+				try {
+					sql = "SELECT * FROM company_data";
+					ps = con.prepareStatement(sql);
+					rs = ps.executeQuery();
+					data = data + rs.getString("instrument_id");
+					data = data + ">" + rs.getString("company_name");
+					data = data + ">" + rs.getString("company_address");						
+				} catch (SQLException e1) {
+					// JOptionPane.showMessageDialog(null,e1);
+				} finally {
+					try {
+						ps.close();
+						con.close();
+					} catch (SQLException e1) {
+						System.out.println(e1.toString());
+					}
+				}
+				return data;
+		}
 }
