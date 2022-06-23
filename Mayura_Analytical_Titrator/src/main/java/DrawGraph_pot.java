@@ -67,7 +67,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 	static int hei, wid, j = 0, temp_j = 0, row = 0, size = 0, end_point_no = 0, typ, ee = 0, m1, d_flag, end_count = 0,
 			i, thershold = 200, factor = 1, graph_mul1 = 1, data_array_size = 0, balance = 0, cur_trial = 1,
-			trial_cnt = 0, report_saved = 0, failed_count = 0, current_cloumn_count = 0, formula_no, no_of_trials;
+			trial_cnt = 0, report_saved = 0, failed_count = 0, current_cloumn_count = 0, formula_no, no_of_trials,e_calib=0;
 	final int PAD = 20;
 
 	static double end_line = 0, total_points = 0, k = 0, ky, delta = 0.6, t, k1, k2, c2, newdata1, diff0, diff1, diff2,
@@ -176,7 +176,13 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		if (msg.contains("N"))
 			int_mv_val = -int_mv_val;
 
-		mv_display_pot.setText(int_mv_val + " mV");
+	//	System.out.println("int_mv_val = "+int_mv_val+"  :   E calib = "+e_calib);
+		
+		int_mv_val = int_mv_val-e_calib;
+		
+	//	System.out.println("int_mv_val = "+int_mv_val);
+		
+		mv_display_pot.setText((int_mv_val) + " mV");
 
 		update_front_end = true;
 
@@ -3933,6 +3939,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		// System.out.println("Select Potentiometry = " + select_column);
 		initialize();
 		add_to_db();
+		get_electrode_calibration_data();
 	}
 
 	private static void save_report() {
@@ -6647,6 +6654,33 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		return temp_result;
 	}
+	
+	public static void get_electrode_calibration_data() {
+		Connection con = DbConnection.connect();
+		PreparedStatement ps = null;
+		String sql;
+		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = 1";
+		try {
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			String[] result = rs.getString("b_factor").split(",");
+			if(result.length == 2)
+				e_calib= Integer.parseInt(result[1]);	
+			else
+				e_calib= Integer.parseInt(result[1]);	
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException e1) {
+				System.out.println(e1.toString());
+			}
+		}
+		
+	}
+
 }
 //try {
 //OutputStream out = new FileOutputStream("C:\\sqlite\\chart\\chart.png"); 

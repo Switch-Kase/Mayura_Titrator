@@ -582,9 +582,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 							if ((int) double_mv_val < Integer.parseInt(end_point))// && pre_run_completed == true
 							{
 								exec_tempp.shutdown();
-								JOptionPane.showMessageDialog(null,
-										"mV less than End-Point!");
-							//	get_mg();
+								JOptionPane.showMessageDialog(null, "mV less than End-Point!");
+								// get_mg();
 								open_timer();
 
 							} else {
@@ -747,10 +746,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		JOptionPane.showMessageDialog(null, "Std. by H2O Trial " + cur_trial + " completed");
 		if (trial_cnt > 0) {
 			double result_kff = 0;
-			if(dosage == 0) {
+			if (dosage == 0) {
 				result_kff = 0;
-			}
-			else {
+			} else {
 				result_kff = (Double.parseDouble(df.format(sample_weight)) / Double.parseDouble(df.format(dosage)));
 			}
 			System.out.println("Inside trial_cnt>0 Sample weight = " + sample_weight + " --dosage = " + dosage
@@ -902,10 +900,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 		if (trial_cnt > 0) {
 			double result_kff = 0;
-			if(dosage == 0) {
+			if (dosage == 0) {
 				result_kff = 0;
-			}
-			else {
+			} else {
 				result_kff = ((Double.parseDouble(df.format(sample_weight)) * 0.1566) / dosage);
 			}
 			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
@@ -1066,16 +1063,16 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			} else if (result_unit.toLowerCase().matches("ppm")) {
 				temp_factor = 1000000;
 			}
-			if(dosage == 0) {
+			if (dosage == 0) {
 				result_moisture = 0;
-			}
-			else {
-				result_moisture = (((Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol)) / Double.parseDouble(df.format(sample_weight))))
-					* (Double.parseDouble(kf_factor)) * (temp_factor);
+			} else {
+				result_moisture = (((Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol))
+						/ Double.parseDouble(df.format(sample_weight)))) * (Double.parseDouble(kf_factor))
+						* (temp_factor);
 			}
 			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
 					String.format("%.4f", result_moisture));
-			System.out.println("Analysis completed = "+kf_factor);
+			System.out.println("Analysis completed = " + kf_factor);
 			update_result_scroll(
 					"\nAnalysis - Trial " + cur_trial + " : Moisture = " + String.format("%.4f", result_moisture));
 
@@ -1324,20 +1321,22 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		button_home.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-
-				if (mv_check_state.matches("g_hundred")) {
-					exec_dg_kf_dosr.shutdown();
-					// exec_dg_kf_dosr.shutdownNow();
+				try {
+					if (mv_check_state.matches("g_hundred")) {
+						exec_dg_kf_dosr.shutdown();
+						// exec_dg_kf_dosr.shutdownNow();
+					}
+					if (mv_check_state.matches("g_one")) {
+						exec_dg_kf_one.shutdown();
+					}
+					if (mv_check_state.matches("timer")) {
+						exec_dg_kf_timer.shutdown();
+					}
+					if (mv_check_state.matches("")) {
+						exec_dg_kf_fill.shutdown();
+					}
 				}
-				if (mv_check_state.matches("g_one")) {
-					exec_dg_kf_one.shutdown();
-				}
-				if (mv_check_state.matches("timer")) {
-					exec_dg_kf_timer.shutdown();
-				}
-				if (mv_check_state.matches("")) {
-					exec_dg_kf_fill.shutdown();
-				}
+				catch(NullPointerException jh) {}
 				current_process = "";
 
 				try {
@@ -2365,5 +2364,4 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		}
 
 	}
-
 }

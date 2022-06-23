@@ -3281,6 +3281,7 @@ public class menubar extends JPanel implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				String[] aa = {user_name};
 				ReformatBuffer.current_exp = "calibrate";
+				calibrate_electrode.stop_updating = false;
 				calibrate_electrode.main(aa);
 			}
 		});
