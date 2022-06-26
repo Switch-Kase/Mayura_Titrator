@@ -898,6 +898,7 @@ public class DrawReport_pot extends JPanel{
 			  String dx[] = tempx[0].split(",");
 			  String dy[] = tempy[0].split(",");
 			  for(int j=0;j<dx.length;j++) {
+				//System.out.println("X = "+dx[j]+" : Y = "+dy[j]);
 				       series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
 			  }
 			  

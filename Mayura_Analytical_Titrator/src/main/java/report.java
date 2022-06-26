@@ -33,7 +33,7 @@ import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.spire.pdf.exporting.xps.schema.Break;
-
+import com.itextpdf.text.FontFactory;
 public class report {
 	
 	static String parameters = "",remarks="",company_details="",headers = "",values = "",trials = "",result = "",rsd = "",instrument_id = "",report_name="";
@@ -49,8 +49,12 @@ public class report {
 	            footer.getDefaultCell().setFixedHeight(20);
 	            footer.getDefaultCell().setBorder(0);
 	         
-	            
-	            footer.addCell(new Phrase("Report generated using model "+instrument_id+" by Mayura Analytical on "+get_date()+"   "+get_time()));
+	            com.itextpdf.text.Font f=new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN,0.10f, com.itextpdf.text.Font.NORMAL, BaseColor.BLACK);
+		           
+	            float fntSize, lineSpacing;
+	            fntSize = 10.0f;
+	            lineSpacing = 10f;
+	            footer.addCell(new Phrase("Report generated using model "+instrument_id+" by Mayura Analytical on "+get_date()+"   "+get_time(),FontFactory.getFont(FontFactory.TIMES_ROMAN, fntSize)));
 
 	            // write page
 	            PdfContentByte canvas = writer.getDirectContent();
@@ -131,8 +135,7 @@ public class report {
 		            com.itextpdf.text.Font f=new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN,25.0f, com.itextpdf.text.Font.NORMAL, BaseColor.BLACK);
 		            com.itextpdf.text.Font f1=new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN,12.0f, com.itextpdf.text.Font.NORMAL,BaseColor.BLACK);
 		            
-		            Image img =Image.getInstance("C:\\sqlite\\company_logo\\logo.png");           
-		        
+		             Image img =Image.getInstance("C:\\sqlite\\company_logo\\logo.png");           
 		             PdfPTable table12 = new PdfPTable(2);
 		             table12.setWidthPercentage(100);
 		             table12.setWidths(new int[]{1, 12});
@@ -148,8 +151,6 @@ public class report {
 		             fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
 		             table12.addCell(createTextCell(company[1],fontH1));
 		             table12.addCell(cell);
-		             
-		             
 		             fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.NORMAL);
 		            // table12.addCell(createTextCell(param[0],fontH1));
 		             
@@ -277,6 +278,7 @@ public class report {
 	
 		            if(graph) {
 		            	for (int graph_trial=0;graph_trial<row_number;graph_trial++) {
+		            		document.newPage();
 			        	 Image imag =Image.getInstance("C:\\sqlite\\logo\\logo.png");
 			             imag.scaleAbsolute(500f, 410f);
 	
@@ -705,20 +707,20 @@ public class report {
 		             document.add(table4);
 		            
 		            }
-	            if(row_number <=3) {
-	            Paragraph p11xcs = new Paragraph(" ",f1);
-	            	addEmptyLine(p11xcs, 1);
-	            	addEmptyLine(p11xcs, 1);
-	           		addEmptyLine(p11xcs, 1);
-	          		document.add(p11xcs);
-	            }
+//	            if(row_number <=3) {
+//	            Paragraph p11xcs = new Paragraph(" ",f1);
+//	            	addEmptyLine(p11xcs, 1);
+//	            	addEmptyLine(p11xcs, 1);
+//	           		addEmptyLine(p11xcs, 1);
+//	          		document.add(p11xcs);
+//	            }
 
 	            addFooter(writer);
 
 	            if(graph) {
 	            	
 	            	for (int graph_trial=0;graph_trial<row_number;graph_trial++) {
-	            		
+	            		document.newPage();
 			        	Image imag =Image.getInstance("C:\\sqlite\\chart\\chart"+graph_trial+".png");
 			            imag.scaleAbsolute(500f, 280f);
 
@@ -727,9 +729,9 @@ public class report {
 			            Paragraph test1= new Paragraph("     ",f1);
 	
 			            Paragraph test2= new Paragraph("     ",f1);
-			            document.add(test);
-			            document.add(test1);
-			            document.add(test2);
+//			            document.add(test);
+//			            document.add(test1);
+//			            document.add(test2);
 
 	                	Paragraph p11 = new Paragraph(" ",f1);
 
