@@ -3098,7 +3098,6 @@ public class menubar extends JPanel implements ItemListener {
 
 				String[] aa = { user_name, role_items };
 				open_report.main(aa);
-
 			}
 		});
 		menu_file.add(menu_item_view_reports);
