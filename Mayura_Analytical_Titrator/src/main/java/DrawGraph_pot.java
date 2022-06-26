@@ -705,7 +705,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 		for (int i = 0; i < temp_ar.length; i++) {
 			if (i == 3) {
-				temp_update = temp_update + "," + String.format("%.4f", bvolume);
+				temp_update = temp_update + "," + String.format("%.3f", bvolume);
 			} else {
 				if (i == 0) {
 					temp_update = temp_update + temp_ar[i];
@@ -722,7 +722,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (i == 0) {
 				temp_db_params = temp_db_params + temp_params[0];
 			} else if (i == 7) {
-				temp_db_params = temp_db_params + "," + String.format("%.4f", bvolume);
+				temp_db_params = temp_db_params + "," + String.format("%.3f", bvolume);
 			} else {
 				temp_db_params = temp_db_params + "," + temp_params[i];
 			}
@@ -854,17 +854,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		res_normality = res_normality / temp_res.size();
 		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Normality = " + String.format("%.4f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.4f", res_normality) + ",";
-		update_result_scroll("Normality RSD = " + String.format("%.4f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.4f", rsd_1) + ",";
+		update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+		update_result_scroll("Normality RSD = " + String.format("%.3f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Normality: " + String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Normality: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
-		db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			if (i == 0) {
@@ -958,18 +958,18 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		res_normality = res_normality / temp_res.size();
 		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.4f", res_normality) + ",";
-		update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.4f", rsd_1) + ",";
+		update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte: " + String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 
-		db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			if (i == 0) {
@@ -1062,19 +1062,19 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		res_normality = res_normality / temp_res.size();
 		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.4f", res_normality) + ",";
-		update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.4f", rsd_1) + ",";
+		update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte: " + String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 
-		db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			if (i == 0) {
@@ -1166,19 +1166,19 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		res_normality = res_normality / temp_res.size();
 		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Normality = " + String.format("%.4f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.4f", res_normality) + ",";
-		update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.4f", rsd_1) + ",";
+		update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Normality: " + String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Normality: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 
-		db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
@@ -1273,19 +1273,19 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		res_normality = res_normality / temp_res.size();
 		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.4f", res_normality) + ",";
-		update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.4f", rsd_1) + ",";
+		update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte: " + String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 
-		db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
@@ -1406,33 +1406,33 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteB = res_analyteB / temp_res.size();
 		double rsd_2 = SD(temp_resB);
 
-		update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+		update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte A: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte A: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte B: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Analyte B: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 		for (int i = 0; i < data_X.size(); i++) {
 			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
@@ -1570,42 +1570,42 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteC = res_analyteC / temp_res.size();
 		double rsd_3 = SD(temp_resC);
 
-		update_result_scroll("\nAverage Analyte A = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average Analyte B = " + String.format("%.4f", res_analyteB) + "\n");
-		update_result_scroll("Average Analyte C = " + String.format("%.4f", res_analyteC) + "\n");
+		update_result_scroll("\nAverage Analyte A = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average Analyte B = " + String.format("%.3f", res_analyteB) + "\n");
+		update_result_scroll("Average Analyte C = " + String.format("%.3f", res_analyteC) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte C = " + String.format("%.4f", res_analyteC) + ",";
-		update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte C = " + String.format("%.3f", res_analyteC) + ",";
+		update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 3 = " + String.format("%.4f", rsd_3) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 3 = " + String.format("%.3f", rsd_3) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2) + ":"
-				+ String.format("%.4f", res_analyteC) + "," + String.format("%.4f", rsd_3);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2) + ":"
+				+ String.format("%.3f", res_analyteC) + "," + String.format("%.3f", rsd_3);
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte A: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte A: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte B: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Analyte B: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte C: " + String.format("%.4f", res_analyteC) + ", RSD: " + String.format("%.4f", rsd_3));
+					"Analyte C: " + String.format("%.3f", res_analyteC) + ", RSD: " + String.format("%.3f", rsd_3));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -1725,30 +1725,30 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteB = res_analyteB / temp_res.size();
 		double rsd_2 = SD(temp_resB);
 
-		update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+		update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte A: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Analyte A: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte B: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Analyte B: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -1871,29 +1871,29 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteB = res_analyteB / temp_res.size();
 		double rsd_2 = SD(temp_resB);
 
-		update_result_scroll("\nAverage Carbonate = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteB) + "\n");
+		update_result_scroll("\nAverage Carbonate = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteB) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Alkali = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Alkali = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Carbonate: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"Carbonate: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Alkali: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Alkali: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -2036,42 +2036,42 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteC = res_analyteC / temp_res.size();
 		double rsd_3 = SD(temp_resC);
 
-		update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
-		update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteC) + "\n");
+		update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
+		update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteC) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  BiCarbonate = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  BiCarbonate = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Alkali = " + String.format("%.4f", res_analyteC) + ",";
-		update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Alkali = " + String.format("%.3f", res_analyteC) + ",";
+		update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 3 = " + String.format("%.4f", rsd_3) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 3 = " + String.format("%.3f", rsd_3) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2) + ":"
-				+ String.format("%.4f", res_analyteC) + "," + String.format("%.4f", rsd_3);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2) + ":"
+				+ String.format("%.3f", res_analyteC) + "," + String.format("%.3f", rsd_3);
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"BiCarbonate: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"BiCarbonate: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Carbonate: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Carbonate: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Alkali: " + String.format("%.4f", res_analyteC) + ", RSD: " + String.format("%.4f", rsd_3));
+					"Alkali: " + String.format("%.3f", res_analyteC) + ", RSD: " + String.format("%.3f", rsd_3));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -2195,30 +2195,30 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteB = res_analyteB / temp_res.size();
 		double rsd_2 = SD(temp_resB);
 
-		update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
+		update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  BiCarbonate = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  BiCarbonate = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Carbonate = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"BiCarbonate: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"BiCarbonate: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Carbonate: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"Carbonate: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -2340,30 +2340,30 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		res_analyteB = res_analyteB / temp_res.size();
 		double rsd_2 = SD(temp_resB);
 
-		update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-		update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+		update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+		update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.4f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
+		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.4f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
+		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
 
-		db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-				+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"AnalyteA: " + String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+					"AnalyteA: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"AnalyteB: " + String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+					"AnalyteB: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -3985,17 +3985,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (k != 1) {
 				res_normality = res_normality / temp_res.size();
 				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Normality = " + String.format("%.4f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.4f", res_normality)
+				update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
 						+ ",";
-				update_result_scroll("Normality RSD = " + String.format("%.4f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.4f", rsd_1)
+				update_result_scroll("Normality RSD = " + String.format("%.3f", rsd_1) + " %\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Normality: "
-							+ String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4074,16 +4074,16 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (k != 1) {
 				res_normality = res_normality / temp_res.size();
 				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.4f", res_normality)
+				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
 						+ ",";
-				update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.4f", rsd_1)
+				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
-							+ String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4163,17 +4163,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 				res_normality = res_normality / temp_res.size();
 				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.4f", res_normality)
+				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
 						+ ",";
-				update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.4f", rsd_1)
+				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
-							+ String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4252,17 +4252,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (k != 1) {
 				res_normality = res_normality / temp_res.size();
 				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.4f", res_normality)
+				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
 						+ ",";
-				update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.4f", rsd_1)
+				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
-							+ String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4343,17 +4343,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (k != 1) {
 				res_normality = res_normality / temp_res.size();
 				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.4f", res_normality)
+				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
 						+ ",";
-				update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.4f", rsd_1)
+				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_results = String.format("%.4f", res_normality) + "," + String.format("%.4f", rsd_1);
+				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
-							+ String.format("%.4f", res_normality) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4454,34 +4454,34 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteB = res_analyteB / temp_res.size();
 				double rsd_2 = SD(temp_resB);
 
-				update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+				update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4599,42 +4599,42 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteC = res_analyteC / temp_res.size();
 				double rsd_3 = SD(temp_resC);
 
-				update_result_scroll("\nAverage Analyte A = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average Analyte B = " + String.format("%.4f", res_analyteB) + "\n");
-				update_result_scroll("Average Analyte C = " + String.format("%.4f", res_analyteC) + "\n");
+				update_result_scroll("\nAverage Analyte A = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average Analyte B = " + String.format("%.3f", res_analyteB) + "\n");
+				update_result_scroll("Average Analyte C = " + String.format("%.3f", res_analyteC) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte C = "
-						+ String.format("%.4f", res_analyteC) + ",";
-				update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+						+ String.format("%.3f", res_analyteC) + ",";
+				update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 3 = " + String.format("%.4f", rsd_3)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 3 = " + String.format("%.3f", rsd_3)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2) + ":"
-						+ String.format("%.4f", res_analyteC) + "," + String.format("%.4f", rsd_3);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2) + ":"
+						+ String.format("%.3f", res_analyteC) + "," + String.format("%.3f", rsd_3);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4735,34 +4735,34 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteB = res_analyteB / temp_res.size();
 				double rsd_2 = SD(temp_resB);
 
-				update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+				update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4862,34 +4862,34 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteB = res_analyteB / temp_res.size();
 				double rsd_2 = SD(temp_resB);
 
-				update_result_scroll("\nAverage Carbonate = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteB) + "\n");
+				update_result_scroll("\nAverage Carbonate = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteB) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Carbonate = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Alkali = " + String.format("%.4f", res_analyteB)
+				db_details = db_details + "[ " + result_timings + " ]  Alkali = " + String.format("%.3f", res_analyteB)
 						+ ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Carbonate: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Alkali: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -4989,8 +4989,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
 								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString() + ","
 								+ model.getValueAt(i, 9).toString() + "," + model.getValueAt(i, 10).toString();
-						db_graph_x = db_graph_x + data_X.get(i);
-						db_graph_y = db_graph_y + data_Y.get(i);
+						db_graph_x = db_graph_x+ ":" + data_X.get(i);
+						db_graph_y = db_graph_y+ ":" + data_Y.get(i);
 					}
 					k++;
 					db_remarks = db_remarks + "," + threshold_array.get(i);
@@ -5007,47 +5007,47 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteC = res_analyteC / temp_res.size();
 				double rsd_3 = SD(temp_resC);
 
-				update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
-				update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteC) + "\n");
+				update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
+				update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteC) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  BiCarbonate = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Carbonate = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Alkali = " + String.format("%.4f", res_analyteC)
+				db_details = db_details + "[ " + result_timings + " ]  Alkali = " + String.format("%.3f", res_analyteC)
 						+ ",";
-				update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+				update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 3 = " + String.format("%.4f", rsd_3)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 3 = " + String.format("%.3f", rsd_3)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2) + ":"
-						+ String.format("%.4f", res_analyteC) + "," + String.format("%.4f", rsd_3);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2) + ":"
+						+ String.format("%.3f", res_analyteC) + "," + String.format("%.3f", rsd_3);
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "BiCarbonate: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Carbonate: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Alkali: "
-							+ String.format("%.4f", res_analyteC) + ", RSD: " + String.format("%.4f", rsd_3));
+							+ String.format("%.3f", res_analyteC) + ", RSD: " + String.format("%.3f", rsd_3));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -5126,11 +5126,15 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
 								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
 								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
+						db_graph_x = db_graph_x + data_X.get(i);
+						db_graph_y = db_graph_y + data_Y.get(i);
 					} else {
 						db_trial_data = db_trial_data + ":" + k + "," + model.getValueAt(i, 2).toString() + ","
 								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
 								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
 								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
+						db_graph_x = db_graph_x + ":" + data_X.get(i);
+						db_graph_y = db_graph_y + ":" + data_Y.get(i);
 					}
 					k++;
 					db_remarks = db_remarks + "," + threshold_array.get(i);
@@ -5144,34 +5148,34 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteB = res_analyteB / temp_res.size();
 				double rsd_2 = SD(temp_resB);
 
-				update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
+				update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  BiCarbonate = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Carbonate = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "BiCarbonate: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Carbonate: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -5270,34 +5274,34 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_analyteB = res_analyteB / temp_res.size();
 				double rsd_2 = SD(temp_resB);
 
-				update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-				update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
+				update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+				update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
-						+ String.format("%.4f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
+						+ String.format("%.3f", res_analyteA) + ",";
+				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 
 				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
-						+ String.format("%.4f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+						+ String.format("%.3f", res_analyteB) + ",";
+				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.4f", rsd_1)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
 						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.4f", rsd_2)
+				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
 						+ ",";
 
-				db_results = String.format("%.4f", res_analyteA) + "," + String.format("%.4f", rsd_1) + ":"
-						+ String.format("%.4f", res_analyteB) + "," + String.format("%.4f", rsd_2);
+				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
 
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
-							+ String.format("%.4f", res_analyteA) + ", RSD: " + String.format("%.4f", rsd_1));
+							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
 				try {
 					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
-							+ String.format("%.4f", res_analyteB) + ", RSD: " + String.format("%.4f", rsd_2));
+							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -5353,8 +5357,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			res_normality = res_normality / temp_res.size();
 			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Normality = " + String.format("%.4f", res_normality) + "\n");
-			update_result_scroll("Normality RSD = " + String.format("%.4f", rsd_1) + " %\n");
+			update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
+			update_result_scroll("Normality RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
 
 		if (formula_no == 2) {
@@ -5372,8 +5376,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			res_normality = res_normality / temp_res.size();
 			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-			update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
+			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
 		if (formula_no == 3) {
 			button_continue.setEnabled(false);
@@ -5390,8 +5394,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			res_normality = res_normality / temp_res.size();
 			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-			update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
+			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
 		if (formula_no == 4) {
 			button_continue.setEnabled(false);
@@ -5408,8 +5412,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			res_normality = res_normality / temp_res.size();
 			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-			update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
+			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
 		if (formula_no == 5) {
 			button_continue.setEnabled(false);
@@ -5426,8 +5430,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			res_normality = res_normality / temp_res.size();
 			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Analyte = " + String.format("%.4f", res_normality) + "\n");
-			update_result_scroll("Analyte RSD = " + String.format("%.4f", rsd_1) + " %\n");
+			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
 		if (formula_no == 6) {
 			button_continue.setEnabled(false);
@@ -5454,10 +5458,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteB = res_analyteB / temp_res.size();
 			double rsd_2 = SD(temp_resB);
 
-			update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+			update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
 		if (formula_no == 7) {
 			button_continue.setEnabled(false);
@@ -5488,12 +5492,12 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteC = res_analyteC / temp_res.size();
 			double rsd_3 = SD(temp_resC);
 
-			update_result_scroll("\nAverage Analyte A = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average Analyte B = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Average Analyte C = " + String.format("%.4f", res_analyteC) + "\n");
-			update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
-			update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+			update_result_scroll("\nAverage Analyte A = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average Analyte B = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Average Analyte C = " + String.format("%.3f", res_analyteC) + "\n");
+			update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
+			update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 		}
 		if (formula_no == 8) {
 			button_continue.setEnabled(false);
@@ -5520,10 +5524,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteB = res_analyteB / temp_res.size();
 			double rsd_2 = SD(temp_resB);
 
-			update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+			update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
 		if (formula_no == 9) {
 			button_continue.setEnabled(false);
@@ -5550,10 +5554,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteB = res_analyteB / temp_res.size();
 			double rsd_2 = SD(temp_resB);
 
-			update_result_scroll("\nAverage Carbonate = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+			update_result_scroll("\nAverage Carbonate = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
 		if (formula_no == 10) {
 			button_continue.setEnabled(false);
@@ -5586,12 +5590,12 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteC = res_analyteC / temp_res.size();
 			double rsd_3 = SD(temp_resC);
 
-			update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Average Alkali = " + String.format("%.4f", res_analyteC) + "\n");
-			update_result_scroll("Analyte RSD 1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD 2 = " + String.format("%.4f", rsd_2) + " %\n");
-			update_result_scroll("Analyte RSD 3 = " + String.format("%.4f", rsd_3) + " %\n");
+			update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Average Alkali = " + String.format("%.3f", res_analyteC) + "\n");
+			update_result_scroll("Analyte RSD 1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
+			update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 		}
 		if (formula_no == 11) {
 			button_continue.setEnabled(false);
@@ -5618,10 +5622,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteB = res_analyteB / temp_res.size();
 			double rsd_2 = SD(temp_resB);
 
-			update_result_scroll("\nAverage BiCarbonate = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average Carbonate = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+			update_result_scroll("\nAverage BiCarbonate = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average Carbonate = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
 		if (formula_no == 12) {
 			button_continue.setEnabled(false);
@@ -5648,10 +5652,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			res_analyteB = res_analyteB / temp_res.size();
 			double rsd_2 = SD(temp_resB);
 
-			update_result_scroll("\nAverage AnalyteA = " + String.format("%.4f", res_analyteA) + "\n");
-			update_result_scroll("Average AnalyteB = " + String.format("%.4f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.4f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.4f", rsd_2) + " %\n");
+			update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+			update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
 	}
 
@@ -6667,7 +6671,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if(result.length == 2)
 				e_calib= Integer.parseInt(result[1]);	
 			else
-				e_calib= Integer.parseInt(result[1]);	
+				e_calib= 0;	
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -6694,4 +6698,4 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 //	System.out.println("checked = "+checked+ " value = "+aa);
 //}
 
-//db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - RSD = " + String.format("%.4f", rsd) + " %,";
+//db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - RSD = " + String.format("%.3f", rsd) + " %,";

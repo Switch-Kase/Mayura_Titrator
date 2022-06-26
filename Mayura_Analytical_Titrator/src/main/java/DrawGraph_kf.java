@@ -142,7 +142,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		int dr = Math.round(aa);
 		if (aa == 0.5) {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(50);
 				output_dg.print("<8888>DOSR,017*");
 				output_dg.flush();
 			} catch (InterruptedException ex) {
@@ -152,7 +152,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			ReformatBuffer.current_state = "dg_kf_dosr";
 		} else {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(50);
 				String s = String.format("%03d", dr);
 				System.out.println("Dosage rate 2 = " + s);
 				output_dg.print("<8888>DOSR," + s + "*");
@@ -198,7 +198,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	public static void send_cvok() {
 		if (sent_cvok == false) {
 			try {
-				Thread.sleep(500);
+				Thread.sleep(50);
 				output_dg.print("<8888>CVOK*");
 				output_dg.flush();
 				ReformatBuffer.current_state = "dg_kf_cvok";
@@ -218,7 +218,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_afil() {
 		try {
-			Thread.sleep(500);
+			Thread.sleep(10);
 			output_dg.print("<8888>AFIL*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_afil";
@@ -279,7 +279,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_dose() {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(10);
 			output_dg.print("<8888>DOSE*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_dose";
@@ -327,7 +327,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_dose_timer() {
 		try {
-			Thread.sleep(50);
+			Thread.sleep(10);
 			output_dg.print("<8888>DOSE*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_dose_timer";
@@ -518,12 +518,12 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						if (temp_status.matches("b")) {
 							blank_vol = String.valueOf(dose);
 							current_process = "";
-							update_result_text("Blank Vol: " + String.format("%.4f", temp_dose) + " mL");
+							update_result_text("Blank Vol: " + String.format("%.3f", temp_dose) + " mL");
 							update_result_scroll("\nBlank run Completed!\n");
 							db_details = db_details + "[ " + get_time() + " ]  Blank run Completed,";
-							update_result_scroll("Blank Volume = " + String.format("%.4f", temp_dose) + " mL \n");
+							update_result_scroll("Blank Volume = " + String.format("%.3f", temp_dose) + " mL \n");
 							db_details = db_details + "[ " + get_time() + " ]  Blank Volume = "
-									+ String.format("%.4f", temp_dose) + " mL,";
+									+ String.format("%.3f", temp_dose) + " mL,";
 							JOptionPane.showMessageDialog(null, "Blank-Run Completed!");
 							// button_blankrun.setEnabled(false);
 							update_blankvol.setEnabled(true);
@@ -753,11 +753,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			}
 			System.out.println("Inside trial_cnt>0 Sample weight = " + sample_weight + " --dosage = " + dosage
 					+ "  --result = " + result_kff);
-			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
-					String.format("%.4f", result_kff));
+			add_row_to_five_column(cur_trial - 1, String.format("%.3f", dosage), String.valueOf(sample_weight),
+					String.format("%.3f", result_kff));
 			update_result_scroll(
-					"\nStd. by H2O - Trial " + cur_trial + " : KFF = " + String.format("%.4f", result_kff));
-			update_result_text("KFF = " + String.format("%.4f", result_kff));
+					"\nStd. by H2O - Trial " + cur_trial + " : KFF = " + String.format("%.3f", result_kff));
+			update_result_text("KFF = " + String.format("%.3f", result_kff));
 			kff_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
 			kff_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
 			kff_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_kff));
@@ -774,7 +774,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_kff = avg_kff / cur_trial;
-				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+				update_result_text("<html>Avg. KFF = " + String.format("%.3f", avg_kff) + "<br/>RSD = "
 						+ String.format("%.2f", rsd) + "</html>");
 				JOptionPane.showMessageDialog(null, "STD. BY H20 COMPLETED");
 				button_std_by_h2o.setEnabled(false);
@@ -814,10 +814,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i] + " timings = " + kf_trial_timings[i]);
 					g++;
 					db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by H2O - Trial " + g + " : KFF = "
-							+ String.format("%.4f", kff_arr[i][2]) + ",";
+							+ String.format("%.3f", kff_arr[i][2]) + ",";
 					try {
 						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
-								"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+								"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.3f", kff_arr[i][2]));
 					} catch (ParseException e1) {
 						e1.printStackTrace();
 					}
@@ -833,7 +833,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			avg_kff = avg_kff / g;
 			db_kff_results = "";
 			double rsd1 = (rsd / avg_kff) * 100;
-			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
+			db_kff_results = db_kff_results + String.format("%.3f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 		} else {
 			int g = 0;
@@ -843,10 +843,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i] + " timings = " + kf_trial_timings[i]);
 				g++;
 				db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by H2O - Trial " + g + " : KFF = "
-						+ String.format("%.4f", kff_arr[i][2]) + ",";
+						+ String.format("%.3f", kff_arr[i][2]) + ",";
 				try {
 					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
-							"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+							"Std. by H2O - Trial " + g + ": KFF =  " + String.format("%.3f", kff_arr[i][2]));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -860,18 +860,18 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			rsd = SD(tempp_arr, g) * 100;
 			avg_kff = avg_kff / g;
 			double rsd1 = (rsd / avg_kff) * 100;
-			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
+			db_kff_results = db_kff_results + String.format("%.3f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 		}
 
-		update_result_scroll("\n\nStd. by H2O - Result KFF = " + String.format("%.4f", avg_kff));
-		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - Result KFF = " + String.format("%.4f", avg_kff)
+		update_result_scroll("\n\nStd. by H2O - Result KFF = " + String.format("%.3f", avg_kff));
+		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - Result KFF = " + String.format("%.3f", avg_kff)
 				+ " ,";
-		update_result_scroll("\nStd. by H2O - RSD = " + String.format("%.4f", rsd) + " % \n");
-		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - RSD = " + String.format("%.4f", rsd) + " %,";
+		update_result_scroll("\nStd. by H2O - RSD = " + String.format("%.3f", rsd) + " % \n");
+		db_details = db_details + "[ " + get_time() + " ]  Std. by H2O - RSD = " + String.format("%.3f", rsd) + " %,";
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. by H2O - Result KFF =  "
-					+ String.format("%.4f", avg_kff) + "   RSD = " + String.format("%.4f", rsd) + " %");
+					+ String.format("%.3f", avg_kff) + "   RSD = " + String.format("%.3f", rsd) + " %");
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -888,7 +888,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		}
 		button_std_by_sodium.setEnabled(false);
 		button_std_by_h2o.setEnabled(false);
-		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+		update_result_text("<html>Avg. KFF = " + String.format("%.3f", avg_kff) + "<br/>RSD = "
 				+ String.format("%.2f", rsd) + "</html>");
 		kf_factor = String.format("%.5f", avg_kff);
 		update_kff_metd(avg_kff);
@@ -905,11 +905,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			} else {
 				result_kff = ((Double.parseDouble(df.format(sample_weight)) * 0.1566) / dosage);
 			}
-			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
-					String.format("%.4f", result_kff));
+			add_row_to_five_column(cur_trial - 1, String.format("%.3f", dosage), String.valueOf(sample_weight),
+					String.format("%.3f", result_kff));
 			update_result_scroll(
-					"\nStd. by DST - Trial " + cur_trial + " : KFF = " + String.format("%.4f", result_kff));
-			update_result_text("KFF = " + String.format("%.4f", result_kff));
+					"\nStd. by DST - Trial " + cur_trial + " : KFF = " + String.format("%.3f", result_kff));
+			update_result_text("KFF = " + String.format("%.3f", result_kff));
 			kff_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
 			kff_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
 			kff_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_kff));
@@ -928,7 +928,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_kff = avg_kff / cur_trial;
-				update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+				update_result_text("<html>Avg. KFF = " + String.format("%.3f", avg_kff) + "<br/>RSD = "
 						+ String.format("%.2f", rsd) + "</html>");
 
 				JOptionPane.showMessageDialog(null, "STD. BY DST COMPLETED");
@@ -971,10 +971,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					System.out.println("Tempp_arr [" + i + "] = " + tempp_arr[i]);
 					g++;
 					db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by DST - Trial " + g + " : KFF = "
-							+ String.format("%.4f", kff_arr[i][2]) + ",";
+							+ String.format("%.3f", kff_arr[i][2]) + ",";
 					try {
 						audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
-								"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+								"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.3f", kff_arr[i][2]));
 					} catch (ParseException e1) {
 						e1.printStackTrace();
 					}
@@ -989,7 +989,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			rsd = SD(tempp_arr, g) * 100;
 			avg_kff = avg_kff / g;
 			double rsd1 = (rsd / avg_kff) * 100;
-			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
+			db_kff_results = db_kff_results + String.format("%.3f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 
 		} else {
@@ -999,10 +999,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				tempp_arr[i] = kff_arr[i][2];
 				g++;
 				db_details = db_details + "[ " + kf_trial_timings[i] + " ]  Std. by DST - Trial " + g + " : KFF = "
-						+ String.format("%.4f", kff_arr[i][2]) + ",";
+						+ String.format("%.3f", kff_arr[i][2]) + ",";
 				try {
 					audit_log_push.push_to_audit(get_date(), kf_trial_timings[i], user_name,
-							"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.4f", kff_arr[i][2]));
+							"Std. by DST - Trial " + g + ": KFF =  " + String.format("%.3f", kff_arr[i][2]));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -1016,19 +1016,19 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			rsd = SD(tempp_arr, g) * 100;
 			avg_kff = avg_kff / g;
 			double rsd1 = (rsd / avg_kff) * 100;
-			db_kff_results = db_kff_results + String.format("%.4f", avg_kff) + "," + String.format("%.2f", rsd);
+			db_kff_results = db_kff_results + String.format("%.3f", avg_kff) + "," + String.format("%.2f", rsd);
 			kf_factor = String.format("%.3f", avg_kff);
 
 		}
 
-		update_result_scroll("\n\nStd. by DST - Result KFF = " + String.format("%.4f", avg_kff));
-		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - Result KFF = " + String.format("%.4f", avg_kff)
+		update_result_scroll("\n\nStd. by DST - Result KFF = " + String.format("%.3f", avg_kff));
+		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - Result KFF = " + String.format("%.3f", avg_kff)
 				+ ",";
-		update_result_scroll("\nStd. by DST - RSD = " + String.format("%.4f", rsd) + " % \n");
-		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - RSD = " + String.format("%.4f", rsd) + " %,";
+		update_result_scroll("\nStd. by DST - RSD = " + String.format("%.3f", rsd) + " % \n");
+		db_details = db_details + "[ " + get_time() + " ]  Std. by DST - RSD = " + String.format("%.3f", rsd) + " %,";
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Std. by DST - Result KFF =  "
-					+ String.format("%.4f", avg_kff) + " mL   RSD = " + String.format("%.4f", rsd) + " %");
+					+ String.format("%.3f", avg_kff) + " mL   RSD = " + String.format("%.3f", rsd) + " %");
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -1045,7 +1045,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		}
 		button_std_by_sodium.setEnabled(false);
 		button_std_by_h2o.setEnabled(false);
-		update_result_text("<html>Avg. KFF = " + String.format("%.4f", avg_kff) + "<br/>RSD = "
+		update_result_text("<html>Avg. KFF = " + String.format("%.3f", avg_kff) + "<br/>RSD = "
 				+ String.format("%.2f", rsd) + "</html>");
 		kf_factor = String.format("%.5f", avg_kff);
 		update_kff_metd(avg_kff);
@@ -1070,13 +1070,13 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						/ Double.parseDouble(df.format(sample_weight)))) * (Double.parseDouble(kf_factor))
 						* (temp_factor);
 			}
-			add_row_to_five_column(cur_trial - 1, String.format("%.4f", dosage), String.valueOf(sample_weight),
-					String.format("%.4f", result_moisture));
+			add_row_to_five_column(cur_trial - 1, String.format("%.3f", dosage), String.valueOf(sample_weight),
+					String.format("%.3f", result_moisture));
 			System.out.println("Analysis completed = " + kf_factor);
 			update_result_scroll(
-					"\nAnalysis - Trial " + cur_trial + " : Moisture = " + String.format("%.4f", result_moisture));
+					"\nAnalysis - Trial " + cur_trial + " : Moisture = " + String.format("%.3f", result_moisture));
 
-			update_result_text("Moisture = " + String.format("%.4f", result_moisture));
+			update_result_text("Moisture = " + String.format("%.3f", result_moisture));
 			moisture_arr[cur_trial - 1][0] = Double.parseDouble(df.format(dosage));
 			moisture_arr[cur_trial - 1][1] = Double.parseDouble(df.format(sample_weight));
 			moisture_arr[cur_trial - 1][2] = Double.parseDouble(df.format(result_moisture));
@@ -1094,7 +1094,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				double rsd = SD(tempp_arr, table1.getRowCount()) * 100;
 				avg_moisture = avg_moisture / cur_trial;
 
-				update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture) + "<br/>RSD = "
+				update_result_text("<html>Avg. Moisture = " + String.format("%.3f", avg_moisture) + "<br/>RSD = "
 						+ String.format("%.2f", rsd) + "</html>");
 				JOptionPane.showMessageDialog(null, "ANALYSIS COMPLETED");
 				button_analysis.setEnabled(false);
@@ -1134,11 +1134,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 					tempp_arr[g] = moisture_arr[i][2];
 
 					db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + (g + 1)
-							+ " : Moisture = " + String.format("%.4f", moisture_arr[i][2]) + ",";
+							+ " : Moisture = " + String.format("%.3f", moisture_arr[i][2]) + ",";
 					try {
 						audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i], user_name,
 								"Analysis - Trial " + (g + 1) + ": Moisture = "
-										+ String.format("%.4f", moisture_arr[i][2]));
+										+ String.format("%.3f", moisture_arr[i][2]));
 					} catch (ParseException e1) {
 						e1.printStackTrace();
 					}
@@ -1154,7 +1154,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			rsd = SD(tempp_arr, g) * 100;
 			avg_moisture = avg_moisture / g;
 			double rsd1 = (rsd / avg_moisture) * 100;
-			db_moisture_results = db_moisture_results + String.format("%.4f", avg_moisture) + ","
+			db_moisture_results = db_moisture_results + String.format("%.3f", avg_moisture) + ","
 					+ String.format("%.2f", rsd);
 		} else {
 			int g = 0;
@@ -1163,10 +1163,10 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				tempp_arr[i] = moisture_arr[i][2];
 				g++;
 				db_details = db_details + "[ " + moisture_trial_timings[i] + " ]  Analysis - Trial " + g
-						+ " : Moisture = " + String.format("%.4f", moisture_arr[i][2]) + ",";
+						+ " : Moisture = " + String.format("%.3f", moisture_arr[i][2]) + ",";
 				try {
 					audit_log_push.push_to_audit(get_date(), moisture_trial_timings[i], user_name,
-							"Analysis - Trial " + (g) + ": Moisture = " + String.format("%.4f", moisture_arr[i][2]));
+							"Analysis - Trial " + (g) + ": Moisture = " + String.format("%.3f", moisture_arr[i][2]));
 				} catch (ParseException e1) {
 					e1.printStackTrace();
 				}
@@ -1180,22 +1180,22 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			rsd = SD(tempp_arr, g) * 100;
 			avg_moisture = avg_moisture / g;
 			double rsd1 = (rsd / avg_moisture) * 100;
-			db_moisture_results = db_moisture_results + String.format("%.4f", avg_moisture) + ","
+			db_moisture_results = db_moisture_results + String.format("%.3f", avg_moisture) + ","
 					+ String.format("%.2f", rsd);
 		}
 
-		update_result_scroll("\n\nAnalysis - Result Moisture = " + String.format("%.4f", avg_moisture));
+		update_result_scroll("\n\nAnalysis - Result Moisture = " + String.format("%.3f", avg_moisture));
 		db_details = db_details + "[ " + get_time() + " ]  Analysis - Result Moisture = "
-				+ String.format("%.4f", avg_moisture) + ",";
-		update_result_scroll("\nAnalysis - RSD = " + String.format("%.4f", rsd) + " %");
-		db_details = db_details + "[ " + get_time() + " ]  Analysis - RSD = " + String.format("%.4f", rsd) + " %,";
+				+ String.format("%.3f", avg_moisture) + ",";
+		update_result_scroll("\nAnalysis - RSD = " + String.format("%.3f", rsd) + " %");
+		db_details = db_details + "[ " + get_time() + " ]  Analysis - RSD = " + String.format("%.3f", rsd) + " %,";
 
-		update_result_text("<html>Avg. Moisture = " + String.format("%.4f", avg_moisture) + "<br/>RSD = "
+		update_result_text("<html>Avg. Moisture = " + String.format("%.3f", avg_moisture) + "<br/>RSD = "
 				+ String.format("%.2f", rsd) + "</html>");
 
 		try {
 			audit_log_push.push_to_audit(get_date(), get_time(), user_name, "Analysis - Result Moisture = "
-					+ String.format("%.4f", avg_moisture) + "    RSD = " + String.format("%.4f", rsd) + " %");
+					+ String.format("%.3f", avg_moisture) + "    RSD = " + String.format("%.3f", rsd) + " %");
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
@@ -1340,7 +1340,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				current_process = "";
 
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 					output_dg.print("<8888>DOSR,020*");
 					output_dg.flush();
 				} catch (InterruptedException ex) {
@@ -1672,7 +1672,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				current_process = "";
 				try {
-					Thread.sleep(100);
+					Thread.sleep(10);
 					output_dg.print("<8888>ESCP*");
 					output_dg.flush();
 					ReformatBuffer.current_state = "dg_kf_escp";
@@ -1876,7 +1876,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void kf_home_dosr() {
 		try {
-			Thread.sleep(100);
+			Thread.sleep(10);
 			output_dg.print("<8888>ESCP*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_home_escp";
@@ -2007,7 +2007,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						}
 					}
 					temp_res = temp_res / r;
-					update_result_text("<html>Avg. KFF = " + String.format("%.4f", temp_res) + "<br/>RSD = "
+					update_result_text("<html>Avg. KFF = " + String.format("%.3f", temp_res) + "<br/>RSD = "
 							+ String.format("%.2f", (SD(temp_double, r) * 100)) + "</html>");
 					// codecode}
 				}
@@ -2239,7 +2239,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				try {
-					Thread.sleep(500);
+					Thread.sleep(10);
 					output_dg.print("<8888>ESCP*");
 					output_dg.flush();
 				} catch (InterruptedException ex) {
