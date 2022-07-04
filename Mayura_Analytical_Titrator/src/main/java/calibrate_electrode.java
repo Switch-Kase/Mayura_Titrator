@@ -38,19 +38,15 @@ import javax.swing.plaf.DimensionUIResource;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
-
-
-
 public class calibrate_electrode extends JPanel {
-	static JFrame frame1 = new JFrame();
-	static calibrate_electrode frame;
+	static JFrame frame = new JFrame();
 	static String user_name = "";
 	static JLabel text_mV, text_ph,previous_value;
 	static JButton button_calibrate;
 	static int int_temp_mv ;
 	static int wid = 0, hei = 0;
 	static boolean stop_updating = false; 
-	
+	static int e_calib = 0;
 	
 	static JPanel p = new JPanel();
 	public calibrate_electrode() {
@@ -61,39 +57,48 @@ public class calibrate_electrode extends JPanel {
 
 	@SuppressWarnings("removal")
 	public static void initialize() {
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
 		
 		text_mV = new JLabel("<html>mV <br/>0 mV</html>");
 		text_mV.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.016 * wid)));
 		text_mV.setBounds((int) Math.round(0.03 * wid), (int) Math.round(0.001 * hei), (int) Math.round(0.4 * wid),
 				(int) Math.round(0.10 * hei));
-		frame1.getContentPane().add(text_mV);
+		frame.getContentPane().add(text_mV);
 
 		text_ph = new JLabel("<html>pH <br/> 0</html>");
 		text_ph.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.016 * wid)));
 		text_ph.setBounds((int) Math.round(0.2 * wid), (int) Math.round(0.001 * hei), (int) Math.round(0.4 * wid),
 				(int) Math.round(0.10 * hei));
-		frame1.getContentPane().add(text_ph);
+		frame.getContentPane().add(text_ph);
 
 		button_calibrate = new JButton("Calibrate");
 		button_calibrate.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
-		button_calibrate.setBounds((int) Math.round(0.1 * wid), (int) Math.round(0.135 * hei),
-				(int) Math.round(0.1 * wid), (int) Math.round(0.05 * hei));
+		button_calibrate.setBounds((int) Math.round(0.05 * wid), (int) Math.round(0.135 * hei),
+				(int) Math.round(0.2 * wid), (int) Math.round(0.05 * hei));
 
-		frame1.getContentPane().add(button_calibrate);
+		frame.getContentPane().add(button_calibrate);
 		button_calibrate.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				check_details_from_db();
+				if(button_calibrate.getText().toString().contains("4")) {
+					button_calibrate.setText("Check completed for pH 9.2");
+					JOptionPane.showMessageDialog(null, "Place the electrode in pH 9.2 solution");
+				}
+				else if(button_calibrate.getText().toString().contains("9")) {
+					close_page();
+				}
+				else {
+					check_details_from_db();
+				}
 			}
 		});
 		previous_value = new JLabel("Previous value");
 		previous_value.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
 		previous_value.setBounds((int) Math.round(0.03 * wid), (int) Math.round(0.001 * hei), (int) Math.round(0.4 * wid),
 				(int) Math.round(0.45 * hei));
-		frame1.getContentPane().add(previous_value);
+		frame.getContentPane().add(previous_value);
 	}
 	public static void get_data() {
 		Connection con = DbConnection.connect();
@@ -104,8 +109,10 @@ public class calibrate_electrode extends JPanel {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
 			String[] result = rs.getString("b_factor").split(",");
-			if(result.length == 2)
-				previous_value.setText("Previous value = "+result[1]+" mV");	
+			if(result.length == 2) {
+				previous_value.setText("Previous value = "+result[1]+" mV");
+				e_calib = Integer.parseInt(result[1]);
+			}
 			else
 				previous_value.setText("Previous value = 0");	
 		} catch (SQLException e1) {
@@ -187,19 +194,23 @@ public class calibrate_electrode extends JPanel {
 		}
 		text_mV.setText("<html>mV <br/> 0 mV</html>");
 		text_ph.setText("<html>pH <br/> 7</html>");
-		stop_updating = true;
+		previous_value.setText("Current value = "+int_temp_mv+" mV");	
 		JOptionPane.showMessageDialog(null, "Electrode calibrated to "+int_temp_mv);
+		button_calibrate.setText("Check completed for pH 4.0");
+		JOptionPane.showMessageDialog(null, "Place the electrode in pH 4.0 solution");
 
+	}
+	public static void close_page() {
 		ReformatBuffer.current_exp = "main";
-		frame1.dispose();
+		frame.dispose();
 		
-		frame1 = new JFrame();
+		frame = new JFrame();
 		p = new JPanel();
 		p.invalidate();
 		p.revalidate();
 		p.repaint();
-
 	}
+	
 	public static String get_date() {
 		DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
 		String date_time = dateFormat2.format(new Date()).toString();
@@ -217,7 +228,7 @@ public class calibrate_electrode extends JPanel {
 			user_name = args[0];
 		}
 
-		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
 		int taskHeight = screenInsets.bottom;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = d.height - taskHeight;
@@ -230,24 +241,24 @@ public class calibrate_electrode extends JPanel {
 
 		System.out.println(wid + "   dfvdvdv " + hei);
 
-		// frame1.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame1.setBounds(0, 0, wid1, hei1);
-		frame1.add(p);
-		frame1.getContentPane().add(new calibrate_electrode());
-		frame1.setLocationRelativeTo(null);
+		// frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		frame.setBounds(0, 0, wid1, hei1);
+		frame.add(p);
+		frame.getContentPane().add(new calibrate_electrode());
+		frame.setLocationRelativeTo(null);
 
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
-		frame1.setTitle("Open Potentiometry Results");
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
+		frame.setTitle("Open Potentiometry Results");
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
+		frame.setIconImage(img.getImage());
 
-		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				frame1.dispose();
-				frame1 = new JFrame();
+				frame.dispose();
+				frame = new JFrame();
 				p = new JPanel();
 				p.revalidate();
 				p.repaint();

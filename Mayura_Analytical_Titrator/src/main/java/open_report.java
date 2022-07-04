@@ -65,8 +65,8 @@ import com.fazecast.jSerialComm.SerialPort;
   
 public class open_report extends JPanel 
 {
-	static JFrame frame1 = new JFrame();
-	static open_report frame;
+	static JFrame frame = new JFrame();
+	//static open_report frame;
 	static JTable table1= new JTable();
 	static String exp="";
 	static DefaultTableModel model;
@@ -89,23 +89,23 @@ public class open_report extends JPanel
 
 	@SuppressWarnings("removal")
 	public static void initialize() {
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
 		JLabel lblNewLabel = new JLabel("From Date");
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		lblNewLabel.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.021 * hei), (int) Math.round(0.198 * wid), (int) Math.round(0.028 * hei));
-		frame1.getContentPane().add(lblNewLabel);
+		frame.getContentPane().add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("To Date");
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		lblNewLabel_1.setBounds((int) Math.round(0.3818 * wid), (int) Math.round(0.021 * hei), (int) Math.round(0.198 * wid), (int) Math.round(0.028 * hei));
-		frame1.getContentPane().add(lblNewLabel_1);
+		frame.getContentPane().add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_4 = new JLabel("Search");
 		lblNewLabel_4.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.0254 * wid)));
 		lblNewLabel_4.setBounds((int) Math.round(0.5304 * wid), (int) Math.round(0.1836 * hei), (int) Math.round(0.198 * wid), (int) Math.round(0.0265 * hei));
-		frame1.getContentPane().add(lblNewLabel_4);
+		frame.getContentPane().add(lblNewLabel_4);
 		
 		UtilDateModel model1 = new UtilDateModel();
 		UtilDateModel model2 = new UtilDateModel();
@@ -118,20 +118,20 @@ public class open_report extends JPanel
 		JDatePickerImpl datePicker = new JDatePickerImpl(datePanel,new DateLabelFormatter());		
 		datePicker.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		datePicker.setBounds((int) Math.round(0.0763 * wid), (int) Math.round(0.0571 * hei), (int) Math.round(0.198 * wid), (int) Math.round(0.08163 * hei));		
-		frame1.getContentPane().add(datePicker);
+		frame.getContentPane().add(datePicker);
 		
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(model2,pp);
 		JDatePickerImpl datePicker1 = new JDatePickerImpl(datePanel1,new DateLabelFormatter());
 		datePicker1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		datePicker1.setBounds((int) Math.round(0.3889 * wid), (int) Math.round(0.0571 * hei), (int) Math.round(0.198 * wid), (int) Math.round(0.08163 * hei));
-		frame1.getContentPane().add(datePicker1);
+		frame.getContentPane().add(datePicker1);
 		
 		
 		tf_search = new JTextField();
 		tf_search.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		tf_search.setBounds((int) Math.round(0.6364 * wid), (int) Math.round(0.1632 * hei), (int) Math.round(0.2828 * wid), (int) Math.round(0.06122 * hei));
 		
-		frame1.getContentPane().add(tf_search);
+		frame.getContentPane().add(tf_search);
 		
 		tf_search.addKeyListener(new KeyListener() {
 
@@ -276,8 +276,8 @@ public class open_report extends JPanel
 					ej.printStackTrace();  
 				} 
 				
-				frame1.dispose();
-				frame1 = new JFrame();
+				frame.dispose();
+				frame = new JFrame();
 		        p=new JPanel();	
 		        p.invalidate();
 		        p.revalidate();
@@ -292,7 +292,7 @@ public class open_report extends JPanel
 		
 		btnNewButton.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		btnNewButton.setBounds((int) Math.round(0.4 * wid), (int) Math.round(0.82 * hei), (int) Math.round(0.1471 * wid), (int) Math.round(0.0755 * hei));
-		frame1.getContentPane().add(btnNewButton);
+		frame.getContentPane().add(btnNewButton);
 		
 		JButton btn_apply_filter = new JButton("Apply Filter");
 		btn_apply_filter.addActionListener(new ActionListener() {
@@ -367,11 +367,11 @@ public class open_report extends JPanel
 		
 		btn_apply_filter.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
 		btn_apply_filter.setBounds((int) Math.round(0.7072 * wid), (int) Math.round(0.04897 * hei), (int) Math.round(0.2121 * wid), (int) Math.round(0.06530 * hei));
-		frame1.getContentPane().add(btn_apply_filter);
+		frame.getContentPane().add(btn_apply_filter);
 		
 		JScrollPane scrollPane = new JScrollPane();
 		scrollPane.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.2653 * hei), (int) Math.round(0.8486 * wid), (int) Math.round(0.5102 * hei));
-		frame1.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
 		table1 = new JTable();
 		table1.setRowHeight((int) Math.round(0.06 * hei));
 		table1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.02 * wid)));
@@ -430,7 +430,7 @@ public class open_report extends JPanel
 //    		permission = args[1];
 //    	}
     	
-    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
         int taskHeight=screenInsets.bottom;
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         int height=d.height-taskHeight;
@@ -443,26 +443,26 @@ public class open_report extends JPanel
         
         System.out.println(wid + "   dfvdvdv " + hei);
         
-       // frame1.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame1.setBounds(0,0,wid, hei);
-		frame1.add(p);
-   		frame1.getContentPane().add(new open_report());
-		frame1.setLocationRelativeTo(null);
+       // frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		frame.setBounds(0,0,wid, hei);
+		frame.add(p);
+   		frame.getContentPane().add(new open_report());
+		frame.setLocationRelativeTo(null);
 
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
-		frame1.setTitle("Open Reports");
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
+		frame.setTitle("Open Reports");
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
+		frame.setIconImage(img.getImage());
 
-			frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent)
 			    {
 			    		System.out.println("Closinggg opn KF result");
-			            frame1.dispose();
-			            frame1 = new JFrame();
+			            frame.dispose();
+			            frame = new JFrame();
 			            p=new JPanel();	
 			            p.revalidate();
 			            p.repaint();

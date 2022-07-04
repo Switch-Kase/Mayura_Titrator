@@ -60,9 +60,8 @@ import com.fazecast.jSerialComm.SerialPort;
   
 public class edit_users extends JPanel 
 {
-	static JFrame frame1 = new JFrame();
+	static JFrame frame = new JFrame();
 	
-	static edit_users frame;
 	static JTable table1;
 
 	static String exp="";
@@ -86,45 +85,45 @@ public class edit_users extends JPanel
 	public static void initialize() {
 		System.out.println("INITIALIZE");
 		
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();		
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();		
 		
 		JLabel user_name_header = new JLabel("User Name : "+user_name);
 		user_name_header.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.01 * hei), (int) Math.round(0.7 * wid), (int) Math.round(0.1 * hei));
 		user_name_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(user_name_header);
+		frame.getContentPane().add(user_name_header);
 		
 		JLabel validity_header = new JLabel("Validity :");
 		validity_header.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.08 * hei), (int) Math.round(0.2 * wid), (int) Math.round(0.1 * hei));
 		validity_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(validity_header);
+		frame.getContentPane().add(validity_header);
 		
 		JLabel new_password = new JLabel("New Password :");
 		new_password.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.18 * hei), (int) Math.round(0.4 * wid), (int) Math.round(0.1 * hei));
 		new_password.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(new_password);
+		frame.getContentPane().add(new_password);
 		
 		JLabel confirm_new_password = new JLabel("Confirm New Password :");
 		confirm_new_password.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.26 * hei), (int) Math.round(0.4 * wid), (int) Math.round(0.1 * hei));
 		confirm_new_password.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(confirm_new_password);
+		frame.getContentPane().add(confirm_new_password);
 		
 		tf_new_password = new JTextField();
 		tf_new_password.setBounds((int) Math.round(0.5 * wid), (int) Math.round(0.21 * hei), (int) Math.round(0.4 * wid), (int) Math.round(0.05 * hei));
 		tf_new_password.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(tf_new_password);
+		frame.getContentPane().add(tf_new_password);
 		
 		tf_confirm_new_password = new JTextField();
 		tf_confirm_new_password.setBounds((int) Math.round(0.5 * wid), (int) Math.round(0.29 * hei), (int) Math.round(0.4 * wid), (int) Math.round(0.05 * hei));
 		tf_confirm_new_password.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(tf_confirm_new_password);
+		frame.getContentPane().add(tf_confirm_new_password);
 		
 		
 		validity = new JTextField();
 		validity.setBounds((int) Math.round(0.25 * wid), (int) Math.round(0.11 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.05 * hei));
 		validity.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(validity);
+		frame.getContentPane().add(validity);
 		validity.setText(valid);
 		validity.addKeyListener(new KeyListener() {
 			@Override
@@ -151,11 +150,11 @@ public class edit_users extends JPanel
 		days_header = new JLabel("Days Left : "+days_left);
 		days_header.setBounds((int) Math.round(0.55 * wid), (int) Math.round(0.1 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.06 * hei));
 		days_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(days_header);
+		frame.getContentPane().add(days_header);
 
 		JScrollPane scrollPane1 = new JScrollPane();
 		scrollPane1.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.4 * hei), (int) Math.round(0.8486 * wid), (int) Math.round(0.35 * hei));
-		frame1.getContentPane().add(scrollPane1);
+		frame.getContentPane().add(scrollPane1);
 		table1 = new JTable();
 		table1.setRowHeight((int) Math.round(0.06 * hei));
 		table1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.024 * wid)));
@@ -262,8 +261,8 @@ public class edit_users extends JPanel
 						    try{
 						    ps.close();
 						    con.close();
-						    frame1.dispose();
-				            frame1 = new JFrame();
+						    frame.dispose();
+				            frame = new JFrame();
 				            p=new JPanel();	
 				            p.revalidate();
 				            p.repaint();
@@ -306,8 +305,8 @@ public class edit_users extends JPanel
 					    try{
 					    ps.close();
 					    con.close();
-					    frame1.dispose();
-			            frame1 = new JFrame();
+					    frame.dispose();
+			            frame = new JFrame();
 			            p=new JPanel();	
 			            p.revalidate();
 			            p.repaint();
@@ -322,7 +321,7 @@ public class edit_users extends JPanel
 		
 		btn_new.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.025 * wid)));
 		btn_new.setBounds((int) Math.round(0.38 * wid), (int) Math.round(0.83 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.07 * hei));
-		frame1.getContentPane().add(btn_new);
+		frame.getContentPane().add(btn_new);
 	}
 	public static String get_date() {
 		DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
@@ -346,7 +345,7 @@ public class edit_users extends JPanel
     		}
     	}
     	
-    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
         int taskHeight=screenInsets.bottom;
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         int height=d.height-taskHeight;
@@ -359,23 +358,23 @@ public class edit_users extends JPanel
         
         System.out.println(wid + "   dfvdvdv " + hei);
         
-		frame1.setBounds(0,0,wid, hei);
-		frame1.add(p);
-   		frame1.getContentPane().add(new edit_users());
-		frame1.setLocationRelativeTo(null);
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
+		frame.setBounds(0,0,wid, hei);
+		frame.add(p);
+   		frame.getContentPane().add(new edit_users());
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
+		frame.setIconImage(img.getImage());
 
-		frame1.setTitle("Update User");
-			frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+		frame.setTitle("Update User");
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent)
 			    {
-			    	frame1.dispose();
-		            frame1 = new JFrame();
+			    	frame.dispose();
+		            frame = new JFrame();
 		            p=new JPanel();	
 		            p.revalidate();
 		            p.repaint();

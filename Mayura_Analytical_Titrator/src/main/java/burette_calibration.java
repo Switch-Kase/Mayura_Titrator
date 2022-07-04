@@ -19,6 +19,9 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
@@ -57,7 +60,7 @@ import org.jfree.ui.FloatDimension;
 import com.fazecast.jSerialComm.SerialPort;
 
 public class burette_calibration extends JPanel implements ItemListener {
-	static JFrame frame1 = new JFrame();
+	static JFrame frame = new JFrame();
 	static JTable table1;
 	static JTable table2 = new JTable();
 	static JPanel p = new JPanel();
@@ -78,6 +81,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 	static float prev_burette_factor = 0;
 
 	static JScrollPane scrollPane, scrollPane1;
+	static String raw_burette_factor = "";
 
 	public burette_calibration() {
 		setLayout(null);
@@ -90,8 +94,8 @@ public class burette_calibration extends JPanel implements ItemListener {
 			sp1 = sp;
 		} catch (NullPointerException np) {
 			JOptionPane.showMessageDialog(null, "Please select the ComPort!");
-			frame1.dispose();
-			frame1 = new JFrame();
+			frame.dispose();
+			frame = new JFrame();
 			p = new JPanel();
 			p.revalidate();
 			p.repaint();
@@ -111,11 +115,26 @@ public class burette_calibration extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 			}
 		} else if (test == false && row_cnt > 8) {
-			for (int i = 0; i < 9; i++) {
-				double temp_w3 = (double) model.getValueAt(i, 5);
+			for (int i = 0; i < 3; i++) { 
+				double temp_w3 = (double) model.getValueAt(i, 4);
 				b_factor = b_factor + temp_w3;
 			}
-			b_factor = b_factor / 9;
+			Double b_factor1 = b_factor/15;
+			b_factor=0;
+			for (int i = 3; i < 6; i++) { 
+				double temp_w3 = (double) model.getValueAt(i, 4);
+				b_factor = b_factor + temp_w3;
+			}
+			Double b_factor2 = b_factor/30;
+			b_factor=0;
+			for (int i = 6; i < 9; i++) { 
+				double temp_w3 = (double) model.getValueAt(i, 4);
+				b_factor = b_factor + temp_w3;
+			}
+			Double b_factor3 = b_factor/45;
+			b_factor=0;
+			
+			b_factor = ((b_factor1+b_factor2+b_factor3) / 3);
 			burette_factor.setText("Burette Factor : " + String.format("%.2f", b_factor));
 			btn_print.setEnabled(true);
 			btn_test_buretter_calibration.setEnabled(true);
@@ -185,7 +204,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 	}
 	
 	public static void input_popup() {
-		String result = (String) JOptionPane.showInputDialog(frame1, "Enter the weight W1 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 and then PRESS OK!",
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
@@ -261,7 +280,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 	public static void bc_stpm_ok_received() {
 		System.out.println("STPM OK BC");
 
-		String result = (String) JOptionPane.showInputDialog(frame1, "Enter the weight W2 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 and then PRESS OK!",
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w2 = Double.parseDouble(result);
@@ -286,9 +305,15 @@ public class burette_calibration extends JPanel implements ItemListener {
 		PreparedStatement ps = null;
 		try {
 			String sql = null;
+			String update_data = "";
 			sql = "UPDATE burette_factor SET b_factor = ? WHERE SlNo = ?";
 			ps = con.prepareStatement(sql);
-			ps.setString(1, String.format("%.2f", b_factor));
+			String[] raw_update = raw_burette_factor.split(",");
+			if(raw_update.length == 2)
+				update_data =  String.format("%.2f", b_factor)+","+raw_update[1];
+			else
+				update_data =  String.format("%.2f", b_factor)+",0";
+			ps.setString(1, update_data);
 			ps.setString(2, "1");
 			ps.executeUpdate();
 			JOptionPane.showMessageDialog(null, "Burette Factor Updated Successfully!");
@@ -301,6 +326,11 @@ public class burette_calibration extends JPanel implements ItemListener {
 			} catch (SQLException e1) {
 				System.out.println(e1.toString());
 			}
+		}
+		try {
+			audit_log_push.push_to_audit(get_date(), get_time(), menubar.user_name, "Burette Factor updated to "+String.format("%.2f", b_factor));
+		} catch (ParseException e1) {
+			e1.printStackTrace();
 		}
 	}
 
@@ -332,9 +362,9 @@ public class burette_calibration extends JPanel implements ItemListener {
 
 	@SuppressWarnings("removal")
 	public static void initialize() {
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
 
 		four_column();
 
@@ -342,19 +372,19 @@ public class burette_calibration extends JPanel implements ItemListener {
 		vol_fill.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
 		vol_fill.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.04 * hei), (int) Math.round(0.15 * wid),
 				(int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(vol_fill);
+		frame.getContentPane().add(vol_fill);
 
 		vol_dose = new JLabel("Volume Dosed : ");
 		vol_dose.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
 		vol_dose.setBounds((int) Math.round(0.22 * wid), (int) Math.round(0.04 * hei), (int) Math.round(0.2 * wid),
 				(int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(vol_dose);
+		frame.getContentPane().add(vol_dose);
 
 		burette_factor = new JLabel("Burette Factor : ");
 		burette_factor.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
 		burette_factor.setBounds((int) Math.round(0.55 * wid), (int) Math.round(0.04 * hei),
 				(int) Math.round(0.2 * wid), (int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(burette_factor);
+		frame.getContentPane().add(burette_factor);
 
 		JButton btn_start = new JButton("Start >>>");
 		btn_start.addActionListener(new ActionListener() {
@@ -366,7 +396,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 		btn_start.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_start.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.88 * hei), (int) Math.round(0.0976 * wid),
 				(int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(btn_start);
+		frame.getContentPane().add(btn_start);
 
 //		btn_done_buretter_calibration = new JButton("Done Burette Calibration");
 //		btn_done_buretter_calibration.addActionListener(new ActionListener() {
@@ -375,7 +405,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 //		});
 //		btn_done_buretter_calibration.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 //		btn_done_buretter_calibration.setBounds((int) Math.round(0.15 * wid), (int) Math.round(0.88 * hei), (int) Math.round(0.16 * wid), (int) Math.round(0.0428 * hei));
-//		frame1.getContentPane().add(btn_done_buretter_calibration);
+//		frame.getContentPane().add(btn_done_buretter_calibration);
 //		btn_done_buretter_calibration.setEnabled(false);
 
 		btn_update_buretter_factor = new JButton("Update Burette Correction Factor");
@@ -387,7 +417,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 		btn_update_buretter_factor.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_update_buretter_factor.setBounds((int) Math.round(0.35 * wid), (int) Math.round(0.88 * hei),
 				(int) Math.round(0.22 * wid), (int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(btn_update_buretter_factor);
+		frame.getContentPane().add(btn_update_buretter_factor);
 		btn_update_buretter_factor.setEnabled(false);
 
 		btn_test_buretter_calibration = new JButton("Test Burette Calibration");
@@ -396,8 +426,8 @@ public class burette_calibration extends JPanel implements ItemListener {
 				String[] aa = {};
 				burette_calibration_test.main(aa);
 				burette_calibration_test.port_setup_bc_test(sp1);
-				frame1.dispose();
-				frame1 = new JFrame();
+				frame.dispose();
+				frame = new JFrame();
 				p = new JPanel();
 				p.revalidate();
 				p.repaint();
@@ -406,7 +436,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 		btn_test_buretter_calibration.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_test_buretter_calibration.setBounds((int) Math.round(0.615 * wid), (int) Math.round(0.88 * hei),
 				(int) Math.round(0.22 * wid), (int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(btn_test_buretter_calibration);
+		frame.getContentPane().add(btn_test_buretter_calibration);
 		// btn_test_buretter_calibration.setEnabled(false);
 
 		btn_print = new JButton("Report");
@@ -418,19 +448,20 @@ public class burette_calibration extends JPanel implements ItemListener {
 		btn_print.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_print.setBounds((int) Math.round(0.895 * wid), (int) Math.round(0.88 * hei), (int) Math.round(0.065 * wid),
 				(int) Math.round(0.0428 * hei));
-		btn_print.setEnabled(false);
+		//btn_print.setEnabled(false);
 
-		frame1.getContentPane().add(btn_print);
+		//frame.getContentPane().add(btn_print);
+		
+		get_data();
 	}
 
-	public static void add_row_to_four_column(boolean check, int r, String v1, String v2, String v3, String v4) {
+	public static void add_row_to_four_column( int r, String v1, String v2, String v3, String v4) {
 		model.addRow(new Object[0]);
-		model.setValueAt(check, r, 0);
-		model.setValueAt(r + 1, r, 1);
-		model.setValueAt(v1, r, 2);
-		model.setValueAt(v2, r, 3);
-		model.setValueAt(v3, r, 4);
-		model.setValueAt(v4, r, 5);
+		model.setValueAt(r + 1, r, 0);
+		model.setValueAt(v1, r, 1);
+		model.setValueAt(v2, r, 2);
+		model.setValueAt(v3, r, 3);
+		model.setValueAt(v4, r, 4);
 		model.fireTableDataChanged();
 	}
 
@@ -438,22 +469,21 @@ public class burette_calibration extends JPanel implements ItemListener {
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.1 * hei), (int) Math.round(0.95 * wid),
 				(int) Math.round(0.75 * hei));
-		frame1.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
 		table1 = new JTable();
 		table1.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
 
 		model = new DefaultTableModel() {
 			public Class<?> getColumnClass(int column) {
 				switch (column) {
+				
 				case 0:
-					return Boolean.class;
-				case 1:
 					return Integer.class;
+				case 1:
+					return String.class;
 				case 2:
 					return String.class;
 				case 3:
-					return String.class;
-				case 4:
 					return String.class;
 				default:
 					return String.class;
@@ -462,7 +492,6 @@ public class burette_calibration extends JPanel implements ItemListener {
 		};
 		table1.setModel(model);
 		table1.setDefaultEditor(Object.class, null);
-		model.addColumn("Select");
 		model.addColumn("Trials");
 		model.addColumn("Displayed Volume in mL");
 		model.addColumn("Weight of Empty Flask(gms){W1}");
@@ -482,100 +511,30 @@ public class burette_calibration extends JPanel implements ItemListener {
 
 		table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		table1.getColumnModel().getColumn(0).setPreferredWidth((int) Math.round(0.0651 * wid));
-		table1.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(0.0651 * wid));
-		table1.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.1302 * wid));
+		table1.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(0.1302 * wid));
+		table1.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.1953 * wid));
 		table1.getColumnModel().getColumn(3).setPreferredWidth((int) Math.round(0.1953 * wid));
-		table1.getColumnModel().getColumn(4).setPreferredWidth((int) Math.round(0.1953 * wid));
-		table1.getColumnModel().getColumn(5).setPreferredWidth((int) Math.round(0.296875 * wid));
-//		table1.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
+		table1.getColumnModel().getColumn(4).setPreferredWidth((int) Math.round(0.38 * wid));
+		table1.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
 		table1.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
 		table1.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
 		table1.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
 		table1.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-		table1.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
 
 		scrollPane.setViewportView(table1);
 
-		add_row_to_four_column(false, 0, "5", "", "", "");
-		add_row_to_four_column(false, 1, "5", "", "", "");
-		add_row_to_four_column(false, 2, "5", "", "", "");
-		add_row_to_four_column(false, 3, "10", "", "", "");
-		add_row_to_four_column(false, 4, "10", "", "", "");
-		add_row_to_four_column(false, 5, "10", "", "", "");
-		add_row_to_four_column(false, 6, "15", "", "", "");
-		add_row_to_four_column(false, 7, "15", "", "", "");
-		add_row_to_four_column(false, 8, "15", "", "", "");
+		add_row_to_four_column( 0, "5", "", "", "");
+		add_row_to_four_column( 1, "5", "", "", "");
+		add_row_to_four_column( 2, "5", "", "", "");
+		add_row_to_four_column( 3, "10", "", "", "");
+		add_row_to_four_column( 4, "10", "", "", "");
+		add_row_to_four_column( 5, "10", "", "", "");
+		add_row_to_four_column( 6, "15", "", "", "");
+		add_row_to_four_column( 7, "15", "", "", "");
+		add_row_to_four_column( 8, "15", "", "", "");
 	}
 
-	public static void test_four_column() {
-		frame1.getContentPane().remove(scrollPane);
-		scrollPane1 = new JScrollPane();
-		scrollPane1.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.1 * hei), (int) Math.round(0.95 * wid),
-				(int) Math.round(0.75 * hei));
-		frame1.getContentPane().add(scrollPane1);
-		table1 = new JTable();
-		table1.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
-
-		model = new DefaultTableModel() {
-			public Class<?> getColumnClass(int column) {
-				switch (column) {
-				case 0:
-					return Boolean.class;
-				case 1:
-					return Integer.class;
-				case 2:
-					return String.class;
-				case 3:
-					return String.class;
-				case 4:
-					return String.class;
-				default:
-					return String.class;
-				}
-			}
-		};
-		table1.setModel(model);
-		table1.setDefaultEditor(Object.class, null);
-		model.addColumn("Select");
-		model.addColumn("Trials");
-		model.addColumn("Displayed Volume in mL");
-		model.addColumn("Weight of Empty Flask(gms){W1}");
-		model.addColumn("Weight of Flask(gms){W2}");
-		model.addColumn("Weight of Actual Vol of H2O dispensed(gms){W2-W1}");
-
-		table1.setRowHeight((int) Math.round(0.076 * hei));
-
-		JTableHeader header = table1.getTableHeader();
-		header.setPreferredSize(new Dimension((int) Math.round(0.0612 * hei), (int) Math.round(0.0612 * hei)));
-		header.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.009765 * wid)));
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-
-		centerRenderer.setHorizontalAlignment(JLabel.CENTER);
-		table1.setDefaultRenderer(String.class, centerRenderer);
-		header.setDefaultRenderer(centerRenderer);
-
-		table1.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table1.getColumnModel().getColumn(0).setPreferredWidth((int) Math.round(0.0651 * wid));
-		table1.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(0.0651 * wid));
-		table1.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.1302 * wid));
-		table1.getColumnModel().getColumn(3).setPreferredWidth((int) Math.round(0.1953 * wid));
-		table1.getColumnModel().getColumn(4).setPreferredWidth((int) Math.round(0.1953 * wid));
-		table1.getColumnModel().getColumn(5).setPreferredWidth((int) Math.round(0.296875 * wid));
-//		table1.getColumnModel().getColumn(0).setCellRenderer( centerRenderer );
-		table1.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-		table1.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-		table1.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-		table1.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-		table1.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-
-		scrollPane1.setViewportView(table1);
-
-		add_row_to_four_column(false, 0, "5", "", "", "");
-		add_row_to_four_column(false, 1, "10", "", "", "");
-		add_row_to_four_column(false, 2, "15", "", "", "");
-
-	}
-
+	
 	public void itemStateChanged(ItemEvent e) {
 
 	}
@@ -587,7 +546,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 
 		}
 
-		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
 		int taskHeight = screenInsets.bottom;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
 		int height = d.height - taskHeight;
@@ -600,17 +559,17 @@ public class burette_calibration extends JPanel implements ItemListener {
 //        wid = 1280;
 //        hei = 720;
 
-		frame1.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame1.setBounds(0, 0, (int) wid, (int) hei);
-		frame1.add(p);
-		frame1.getContentPane().add(new burette_calibration());
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
-		frame1.setTitle("Burette Calibration");
+		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		frame.setBounds(0, 0, (int) wid, (int) hei);
+		frame.add(p);
+		frame.getContentPane().add(new burette_calibration());
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
+		frame.setTitle("Burette Calibration");
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
-		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+		frame.setIconImage(img.getImage());
+		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				try {
@@ -626,12 +585,47 @@ public class burette_calibration extends JPanel implements ItemListener {
 					sp1.closePort();
 				} catch (NullPointerException ne) {
 				}
-				frame1.dispose();
-				frame1 = new JFrame();
+				frame.dispose();
+				frame = new JFrame();
 				p = new JPanel();
 				p.revalidate();
 				p.repaint();
 			}
 		});
+	}
+	
+	public static void get_data() {
+		Connection con = DbConnection.connect();
+		PreparedStatement ps = null;
+		String sql;
+		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = 1";
+		try {
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			String[] result = rs.getString("b_factor").split(",");
+			raw_burette_factor = rs.getString("b_factor");
+			burette_factor.setText("Burette Factor : "+result[0]);	
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException e1) {
+				System.out.println(e1.toString());
+			}
+		}
+	}
+	
+	public static String get_date() {
+		DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+		String date_time = dateFormat2.format(new Date()).toString();
+		return date_time;
+	}
+
+	public static String get_time() {
+		DateFormat dateFormat2 = new SimpleDateFormat("hh:mm:ss aa");
+		String date_time = dateFormat2.format(new Date()).toString();
+		return date_time;
 	}
 }

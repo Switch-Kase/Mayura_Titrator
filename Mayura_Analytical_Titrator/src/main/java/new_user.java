@@ -59,9 +59,8 @@ import com.fazecast.jSerialComm.SerialPort;
   
 public class new_user extends JPanel 
 {
-	static JFrame frame1 = new JFrame();
+	static JFrame frame = new JFrame();
 	
-	static new_user frame;
 	static JTable table1;
 
 	static String exp="";
@@ -81,39 +80,39 @@ public class new_user extends JPanel
 	public static void initialize() {
 		System.out.println("INITIALIZE");
 		
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();		
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();		
 		
 		JLabel user_name_header = new JLabel("User Name : ");
 		user_name_header.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.02 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.06 * hei));
 		user_name_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(user_name_header);
+		frame.getContentPane().add(user_name_header);
 
 		user_name = new JTextField();
 		user_name.setBounds((int) Math.round(0.4 * wid), (int) Math.round(0.03 * hei), (int) Math.round(0.515 * wid), (int) Math.round(0.06 * hei));
 		user_name.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(user_name);
+		frame.getContentPane().add(user_name);
 		
 		JLabel user_pass_header = new JLabel("Password: ");
 		user_pass_header.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.12 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.06 * hei));
 		user_pass_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(user_pass_header);
+		frame.getContentPane().add(user_pass_header);
 				
 		password = new JTextField();
 		password.setBounds((int) Math.round(0.4 * wid), (int) Math.round(0.12 * hei), (int) Math.round(0.515 * wid), (int) Math.round(0.06 * hei));
 		password.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(password);
+		frame.getContentPane().add(password);
 		
 		JLabel validity_header = new JLabel("Validity: ");
 		validity_header.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.21 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.06 * hei));
 		validity_header.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(validity_header);
+		frame.getContentPane().add(validity_header);
 		
 		validity = new JTextField();
 		validity.setBounds((int) Math.round(0.4 * wid), (int) Math.round(0.21 * hei), (int) Math.round(0.515 * wid), (int) Math.round(0.06 * hei));
 		validity.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.03 * wid)));
-		frame1.getContentPane().add(validity);
+		frame.getContentPane().add(validity);
 		validity.addKeyListener(new KeyListener() {
 			@Override
 			public void keyTyped(KeyEvent e) {
@@ -138,7 +137,7 @@ public class new_user extends JPanel
 		
 		JScrollPane scrollPane1 = new JScrollPane();
 		scrollPane1.setBounds((int) Math.round(0.07637 * wid), (int) Math.round(0.34 * hei), (int) Math.round(0.8486 * wid), (int) Math.round(0.4 * hei));
-		frame1.getContentPane().add(scrollPane1);
+		frame.getContentPane().add(scrollPane1);
 		table1 = new JTable();
 		table1.setRowHeight((int) Math.round(0.06 * hei));
 		table1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.024 * wid)));
@@ -245,8 +244,8 @@ public class new_user extends JPanel
 					        ps.setString(4, validity.getText().toString());
 					        ps.setString(5, items);
 							ps.executeUpdate();
-							    frame1.dispose();
-					            frame1 = new JFrame();
+							    frame.dispose();
+					            frame = new JFrame();
 					            p=new JPanel();	
 					            p.revalidate();
 					            p.repaint();
@@ -285,7 +284,7 @@ public class new_user extends JPanel
 		
 		btn_new.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.025 * wid)));
 		btn_new.setBounds((int) Math.round(0.38 * wid), (int) Math.round(0.8 * hei), (int) Math.round(0.25 * wid), (int) Math.round(0.08 * hei));
-		frame1.getContentPane().add(btn_new);
+		frame.getContentPane().add(btn_new);
 	}
 	
 	public static String get_date() {
@@ -296,7 +295,7 @@ public class new_user extends JPanel
 	
     public static void main(String[] args) {    
     	
-    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
         int taskHeight=screenInsets.bottom;
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         int height=d.height-taskHeight;
@@ -309,23 +308,23 @@ public class new_user extends JPanel
         
         System.out.println(wid + "   dfvdvdv " + hei);
         
-		frame1.setBounds(0,0,wid, hei);
-		frame1.add(p);
-   		frame1.getContentPane().add(new new_user());
-		frame1.setLocationRelativeTo(null);
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
-		frame1.setTitle("New User");
+		frame.setBounds(0,0,wid, hei);
+		frame.add(p);
+   		frame.getContentPane().add(new new_user());
+		frame.setLocationRelativeTo(null);
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
+		frame.setTitle("New User");
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
+		frame.setIconImage(img.getImage());
 
-			frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent)
 			    {
-			    	frame1.dispose();
-		            frame1 = new JFrame();
+			    	frame.dispose();
+		            frame = new JFrame();
 		            p=new JPanel();	
 		            p.revalidate();
 		            p.repaint();

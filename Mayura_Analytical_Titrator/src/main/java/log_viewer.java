@@ -57,7 +57,7 @@ import com.fazecast.jSerialComm.SerialPort;
   
 public class log_viewer extends JPanel implements ItemListener
 {
-	static JFrame frame1 = new JFrame();
+	static JFrame frame = new JFrame();
 	static JTable table1;
 	static JTable table2= new JTable();
 	static JPanel p = new JPanel();
@@ -79,9 +79,9 @@ public class log_viewer extends JPanel implements ItemListener
 
 	@SuppressWarnings("removal")
 	public static void initialize() {
-		frame1.getContentPane().invalidate();
-		frame1.getContentPane().validate();
-		frame1.getContentPane().repaint();
+		frame.getContentPane().invalidate();
+		frame.getContentPane().validate();
+		frame.getContentPane().repaint();
 		four_column();
 		UtilDateModel model1 = new UtilDateModel();
 		UtilDateModel model2 = new UtilDateModel();
@@ -90,12 +90,12 @@ public class log_viewer extends JPanel implements ItemListener
 		lblNewLabel.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		lblNewLabel.setBounds((int) Math.round(0.0325* wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.09114 * wid), (int) Math.round(0.02573 * hei));
 		
-		frame1.getContentPane().add(lblNewLabel);
+		frame.getContentPane().add(lblNewLabel);
 		
 		JLabel lblNewLabel_1 = new JLabel("To Date");
 		lblNewLabel_1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		lblNewLabel_1.setBounds((int) Math.round(0.2604* wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.09114 * wid), (int) Math.round(0.0159 * hei));
-		frame1.getContentPane().add(lblNewLabel_1);
+		frame.getContentPane().add(lblNewLabel_1);
 		
 		Properties p = new Properties();
 		p.put("text.today", "Today");
@@ -108,7 +108,7 @@ public class log_viewer extends JPanel implements ItemListener
 		datePicker.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		datePicker.setBounds((int) Math.round(0.0976 * wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.09114 * wid), (int) Math.round(0.0490 * hei));
 		
-		frame1.getContentPane().add(datePicker);
+		frame.getContentPane().add(datePicker);
 		
 		
 		JDatePanelImpl datePanel1 = new JDatePanelImpl(model2,p);
@@ -116,7 +116,7 @@ public class log_viewer extends JPanel implements ItemListener
 		datePicker1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		datePicker1.setBounds((int) Math.round(0.3125 * wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.09114 * wid), (int) Math.round(0.0490 * hei));
 		
-		frame1.getContentPane().add(datePicker1);
+		frame.getContentPane().add(datePicker1);
 		
 		insert_data();
 		
@@ -149,7 +149,7 @@ public class log_viewer extends JPanel implements ItemListener
 		btn_apply_filter.setBounds((int) Math.round(0.455 * wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.0976 * wid), (int) Math.round(0.0428 * hei));
 		
 		
-		frame1.getContentPane().add(btn_apply_filter);
+		frame.getContentPane().add(btn_apply_filter);
 		
 		JButton btn_clear_filter = new JButton("Clear Filter");
 		btn_clear_filter.addActionListener(new ActionListener() {
@@ -159,7 +159,7 @@ public class log_viewer extends JPanel implements ItemListener
 		});
 		btn_clear_filter.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_clear_filter.setBounds((int) Math.round(0.585 * wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.0976 * wid), (int) Math.round(0.0428 * hei));
-		frame1.getContentPane().add(btn_clear_filter);
+		frame.getContentPane().add(btn_clear_filter);
 		
 		JButton btn_print = new JButton("Print");
 		btn_print.addActionListener(new ActionListener() {
@@ -170,7 +170,7 @@ public class log_viewer extends JPanel implements ItemListener
 		btn_print.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_print.setBounds((int) Math.round(0.895 * wid), (int) Math.round(0.0245 * hei), (int) Math.round(0.065 * wid), (int) Math.round(0.0428 * hei));
 
-		//frame1.getContentPane().add(btn_print);
+		//frame.getContentPane().add(btn_print);
 		
     }
 	public static void filtered_data(String from_date,String to_date,String cur_date) {
@@ -296,7 +296,7 @@ public class log_viewer extends JPanel implements ItemListener
 		scrollPane.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.098 * hei), (int) Math.round(0.95 * wid), (int) Math.round(0.803 * hei));
 
 		
-		frame1.getContentPane().add(scrollPane);
+		frame.getContentPane().add(scrollPane);
 
 		table1 = new JTable();
 		table1.setFont(new Font("Times New Roman", Font.CENTER_BASELINE,17));
@@ -349,7 +349,7 @@ public class log_viewer extends JPanel implements ItemListener
 				if(note.matches("")) {
 					try {
 				    	String result = (String)JOptionPane.showInputDialog(
-					               frame1,
+					               frame,
 					               "Enter the Note!", 
 					               "Note",            
 					               JOptionPane.PLAIN_MESSAGE,
@@ -427,7 +427,7 @@ public class log_viewer extends JPanel implements ItemListener
     		
     	}
     	
-    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
+    	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
         int taskHeight=screenInsets.bottom;
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
         int height=d.height-taskHeight;
@@ -439,23 +439,23 @@ public class log_viewer extends JPanel implements ItemListener
         
         
 
-        frame1.setExtendedState(Frame.MAXIMIZED_BOTH);
-		frame1.setBounds(0,0,(int)wid,(int)hei);
-		frame1.add(p);
-   		frame1.getContentPane().add(new log_viewer());
-		frame1.setResizable(true);
-		frame1.setVisible(true);
-		frame1.repaint();
-		frame1.setTitle("Audit Log");
+        frame.setExtendedState(Frame.MAXIMIZED_BOTH);
+		frame.setBounds(0,0,(int)wid,(int)hei);
+		frame.add(p);
+   		frame.getContentPane().add(new log_viewer());
+		frame.setResizable(true);
+		frame.setVisible(true);
+		frame.repaint();
+		frame.setTitle("Audit Log");
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-		frame1.setIconImage(img.getImage());
+		frame.setIconImage(img.getImage());
 
-			frame1.addWindowListener(new java.awt.event.WindowAdapter() {
+			frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent)
 			    {
-			            frame1.dispose();
-			            frame1 = new JFrame();
+			            frame.dispose();
+			            frame = new JFrame();
 			            p=new JPanel();	
 			            p.revalidate();
 			            p.repaint();
