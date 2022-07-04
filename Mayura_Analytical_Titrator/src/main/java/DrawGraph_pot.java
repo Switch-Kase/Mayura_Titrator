@@ -548,6 +548,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	}
 
 	public static void pot_home_escp() {
+		check_details_from_db();
+		
 		String aa[] = new String[1];
 		aa[0] = "aa";
 		menubar.main(aa);
@@ -6415,7 +6417,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				int rc, checked = 0;
-
+				System.out.println("Closingggg POTTTT");
 				if (report_saved == 1) {
 					int result = JOptionPane.showConfirmDialog(null, "Save report ? ", "Report not Saved!",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -6579,7 +6581,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	}
 
 	public static void check_details_from_db() {
-
+		System.out.println("Check details from DB POT");
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;

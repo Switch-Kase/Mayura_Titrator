@@ -84,7 +84,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			analysis_conducted = false, kf_done = false, select_column = true;
 
 	static SerialPort sp1;
-	static DecimalFormat df = new DecimalFormat("0.0000");
+	static DecimalFormat df = new DecimalFormat("0.000");
 
 	public static void reset() {
 		variables = new String[17];
@@ -142,7 +142,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		int dr = Math.round(aa);
 		if (aa == 0.5) {
 			try {
-				Thread.sleep(50);
+				Thread.sleep(500);
 				output_dg.print("<8888>DOSR,017*");
 				output_dg.flush();
 			} catch (InterruptedException ex) {
@@ -152,7 +152,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			ReformatBuffer.current_state = "dg_kf_dosr";
 		} else {
 			try {
-				Thread.sleep(50);
+				Thread.sleep(500);
 				String s = String.format("%03d", dr);
 				System.out.println("Dosage rate 2 = " + s);
 				output_dg.print("<8888>DOSR," + s + "*");
@@ -198,7 +198,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	public static void send_cvok() {
 		if (sent_cvok == false) {
 			try {
-				Thread.sleep(50);
+				Thread.sleep(500);
 				output_dg.print("<8888>CVOK*");
 				output_dg.flush();
 				ReformatBuffer.current_state = "dg_kf_cvok";
@@ -218,7 +218,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_afil() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(500);
 			output_dg.print("<8888>AFIL*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_afil";
@@ -279,7 +279,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_dose() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(50);
 			output_dg.print("<8888>DOSE*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_dose";
@@ -327,7 +327,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void send_dose_timer() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(50);
 			output_dg.print("<8888>DOSE*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_dose_timer";
@@ -1066,10 +1066,16 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			if (dosage == 0) {
 				result_moisture = 0;
 			} else {
-				result_moisture = (((Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol))
-						/ Double.parseDouble(df.format(sample_weight)))) * (Double.parseDouble(kf_factor))
+				result_moisture = (( Math.abs(Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol))
+						/ Double.parseDouble(df.format(sample_weight))) ) * (Double.parseDouble(kf_factor))
 						* (temp_factor);
 			}
+			System.out.println("MOISTURE Variables = Dosage = "+Double.parseDouble(df.format(dosage)));
+			System.out.println("MOISTURE Variables = Blank Volume = "+Double.parseDouble((blank_vol)));
+			System.out.println("MOISTURE Variables = Sample Weight = "+Double.parseDouble(df.format(sample_weight)));
+			System.out.println("MOISTURE Variables = KF_Factor = "+Double.parseDouble(kf_factor));
+			System.out.println("MOISTURE Variables = Temp Factor = "+temp_factor);
+
 			add_row_to_five_column(cur_trial - 1, String.format("%.3f", dosage), String.valueOf(sample_weight),
 					String.format("%.3f", result_moisture));
 			System.out.println("Analysis completed = " + kf_factor);
@@ -1340,7 +1346,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				current_process = "";
 
 				try {
-					Thread.sleep(10);
+					Thread.sleep(100);
 					output_dg.print("<8888>DOSR,020*");
 					output_dg.flush();
 				} catch (InterruptedException ex) {
@@ -1672,7 +1678,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				current_process = "";
 				try {
-					Thread.sleep(10);
+					Thread.sleep(100);
 					output_dg.print("<8888>ESCP*");
 					output_dg.flush();
 					ReformatBuffer.current_state = "dg_kf_escp";
@@ -1876,7 +1882,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 
 	public static void kf_home_dosr() {
 		try {
-			Thread.sleep(10);
+			Thread.sleep(100);
 			output_dg.print("<8888>ESCP*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_kf_home_escp";
@@ -1887,6 +1893,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void kf_home_escp() {
+		check_details_from_db();
+
 		String aa[] = new String[1];
 		aa[0] = "aa";
 		menubar.main(aa);
@@ -2238,8 +2246,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				System.out.println("Clossinnggggg KF");
 				try {
-					Thread.sleep(10);
+					Thread.sleep(500);
 					output_dg.print("<8888>ESCP*");
 					output_dg.flush();
 				} catch (InterruptedException ex) {
@@ -2248,8 +2257,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 				}
 				try {
 					sp1.closePort();
-				} catch (NullPointerException npn) {
-				}
+				} catch (NullPointerException npn) {}
 				if (blank_run_conducted == true) {
 					int result = JOptionPane.showConfirmDialog(null, "Update Blank Volume ? ", "Blank Volume Update",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);

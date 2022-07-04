@@ -366,8 +366,8 @@ public class DrawReport_kf extends JPanel {
 			parameter = parameter +",Time : "+table2.getValueAt(2, 1);
 			parameter = parameter +",Std. Tech : "+table2.getValueAt(21, 1);
 			parameter = parameter +",Method File : "+table2.getValueAt(3, 1);
-			parameter = parameter +", End Point : "+table2.getValueAt(11, 1);
-			parameter = parameter +", Instrument ID : "+company_arr[0];
+			parameter = parameter +",End Point : "+table2.getValueAt(11, 1);
+			parameter = parameter +",Instrument ID : "+company_arr[0];
 			parameter = parameter +",AR No : "+table2.getValueAt(16, 1);
 			parameter = parameter +",User Name : "+table2.getValueAt(0, 1);
 			parameter = parameter +",Titration Speed : "+table2.getValueAt(12, 1);
@@ -394,8 +394,8 @@ public class DrawReport_kf extends JPanel {
 			parameter = parameter +",KF Factor : "+table2.getValueAt(10, 1);
 			parameter = parameter +",Density : "+table2.getValueAt(9, 1);
 			parameter = parameter +",Method File : "+table2.getValueAt(3, 1);
-			parameter = parameter +", Blank Vol : "+table2.getValueAt(7, 1);
-			parameter = parameter +", Instrument ID : "+company_arr[0];
+			parameter = parameter +",Blank Vol : "+table2.getValueAt(7, 1);
+			parameter = parameter +",Instrument ID : "+company_arr[0];
 			parameter = parameter +",AR No : "+table2.getValueAt(16, 1);
 			parameter = parameter +",User Name : "+table2.getValueAt(0, 1);
 			parameter = parameter +",Titration Speed : "+table2.getValueAt(12, 1);

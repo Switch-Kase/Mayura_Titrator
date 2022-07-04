@@ -119,6 +119,12 @@ public class DrawReport_pot extends JPanel{
 
 	public DrawReport_pot() {
 		setLayout(null);		
+		System.out.println("menubar isOpen = "+menubar.frame1);
+
+		System.out.println("Draw Graph KF isOpen = "+DrawGraph_kf.button_prerun);
+		System.out.println("Pot Result isOpen = "+open_pot_result.frame);
+
+		
 		JLabel experiment = new JLabel("Potentiometry");
 		experiment.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.013 * wid)));
 		experiment.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.02 * hei), (int) Math.round(0.15 * wid), (int) Math.round(0.03 * hei));
@@ -476,13 +482,13 @@ public class DrawReport_pot extends JPanel{
 		//value = header;
 		
 		parameter = parameter +",User Name : "+table2.getValueAt(0, 1);
-		parameter = parameter +",Instrument Id : "+company_arr[0];
+		parameter = parameter +",Report Name : "+report_name;
 		parameter = parameter +",Date : "+table2.getValueAt(1, 1);
 		parameter = parameter +",Time : "+table2.getValueAt(2, 1);
 		parameter = parameter +",Method File : "+table2.getValueAt(3, 1);
 		parameter = parameter +",Batch Number : "+table2.getValueAt(23, 1);
-		parameter = parameter +", AR Number : "+table2.getValueAt(22, 1);
-		parameter = parameter +", Sample Name: "+table2.getValueAt(24, 1);
+		parameter = parameter +",AR Number : "+table2.getValueAt(22, 1);
+		parameter = parameter +",Sample Name: "+table2.getValueAt(24, 1);
 		parameter = parameter +",Dosage Speed : "+table2.getValueAt(11, 1);
 		parameter = parameter +",EP Select : "+table2.getValueAt(17, 1);
 		parameter = parameter +",No. of Trials : "+table2.getValueAt(12, 1);
@@ -508,7 +514,7 @@ public class DrawReport_pot extends JPanel{
 			}
 			report.generate_report_pot(company_details_temp, parameter, header, trial_data,graph_print,results,remarks_final[0],
 					threshold,timings,table2.getValueAt(5, 1).toString(),table2.getValueAt(4, 1).toString(),
-					table2.getValueAt(3, 1).toString(),table2.getValueAt(11, 1).toString(),table2.getValueAt(17, 1).toString(),table2.getValueAt(27, 1).toString());
+					table2.getValueAt(3, 1).toString(),table2.getValueAt(11, 1).toString(),table2.getValueAt(17, 1).toString(),table2.getValueAt(27, 1).toString(),"Instrument ID: "+company_arr[0]);
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

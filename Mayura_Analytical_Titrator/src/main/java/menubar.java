@@ -173,7 +173,7 @@ public class menubar extends JPanel implements ItemListener {
 	static JRadioButton rdbtnNewRadioButton, rdbtnNewRadioButton_1, rdbtnNewRadioButton_2, rdbtnNewRadioButton_3;
 	static int u = 0,v = 0,formula_cnt = 0;
 	static Double volume;
-	static String mb_cur_state = "",math = "", math2 = "", math3 = "",user_name = "testing", roles_list = "testing", role_items = "testing", admin_user_name = "testing";
+	static String mb_cur_state = "",math = "", math2 = "", math3 = "",user_name = "No Login", roles_list = "testing", role_items = "testing", admin_user_name = "testing";
 	static TeXFormula formula, formula2, formula3;
 	static TeXIcon ti_formula, ti_formula2, ti_formula3;
 	static BufferedImage b_formula, b_formula2, b_formula3;
@@ -214,6 +214,7 @@ public class menubar extends JPanel implements ItemListener {
 		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
+				System.out.println("Closing Menubar");
 				try {
 					Thread.sleep(500);
 					output.print("<8888>ESCP*");
@@ -231,10 +232,13 @@ public class menubar extends JPanel implements ItemListener {
 				try {
 					audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Software closed!");
 				} catch (ParseException e1) {e1.printStackTrace();}
+				 
+				close_all.close_windows();
 				
 				frame1.dispose();
 				frame1 = new JFrame();
 				p = new JPanel();
+				p.invalidate();
 				p.revalidate();
 				p.repaint();
 			}
@@ -1022,6 +1026,7 @@ public class menubar extends JPanel implements ItemListener {
 			new File("C:\\SQLite\\logo").mkdir();
 			new File("C:\\SQLite\\company_logo").mkdir();
 			new File("C:\\SQLite\\audit_log_report").mkdir();
+			new File("C:\\SQLite\\help").mkdir();
 
 			String separator = "\\";
 
@@ -1049,6 +1054,8 @@ public class menubar extends JPanel implements ItemListener {
 			File dest5 = new File("C:\\SQLite\\sqlite3_analyzer.exe");
 			File source6 = new File(path_final + "\\logo.png");
 			File dest6 = new File("C:\\SQLite\\logo\\logo.png");
+			File source7 = new File(path_final + "\\help.pdf");
+			File dest7 = new File("C:\\SQLite\\help\\help.pdf");
 
 			try {
 				Files.copy(source.toPath(), dest.toPath());
@@ -1057,6 +1064,8 @@ public class menubar extends JPanel implements ItemListener {
 				Files.copy(source4.toPath(), dest4.toPath());
 				Files.copy(source5.toPath(), dest5.toPath());
 				Files.copy(source6.toPath(), dest6.toPath());
+				Files.copy(source7.toPath(), dest7.toPath());
+
 
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -3261,13 +3270,18 @@ public class menubar extends JPanel implements ItemListener {
 		menu_item_login = new JMenuItem("Login");
 		menu_item_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AdminLogin al = new AdminLogin();
-				if (checked_vaidity == true) {
-					AdminLogin.check_validity = true;
-				} else {
-					AdminLogin.check_validity = false;
+				if(AdminLogin.frame == null) {
+					AdminLogin al = new AdminLogin();
+					if (checked_vaidity == true) {
+						AdminLogin.check_validity = true;
+					} else {
+						AdminLogin.check_validity = false;
+					}
+					al.setVisible(true);
 				}
-				al.setVisible(true);
+				else {
+					JOptionPane.showMessageDialog(null, "Window already open!");
+				}
 			}
 		});
 		mnNewMenu_5.add(menu_item_login);
@@ -3396,7 +3410,33 @@ public class menubar extends JPanel implements ItemListener {
 
 		JMenu mnNewMenu_6 = new JMenu("Help");
 		mnNewMenu_6.setFont(new Font("Segoe UI", Font.BOLD, 15));
-	//	menubar1.add(mnNewMenu_6);
+		menubar1.add(mnNewMenu_6);
+		
+		JMenuItem menu_item_help = new JMenuItem("Help");
+		menu_item_help.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				try {
+	            	File file;
+						 file = new File("C:\\SQLite\\help\\help.pdf");
+			       
+					if (!Desktop.isDesktopSupported()) {
+						System.out.println("not supported");
+						return;
+					}
+					Desktop desktop = Desktop.getDesktop();
+					if (file.exists())
+						desktop.open(file);
+				} catch (Exception ee) {
+					ee.printStackTrace();
+				}
+			}
+		});
+		mnNewMenu_6.add(menu_item_help);
+		
+		
+		
+		
+		
 		selected_experiment = "potentiometry";
 
 		initialize();
@@ -3749,5 +3789,31 @@ public class menubar extends JPanel implements ItemListener {
 					}
 				}
 				return data;
+		}
+	 public static double get_burette_factor() {
+		 	double temp_result = 0;
+			Connection con = DbConnection.connect();
+			PreparedStatement ps = null;
+			String sql;
+
+			sql = "SELECT b_factor FROM burette_factor WHERE SlNo = '1'";
+
+			try {
+				ps = con.prepareStatement(sql);
+				ResultSet rs = ps.executeQuery();
+				String[] ress = rs.getString("b_factor").split(",");
+				temp_result = Double.parseDouble(ress[0]);
+			} catch (SQLException e1) {
+				JOptionPane.showMessageDialog(null, e1);
+			} finally {
+				try {
+					ps.close();
+					con.close();
+				} catch (SQLException e1) {
+					System.out.println(e1.toString());
+				}
+			}
+
+			return temp_result;
 		}
 }

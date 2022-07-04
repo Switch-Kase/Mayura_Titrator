@@ -32,6 +32,7 @@ public class select_comport extends JFrame {
     static DefaultListModel<String> l1;
     String[] port_arr ;
     JComboBox comboBox_port;
+    static select_comport frame;
 	/**
 	 * Launch the application.
 	 */
@@ -40,7 +41,7 @@ public class select_comport extends JFrame {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-					select_comport frame = new select_comport();
+					frame = new select_comport();
 					frame.setVisible(true);
 					ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 					frame.setIconImage(img.getImage());
