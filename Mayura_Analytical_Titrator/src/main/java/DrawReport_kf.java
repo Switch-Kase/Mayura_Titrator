@@ -251,7 +251,10 @@ public class DrawReport_kf extends JPanel {
 					}
 				}
 			});
-		}		
+		}	
+		else {
+			
+		}
 		initialize();
 	}
 

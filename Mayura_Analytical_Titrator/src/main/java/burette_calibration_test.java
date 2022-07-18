@@ -172,7 +172,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
-			model.setValueAt(w1, row_cnt, 3);
+			model.setValueAt(w1, row_cnt, 2);
 			model.fireTableDataChanged();
 			if (row_cnt == 0) {
 				dose = 5;
@@ -214,8 +214,8 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 			@Override
 			public void run() {
 				if (dose_counter < dose) {
-					dose_counter = dose_counter + ((20 / 60.0) / 5);
-					vol_dose.setText("Volume Dosed : " + String.format("%.5f", dose_counter) + "mL");
+					dose_counter = dose_counter + ((20 / 60.0) / 10);
+					vol_dose.setText("Volume Dosed : " + String.format("%.3f", dose_counter) + "mL");
 				} else {
 					dose_counter = 0;
 					exec_bc_dose.shutdown();
@@ -230,7 +230,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 					}
 				}
 			}
-		}, 0, 50, TimeUnit.MILLISECONDS);
+		}, 0, 100, TimeUnit.MILLISECONDS);
 	}
 
 	public static void bct_stpm_ok_received() {
@@ -240,11 +240,13 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w2 = Double.parseDouble(result);
-			model.setValueAt(w2, row_cnt, 4);
+			model.setValueAt(w2, row_cnt, 3);
 			model.fireTableDataChanged();
 
-			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 3).toString());
-			model.setValueAt(w3, row_cnt, 5);
+			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 2).toString());
+			DecimalFormat df = new DecimalFormat("#.##");      
+			w3 = Double.valueOf(df.format(w3));
+			model.setValueAt(w3, row_cnt, 4);
 			System.out.println("W3 = " + w3);
 			model.fireTableDataChanged();
 			row_cnt++;
@@ -331,14 +333,14 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		String company_details = "";
 		String parameter = "", header = "", value = "", trials = "", result = "", rsd = "", instrument_id = "",
 				analyzed_by = "",result_kff="";
-		trials = "1,5," + table1.getValueAt(0, 3).toString()+",";
-		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(0, 3).toString())-5)/5)*100))));
+		trials = "1,5," + table1.getValueAt(0, 4).toString()+",";
+		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(0, 4).toString())-5)/5)*100))));
 		trials = trials+result_kff+":";
-		trials = trials+"2,10," + table1.getValueAt(1, 3).toString()+",";
-		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(1, 3).toString())-10)/10)*100))));
+		trials = trials+"2,10," + table1.getValueAt(1, 4).toString()+",";
+		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(1, 4).toString())-10)/10)*100))));
 		trials = trials+result_kff+":";
-		trials = trials+"3,15," + table1.getValueAt(2, 3).toString()+",";
-		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(2, 3).toString())-15)/15)*100))));
+		trials = trials+"3,15," + table1.getValueAt(2, 4).toString()+",";
+		result_kff = String.valueOf((Double.parseDouble(df.format(((Double.parseDouble(table1.getValueAt(2, 4).toString())-15)/15)*100))));
 		trials = trials+result_kff;
 		
 
