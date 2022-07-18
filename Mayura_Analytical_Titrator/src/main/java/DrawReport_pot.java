@@ -124,7 +124,6 @@ public class DrawReport_pot extends JPanel{
 		System.out.println("Draw Graph KF isOpen = "+DrawGraph_kf.button_prerun);
 		System.out.println("Pot Result isOpen = "+open_pot_result.frame);
 
-		
 		JLabel experiment = new JLabel("Potentiometry");
 		experiment.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.013 * wid)));
 		experiment.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.02 * hei), (int) Math.round(0.15 * wid), (int) Math.round(0.03 * hei));
@@ -248,7 +247,10 @@ public class DrawReport_pot extends JPanel{
 					}
 				}
 			});
-		}		
+		}
+		else {
+			already_certified = true;
+		}
 		
 		JButton btn_print_kf_result = new JButton("Print");
 		btn_print_kf_result.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
@@ -404,11 +406,37 @@ public class DrawReport_pot extends JPanel{
 				ps.setString(1, push_remarks);
 				ps.setString(2, report_name);
 				user_text = user_text+" Remarks Updated";
+			}else if(certify_now == false && already_certified == false) {
+				if (remarks_input_pot.getText().toString().matches("")) {
+					temp_remarks = "No Remarks";
+				} else {
+					temp_remarks = remarks_input_pot.getText().toString();
+				}
+				
+				String push_remarks = "";
+				String[] temp_remarks_arr = remarks.split(",");
+				
+				for(int i=0;i<temp_remarks_arr.length;i++) {
+					if(i==0) {
+						push_remarks = temp_remarks;
+					}
+					else {
+						push_remarks = push_remarks +","+temp_remarks_arr[i];
+					}
+				}
+				sql = "UPDATE potentiometry SET remarks = ? WHERE report_name = ?";
+				ps = con.prepareStatement(sql);
+				ps.setString(1, push_remarks);
+				ps.setString(2, report_name);
+				user_text = user_text+" Remarks Updated";
 			}
 			ps.executeUpdate();
 			JOptionPane.showMessageDialog(null, "Pot Remarks Updated Successfully!");
+			already_certified= false;
+			already_remarked = false;
 			frame1.dispose();
 			frame1 = new JFrame();
+			
 			p = new JPanel();
 			p.invalidate();
 			p.revalidate();
@@ -422,6 +450,7 @@ public class DrawReport_pot extends JPanel{
 			} catch (SQLException e1) {
 				System.out.println(e1.toString());
 			}
+			catch(NullPointerException h) {}
 		}
 		
 		try {
@@ -722,6 +751,12 @@ public class DrawReport_pot extends JPanel{
 				checkBox1.setEnabled(false);
 				already_certified = true;
 			}
+		}
+		catch(NullPointerException jx) {
+			System.out.println(jx.getMessage());
+
+		}
+		try {
 			String[] details_data = details.split(",");
 			String temp_details = "";
 			for (int i = 0; i < details_data.length; i++) {
@@ -732,7 +767,8 @@ public class DrawReport_pot extends JPanel{
 			
 			String[] temp_remarks_arr = remarks.split(",");
 			remarks_input_pot.setText(temp_remarks_arr[0]);
-			if(!temp_remarks_arr[0].toLowerCase().contains("no remarks")) {
+			System.out.println("Remarks  = "+temp_remarks_arr[0]);
+			if(!temp_remarks_arr[0].toLowerCase().matches("no remarks")) {
 				remarks_input_pot.setEnabled(false);
 				already_remarked = true;
 			}
@@ -743,9 +779,10 @@ public class DrawReport_pot extends JPanel{
 			
 			
 		} catch (NullPointerException njh) {
+			System.out.println(njh.getMessage());
 
 		} catch (ArrayIndexOutOfBoundsException fd) {
-			System.out.println("");
+			System.out.println(fd.getMessage());
 		}
 		
 		try {
@@ -753,6 +790,10 @@ public class DrawReport_pot extends JPanel{
 		} catch (ParseException e1) {e1.printStackTrace();}
 		
     }
+	
+	public static void clear_all() {
+		
+	}
 	
 	public static void get_data_pot() {
 		System.out.println("get_data_pot");
@@ -1725,11 +1766,13 @@ public class DrawReport_pot extends JPanel{
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		frame1.setIconImage(img.getImage());
 
-		ReformatBuffer.current_exp = "kf";
+		ReformatBuffer.current_exp = "pot";
 			frame1.addWindowListener(new java.awt.event.WindowAdapter() {
 			    @Override
 			    public void windowClosing(java.awt.event.WindowEvent windowEvent)
 			    {
+			    	already_certified = false;
+			    	already_remarked = false;
 			    	series.clear();
 			    	frame1.dispose();
 					frame1 = new JFrame();

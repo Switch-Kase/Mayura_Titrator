@@ -1066,7 +1066,6 @@ public class menubar extends JPanel implements ItemListener {
 				Files.copy(source6.toPath(), dest6.toPath());
 				Files.copy(source7.toPath(), dest7.toPath());
 
-
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}

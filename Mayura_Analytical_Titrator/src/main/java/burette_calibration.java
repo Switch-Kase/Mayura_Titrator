@@ -208,7 +208,7 @@ public class burette_calibration extends JPanel implements ItemListener {
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
-			model.setValueAt(w1, row_cnt, 3);
+			model.setValueAt(w1, row_cnt, 2);
 			model.fireTableDataChanged();
 			if (row_cnt == 0 || row_cnt == 1 || row_cnt == 2) {
 				dose = 5;
@@ -284,11 +284,11 @@ public class burette_calibration extends JPanel implements ItemListener {
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w2 = Double.parseDouble(result);
-			model.setValueAt(String.format("%.4f", w2), row_cnt, 4);
+			model.setValueAt(String.format("%.3f", w2), row_cnt, 3);
 			model.fireTableDataChanged();
 
-			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 3).toString());
-			model.setValueAt(w3, row_cnt, 5);
+			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 2).toString());
+			model.setValueAt(w3, row_cnt, 4);
 			System.out.println("W3 = " + w3);
 			model.fireTableDataChanged();
 			row_cnt++;
