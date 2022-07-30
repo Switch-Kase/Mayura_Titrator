@@ -45,3 +45,4 @@ update_sop.java (Window/Screen): used to upload a new SOP (Standard Operating Pr
 user_device_data.java (Window/Screen): fetches device data during installation
 users_roles.java (Window/Screen): used to fetch user roles for editing
 
+edc
