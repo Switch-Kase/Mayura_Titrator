@@ -101,7 +101,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	static double[] diff = new double[20];
 	static double[] data1;
 
-	static FileWriter fw;
+	static FileWriter fw,fw_i,fw_d;
 
 	static JFrame frame1 = new JFrame();
 	static JFrame frame2 = new JFrame();
@@ -141,6 +141,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	static Stack<String> threshold_array = new Stack<String>();
 	static int[] int_arr = new int[5000];
 	static ArrayList<Double> data_array = new ArrayList<Double>();
+	static ArrayList<Integer> data_array_raw = new ArrayList<Integer>();
+	static ArrayList<Double> data_array_raw_d = new ArrayList<Double>();
 	public static String variables[] = new String[17];
 
 
@@ -152,6 +154,12 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	}
 
 	public static void update_mv_pot(String msg) {
+		
+		DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
+		String date_time244 = dateFormat244.format(new Date()).toString();
+		System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
+		
+		
 		msg = msg.replaceAll("\\\n", "");
 		msg = msg.replaceAll("\\\t", "");
 		String[] temp = new String[2];
@@ -173,16 +181,21 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		int int_mv_val = Integer.parseInt(mv_val_str);
 		double double_mv_val = Double.parseDouble(mv_val_str);
 
-		if (msg.contains("N"))
+		if (msg.contains("N")) {
 			int_mv_val = -int_mv_val;
+			double_mv_val = -double_mv_val;
+		}
 
 	//	System.out.println("int_mv_val = "+int_mv_val+"  :   E calib = "+e_calib);
 		
 		int_mv_val = int_mv_val-e_calib;
+		double_mv_val = double_mv_val-e_calib;
 		
 	//	System.out.println("int_mv_val = "+int_mv_val);
 		
 		mv_display_pot.setText((int_mv_val) + " mV");
+	
+		
 
 		update_front_end = true;
 
@@ -194,12 +207,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				temp_val = (data_array.get(data_array.size() - 1) * 0.5) + (double_mv_val * 0.5);
 			}
 			data_array.add(temp_val);
+			
+			data_array_raw.add(int_mv_val);
+			data_array_raw_d.add(double_mv_val);
+			
 			float f = (float) dose;
 
 			series.addOrUpdate(f, int_mv_val);
 
 			DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
 			String date_time = dateFormat2.format(new Date()).toString();
+	//		System.out.println("Dattaaaaa = "+int_mv_val + "   -   Time = "+ date_time);
 
 //			try {
 //				 fw_temp.append(int_mv_val+"------------"+date_time+"\n");
@@ -207,6 +225,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 //				// TODO Auto-generated catch block
 //				e1.printStackTrace();
 //			}
+			
+			
 
 		}
 	}
@@ -499,7 +519,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		exec_dg.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
-				System.out.println("Dose counter EXEC_DG1111 = "+dose);
+				//System.out.println("Dose counter EXEC_DG1111 = "+dose);
 
 				dose = dose + ((doserate_val / 60.0) / 4.0);
 
@@ -2560,9 +2580,9 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 			else if (math.contains("V_3") || math2.contains("V_3") || math3.contains("V_3")) {
 				if (end_point_no > 2) {
-					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)) + pre_dose;
-					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)) + pre_dose;
-					end_point_3 = (((End_Point[2] * dossage_speed / burette_factor) / 1000)) + pre_dose;
+					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
+					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
+					end_point_3 = (((End_Point[2] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					ValueMarker marker = new ValueMarker(end_point_1);
 					marker.setPaint(Color.blue);
 					plot = (XYPlot) chart.getPlot();
@@ -2637,8 +2657,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				}
 			} else if (math.contains("V_2") || math2.contains("V_2") || math3.contains("V_2")) {
 				if (end_point_no > 1) {
-					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)) + pre_dose;
-					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)) + pre_dose;
+					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
+					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					ValueMarker marker = new ValueMarker(end_point_1);
 					marker.setPaint(Color.blue);
 					plot = (XYPlot) chart.getPlot();
@@ -2709,7 +2729,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 			else if (math.contains("V_1") || math2.contains("V_1") || math3.contains("V_1")) {
 				if (end_point_no > 0) {
-					end_point_1 = ((((End_Point[0] * dossage_speed / burette_factor) / 1000)) + pre_dose);
+					end_point_1 = ((((End_Point[0] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose);
 					ValueMarker marker = new ValueMarker(end_point_1);
 					marker.setPaint(Color.blue);
 					plot = (XYPlot) chart.getPlot();
@@ -2811,6 +2831,9 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 		try {
 			fw = new FileWriter("C:\\SQLite\\RAW_DATA.csv");
+			fw_i = new FileWriter("C:\\SQLite\\RAW_DATA_BEFORE_INT.csv");
+			fw_d = new FileWriter("C:\\SQLite\\RAW_DATA_BEFORE_DOUBLE.csv");
+			
 		} catch (IOException e1) {
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
@@ -2818,12 +2841,17 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		for (int i = 0; i < temp_d.size(); i++) {
 			try {
 				fw.append(temp_d.get(i) + ",\n");
+				fw_i.append(data_array_raw.get(i) + ",\n");
+				fw_d.append(data_array_raw_d.get(i) + ",\n");
 			} catch (Exception e) {
 				System.out.println(e);
 			}
 		}
 		try {
 			fw.close();
+			fw_i.close();
+			fw_d.close();
+
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -2886,7 +2914,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			}
 			// System.out.println("C2 = " + c2);
 			// Change K here
-			k = 4;
+			k = 0;
 			m1 = 0;
 
 			Arrays.fill(diff, 0);
@@ -2932,7 +2960,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 						ky = k;
 						d_flag = 1;
 					}
-				} else if (d_flag == 1) {
+				} 
+				else if (d_flag == 1) {
 					if (Math.abs(slope) > Math.abs(diff[8]) / 1) {
 						// System.out.println("indise abs-slope if " + Math.abs(slope));
 

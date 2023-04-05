@@ -1,53 +1,14 @@
 package main.java;
 
-import java.awt.EventQueue;
-import java.awt.FlowLayout;
-
-import javax.swing.JFrame;
-import javax.swing.JToolBar;
-import javax.swing.SwingConstants;
-import javax.swing.UIManager;
-import javax.swing.border.Border;
-
-import org.scilab.forge.jlatexmath.TeXConstants;
-import org.scilab.forge.jlatexmath.TeXFormula;
-import org.scilab.forge.jlatexmath.TeXIcon;
-
-import com.fazecast.jSerialComm.SerialPort;
-import com.itextpdf.text.DocumentException;
-import com.sun.jdi.connect.Connector.SelectedArgument;
-
 import java.awt.Color;
-import java.awt.Component;
-import java.awt.Container;
 import java.awt.Desktop;
 import java.awt.Dimension;
-
-import javax.swing.JLabel;
 import java.awt.Font;
 import java.awt.Frame;
-import java.awt.Graphics;
 import java.awt.Insets;
-
-import javax.swing.JTextField;
-import javax.swing.JComboBox;
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JPanel;
 import java.awt.SystemColor;
 import java.awt.Toolkit;
-import javax.swing.JRadioButton;
-import javax.swing.JScrollPane;
-import javax.swing.JLayeredPane;
-import javax.swing.JDesktopPane;
-import javax.swing.JFileChooser;
-import javax.swing.JTabbedPane;
-import javax.swing.JMenuBar;
-import javax.swing.JMenu;
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -57,8 +18,6 @@ import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.nio.file.FileAlreadyExistsException;
@@ -71,7 +30,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -80,12 +38,36 @@ import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-import java.awt.event.ActionEvent;
+import java.util.regex.Pattern;
+
+import javax.swing.BorderFactory;
+import javax.swing.Box;
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JLayeredPane;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
-import java.util.regex.Pattern;
-import java.util.zip.ZipException;
-import java.util.zip.ZipFile;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+import javax.swing.SwingConstants;
+import javax.swing.UIManager;
+import javax.swing.border.Border;
+
+import org.scilab.forge.jlatexmath.TeXConstants;
+import org.scilab.forge.jlatexmath.TeXFormula;
+import org.scilab.forge.jlatexmath.TeXIcon;
+
+import com.fazecast.jSerialComm.SerialPort;
+import com.itextpdf.text.DocumentException;
 
 public class menubar extends JPanel implements ItemListener {
 
@@ -1007,6 +989,9 @@ public class menubar extends JPanel implements ItemListener {
 			output.print("<8888>CVOL*");
 			output.flush();
 		} catch (NullPointerException ee) {
+			
+			
+			
 			// system.out.println(" portport_clickclick = ");
 		}
 	}
@@ -3354,7 +3339,6 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		mnNewMenu_5.add(menuItem_calibrate_electrode);
-
 		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -3431,16 +3415,12 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		mnNewMenu_6.add(menu_item_help);
-		
-		
-		
-		
-		
+				
 		selected_experiment = "potentiometry";
 
 		initialize();
 		enable_all(false);
-
+		
 		if (check_validity()) {
 			ScheduledExecutorService exec_temp1 = Executors.newSingleThreadScheduledExecutor();
 			exec_temp1.scheduleAtFixedRate(new Runnable() {
@@ -3701,6 +3681,7 @@ public class menubar extends JPanel implements ItemListener {
 
 	}
 
+	
 	public static void setRole(String u_name, String roles, String items) {
 
 		System.out.println("SETTTT ROLEEEE");

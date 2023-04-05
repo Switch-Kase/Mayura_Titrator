@@ -95,7 +95,7 @@ public class DbConnection {
                 + " Value text \n"
                 + ");"; 
         String Trials4 = "CREATE TABLE IF NOT EXISTS company_data (\n"  
-                + " Slno text ,\n"  
+                + " Slno text NOT NULL UNIQUE,\n"  
                 + " instrument_id text ,\n"  
                 + " company_logo text, \n"
                 + " company_name text, \n"
@@ -157,6 +157,8 @@ public class DbConnection {
 		String formula12 = "INSERT OR IGNORE INTO formulas(no,formula) VALUES('12','Analyte A= \\frac {V_1*N*F_1*Unit}{W*F_3},Analyte B= \\frac {V_2*N*F_2*Unit}{W*F_4}')";
 
 		String set_bf = "INSERT OR IGNORE INTO burette_factor(SlNo,b_factor,permision) VALUES('1','1,0','true')";
+		String set_company_details = "INSERT OR IGNORE INTO company_data(Slno,instrument_id,company_logo,company_name,company_address,start_date,validity) VALUES('1','HP77','C:\\SQLite\\logo\\logo.png','Mayura Analytical','Bangalore','2022-06-08','100000')";
+
 
 		try{  
             Connection con = DriverManager.getConnection(url);  
@@ -187,6 +189,8 @@ public class DbConnection {
             sql.execute(formula11);
             sql.execute(formula12);
             sql.execute(set_bf);
+            sql.execute(set_company_details);
+
             
         } 
 		catch (SQLException e) {  

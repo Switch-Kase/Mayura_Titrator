@@ -13,8 +13,8 @@ import java.util.Arrays;
 public class bbb {
 	
 static BufferedReader br1;
-static double[] d = new double[1500];
-static double[] d1 = new double[1500];
+static double[] d = new double[2000];
+static double[] d1 = new double[2000];
 
 static double[] cur_val = new double[20];
 static double[] end_point_mv = new double[2000];
@@ -44,12 +44,12 @@ static boolean continue_data1=false,res_flag;
 private static String dos_speed; 
 
 static int burette_factor = 1;
-static float dose_speed=4;
+static float dose_speed=6;
 static float pre_dose = 0;
-static double filter=1;
+static double filter=4;
 static int thershold = 100;
 
-static int a=1; // enter the number for end points run by the VB experiment
+static int a=2; // enter the number for end points run by the VB experiment
 
 public static void arr() 
 {   
@@ -133,18 +133,18 @@ public static void arr()
 		System.out.println(" setdose_speed ");
 		if (dose_speed == 0.5) 
 		dossage_speed = 1.8;
-		else if (dose_speed == 1) 
+		else if (dose_speed == 1)
 		dossage_speed = 3.6;
 		else if (dose_speed == 2) 
 		dossage_speed = 7.2;
 		else if (dose_speed == 3) 
 		dossage_speed = 10.8;
 		else if (dose_speed == 4) 
-		dossage_speed = 16.67;
+		dossage_speed = 14.4;
 		else if (dose_speed == 5) 
 		dossage_speed = 18;
 		else if (dose_speed == 6) 
-		dossage_speed = 26.4;
+		dossage_speed = 21.6;
 		else if (dose_speed == 8) 
 		dossage_speed = 28.8;
 		else if (dose_speed == 10) 
@@ -161,7 +161,7 @@ public static void arr()
 	   {
 	       String st;
 
-		   File file = new File("C:\\Users\\mayur\\Desktop\\Test19051.dat");
+		   File file = new File("C:\\Users\\brahm\\OneDrive\\Desktop\\abcabc.txt");
 
 				try 
 				{
@@ -244,7 +244,7 @@ public static void arr()
 					i = i + 1;
 				}	
 				//System.out.println("C2 = "+c2);
-				k = 4;
+				k = 0;
 				m1 = 0;
 				
 				
@@ -321,7 +321,7 @@ public static void arr()
 				corres_fact = -0.037;
 				}
 				else if (dose_speed == 4) {
-				corres_fact = 0;
+				corres_fact = -0.068;
 				}
 				else if (dose_speed == 5) {
 				corres_fact = -0.054;
