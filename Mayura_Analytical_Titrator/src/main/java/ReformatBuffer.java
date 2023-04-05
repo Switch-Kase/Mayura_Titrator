@@ -16,11 +16,17 @@ public class ReformatBuffer {
     public static String current_exp="";
 
     public static void parseByteArray(byte[] readBuffer) {
-
+    	
+    	
         String s = new String(readBuffer);
 //         bufferReadToString = bufferReadToString.concat(s);
      //   System.out.println("ReformatBuffer = "+readBuffer);
        //   DrawGraph.temp_graph(s);
+        
+//        DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
+//		String date_time244 = dateFormat244.format(new Date()).toString();
+		//System.out.println("Dattaaaaa = "+s+"   -   Time = "+ date_time244);
+
           
         if(s.contains("*")){
         	bufferReadToString+=s;

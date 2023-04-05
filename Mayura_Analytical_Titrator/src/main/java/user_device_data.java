@@ -144,7 +144,7 @@ public class user_device_data extends JFrame {
 		validity_left_heading = new JLabel("Days left :");
 		validity_left_heading.setFont(new Font("Times New Roman", Font.BOLD, 17));
 		validity_left_heading.setBounds(190, 335, 139, 21);
-		contentPane.add(validity_left_heading);
+	//	contentPane.add(validity_left_heading);
 		
 		btn_browse = new JButton("Browse");
 		btn_browse.setFont(new Font("Times New Roman", Font.BOLD, 18));
@@ -275,7 +275,7 @@ public class user_device_data extends JFrame {
 			company_name_tf.setText(data_arr[2]);
 			company_address_tf.setText(data_arr[3]);
 			int temp = Integer.parseInt(data_arr[4]) - Integer.parseInt(data_arr[5]);
-			validity_left_heading.setText("Days left : "+temp);
+			//validity_left_heading.setText("Days left : "+temp);
 			update = true;
 			btn_update.setText("Update");
 			heading.setText("Update Company Data");

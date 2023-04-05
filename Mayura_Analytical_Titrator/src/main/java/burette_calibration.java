@@ -20,6 +20,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.DateFormat;
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
@@ -282,22 +283,26 @@ public class burette_calibration extends JPanel implements ItemListener {
 
 		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 and then PRESS OK!",
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
-		try {
+		//try {
 			double w2 = Double.parseDouble(result);
 			model.setValueAt(String.format("%.3f", w2), row_cnt, 3);
 			model.fireTableDataChanged();
 
 			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 2).toString());
+			DecimalFormat df = new DecimalFormat("#.##");      
+			w3 = Double.valueOf(df.format(w3));
 			model.setValueAt(w3, row_cnt, 4);
 			System.out.println("W3 = " + w3);
 			model.fireTableDataChanged();
 			row_cnt++;
-			send_afil();
-		} catch (NullPointerException ne) {
-			JOptionPane.showMessageDialog(null, "Please enter a value!");
-		} catch (NumberFormatException e) {
-			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
-		}
+			if(row_cnt<9)
+				send_afil();
+//		} catch (NullPointerException ne) {
+//			System.out.println();
+//			JOptionPane.showMessageDialog(null, "Please enter a value!");
+//		} catch (NumberFormatException e) {
+//			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
+//		}
 	}
 
 	public static void update_burette_factor() {
