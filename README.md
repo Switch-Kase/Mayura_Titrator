@@ -1,6 +1,6 @@
 # Mayura_Titrator
 
-AdminLogin.java (Window/Screen): UserLogin screen
+#AdminLogin.java (Window/Screen): UserLogin screen
 audit_log_push.java: Used to puh data to audit log
 burette_calibration_test.java (Window/Screen): Testing burette Calibration screen
 burette_calibration.java (Window/Screen): Burette Calilbration Page
