@@ -79,22 +79,30 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	static JButton btn_print, btn_test_buretter_calibration, btn_update_buretter_factor, btn_done_buretter_calibration,
 			btn_brtest_report;
 	static boolean test = true;
-
-	static float prev_burette_factor = 0;
-
 	static JScrollPane scrollPane, scrollPane1;
 	static DecimalFormat df = new DecimalFormat("0.000");
-
+	
+	static String str_format = "%.4f", double_format = "#.####";
 
 	public burette_calibration_test() {
 		setLayout(null);
 		initialize();
 	}
 
-	public static void port_setup_bc_test(SerialPort sp) {
+	public static void port_setup_bct(SerialPort sp) {
 		try {
 			output_bc = new PrintWriter(sp.getOutputStream());
 			sp1 = sp;
+			try {
+				Thread.sleep(250);
+				output_bc.print("<8888>DOSR,006*");
+				output_bc.flush();
+			} catch (InterruptedException ex) {
+			} catch (NullPointerException ee) {
+				JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+			}
+			ReformatBuffer.current_state = "bct_dosr";
+			
 		} catch (NullPointerException np) {
 			JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 			frame.dispose();
@@ -105,25 +113,45 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		}
 	}
 
+	
+	public static void send_cvop() {
+		System.out.println("Inside send CVOP");
+		try {
+			Thread.sleep(250);
+			output_bc.print("<8888>CVOP*");
+			output_bc.flush();
+			ReformatBuffer.current_state = "dg_bct_cvop";
+		} catch (InterruptedException ex) {
+		} catch (NullPointerException ee) {
+			JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+		}
+	}
+	
+	public static void cvop_ok_received() {
+		send_afil();
+	}
+	
+	
 	public static void send_afil() {
-		if (row_cnt < 3) {
-			System.out.println("Sending Fill BC");
-			if (test == true && row_cnt <= 3) {
-				try {
-					Thread.sleep(500);
-					output_bc.print("<8888>FILL*");
-					output_bc.flush();
-					ReformatBuffer.current_state = "bct_afil";
-				} catch (InterruptedException ex) {
-				} catch (NullPointerException ee) {
-					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
-				}
+		System.out.println("Inside send AFILL bc");
+		if (row_cnt <= 2) {
+			try {
+				Thread.sleep(500);
+				output_bc.print("<8888>AFIL*");
+				output_bc.flush();
+				ReformatBuffer.current_state = "bct_afil";
+			} catch (InterruptedException ex) {
+			} catch (NullPointerException ee) {
+				JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 			}
+		} else{
+			btn_brtest_report.setEnabled(true);
 		}
 	}
 
 	public static void bct_afill_ok_received() {
-		System.out.println("Fill OK BC");
+		System.out.println("Inside AFIL OK");
+
 		exec_bc_fill = Executors.newSingleThreadScheduledExecutor();
 		exec_bc_fill.scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -166,15 +194,17 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 
 	public static void bct_afill_end_received() {
 		exec_bc_fill.shutdown();
-		System.out.println("Fill END BC");
-
+		input_popup();
+	}
+	
+	public static void input_popup() {
 		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 and then PRESS OK!",
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
 			model.setValueAt(w1, row_cnt, 2);
 			model.fireTableDataChanged();
-			if (row_cnt == 0) {
+			if (row_cnt == 0 ) {
 				dose = 5;
 			}
 			if (row_cnt == 1) {
@@ -186,14 +216,14 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 			send_dose();
 		} catch (NullPointerException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a value!");
+			input_popup();
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
+			input_popup();
 		}
 	}
 
 	public static void send_dose() {
-		System.out.println("SEND DOSE BC");
-
 		try {
 			Thread.sleep(500);
 			output_bc.print("<8888>DOSE*");
@@ -206,16 +236,14 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	}
 
 	public static void bct_dose_ok_received() {
-		System.out.println("DOSE OK BC");
-
 		dose_counter = 0;
 		exec_bc_dose = Executors.newSingleThreadScheduledExecutor();
 		exec_bc_dose.scheduleAtFixedRate(new Runnable() {
 			@Override
 			public void run() {
 				if (dose_counter < dose) {
-					dose_counter = dose_counter + ((20 / 60.0) / 10);
-					vol_dose.setText("Volume Dosed : " + String.format("%.3f", dose_counter) + "mL");
+					dose_counter = dose_counter + (((6 / 60.0) / 10)*b_factor);
+					vol_dose.setText("Volume Dosed : " + String.format("%.1f", dose_counter) + " mL");
 				} else {
 					dose_counter = 0;
 					exec_bc_dose.shutdown();
@@ -233,43 +261,48 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		}, 0, 100, TimeUnit.MILLISECONDS);
 	}
 
-	public static void bct_stpm_ok_received() {
-		System.out.println("STPM OK BC");
+	public static void bct_dosr_ok_received() {
+		//JOptionPane.showMessageDialog(null, "Dose Rate at 6 ml/min");
+	}
+	
+	
 
+	public static void bct_stpm_ok_received() {
 		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 and then PRESS OK!",
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
+			DecimalFormat df = new DecimalFormat(double_format);
 			double w2 = Double.parseDouble(result);
+			w2 = Double.valueOf(df.format(w2));
 			model.setValueAt(w2, row_cnt, 3);
-			model.fireTableDataChanged();
-
+			
 			Double w3 = w2 - Double.parseDouble(model.getValueAt(row_cnt, 2).toString());
-			DecimalFormat df = new DecimalFormat("#.##");      
 			w3 = Double.valueOf(df.format(w3));
-			model.setValueAt(w3, row_cnt, 4);
-			System.out.println("W3 = " + w3);
+			model.setValueAt(w3, row_cnt, 4);		
 			model.fireTableDataChanged();
+			
 			row_cnt++;
-			send_afil();
+			if(row_cnt<=3)
+				send_cvop();
 		} catch (NullPointerException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a value!");
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
 		}
 	}
-
-	public static float get_burette_factor() {
-		float temp_result = 0;
+	
+	public static double get_burette_factor() {
+		double temp_bf = 0;
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
 
-		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = '1'";
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'buretteFactor' and cnfg_param_name = 'buretteFactor'";
 
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			temp_result = Float.parseFloat(rs.getString("b_factor"));
+			temp_bf = Double.parseDouble(rs.getString("cnfg_param_value"));
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -281,7 +314,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 			}
 		}
 
-		return temp_result;
+		return temp_bf;
 	}
 
 	@SuppressWarnings("removal")
@@ -308,7 +341,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		btn_start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				btn_start.setEnabled(false);
-				send_afil();
+				send_cvop();
 			}
 		});
 		btn_start.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
@@ -325,7 +358,11 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		btn_brtest_report.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
 		btn_brtest_report.setBounds((int) Math.round(0.8 * wid), (int) Math.round(0.88 * hei),
 				(int) Math.round(0.0976 * wid), (int) Math.round(0.0428 * hei));
+		btn_brtest_report.setEnabled(false);
 		frame.getContentPane().add(btn_brtest_report);
+		
+		b_factor = get_burette_factor();
+		System.out.println("BF = "+b_factor);
 	}
 
 	public static void print_burette_calibration_report() {
@@ -443,7 +480,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		model.addColumn("Trials");
 		model.addColumn("Displayed Volume in mL");
 		model.addColumn("Weight of Empty Flask(gms){W1}");
-		model.addColumn("Weight of Empty Flask(gms){W2}");
+		model.addColumn("Weight of Flask with H20(gms){W2}");
 		model.addColumn("Weight of Actual Vol of H2O dispensed(gms){W2-W1}");
 
 		table1.setRowHeight((int) Math.round(0.076 * hei));
@@ -482,12 +519,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	}
 
 	public static void main(String[] args) {
-
-		if (args.length != 0) {
-			// method_name,method_data,ar,batch,sample_name,normality_val,moisture_val,report_name,titrant_name
-
-		}
-
+		
 		Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame.getGraphicsConfiguration());
 		int taskHeight = screenInsets.bottom;
 		Dimension d = Toolkit.getDefaultToolkit().getScreenSize();
@@ -496,10 +528,6 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		wid = d.getWidth();
 		hei = d.getHeight() - taskHeight;
 
-		System.out.println(width + "   dfvdvdv " + hei);
-
-//        wid = 1280;
-//        hei = 720;
 
 		frame.setExtendedState(Frame.MAXIMIZED_BOTH);
 		frame.setBounds(0, 0, (int) wid, (int) hei);

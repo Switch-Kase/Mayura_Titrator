@@ -28,9 +28,12 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.WindowEvent;
 import java.awt.event.WindowListener;
 import java.nio.charset.Charset;
 import java.security.InvalidKeyException;
@@ -48,17 +51,18 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 
-public class AdminLogin extends JFrame implements ActionListener, KeyListener {
+public class AdminLogin extends JDialog{
 
 	public static JPanel contentPane;
-	private JTextField user;
+	public static JTextField user;
 	private JTextField password;
-	static AdminLogin frame;
+	public static AdminLogin frame;
 
 	static boolean check_validity = false;
 	
 	static String audit_user="",audit_text="";
-
+	
+	public static boolean isIconified = false;
 	/**
 	 * Launch the application.
 	 */
@@ -77,31 +81,13 @@ public class AdminLogin extends JFrame implements ActionListener, KeyListener {
 		});
 	}
 
-	public void actionPerformed(ActionEvent e) {
-		String s = e.getActionCommand();
-		if (s.equals("Click here")) {
-			JOptionPane.showMessageDialog(null, "Your form has been sent");
-		}
-	}
-
-	public void keyPressed(KeyEvent e) {
-		if (e.getKeyCode() == KeyEvent.VK_ENTER) {
-			JOptionPane.showMessageDialog(null, "Your form has been sent");
-		}
-	}
-
-	@Override
-	public void keyReleased(KeyEvent arg) {
-	}
-
-	@Override
-	public void keyTyped(KeyEvent arg) {
-	}
-
 	public AdminLogin() {
 		setBounds(100, 200, 400, 220);
 		setTitle("Login");
 		setLocationRelativeTo(null);
+		
+		setResizable(false);
+		setModal(true);
 		
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		setIconImage(img.getImage());
@@ -179,7 +165,6 @@ public class AdminLogin extends JFrame implements ActionListener, KeyListener {
 							final LocalDate firstDate = LocalDate.parse(rs.getString("created_date"), formatter);
 							final LocalDate secondDate = LocalDate.parse(get_date(), formatter);
 							final long days = ChronoUnit.DAYS.between(firstDate, secondDate);
-							System.out.println("Days between: " + days);
 
 							if (days <= Integer.valueOf(rs.getString("validity"))) {
 
@@ -203,7 +188,7 @@ public class AdminLogin extends JFrame implements ActionListener, KeyListener {
 
 								menubar.enable_all(true);
 								menubar.setRole(user.getText().toString(), rs.getString("Roles"), det_items);
-								menubar.menu_item_sa_login.setEnabled(true);
+								//menubar.menu_item_sa_login.setEnabled(true);
 
 								dispose();
 							} else {
@@ -229,29 +214,7 @@ public class AdminLogin extends JFrame implements ActionListener, KeyListener {
 							System.out.println(e1.toString());
 						}
 					}
-				}
-
-				// }
-//				} catch (InvalidKeyException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (HeadlessException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (NoSuchAlgorithmException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (NoSuchPaddingException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (IllegalBlockSizeException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				} catch (BadPaddingException e1) {
-//					// TODO Auto-generated catch block
-//					e1.printStackTrace();
-//				}
-				
+				}				
 				try {
 					audit_log_push.push_to_audit(get_date(), get_time(),audit_user,audit_text);
 				} catch (ParseException e1) {e1.printStackTrace();}
@@ -292,6 +255,5 @@ public class AdminLogin extends JFrame implements ActionListener, KeyListener {
 		byte[] decrypted = cipher.doFinal(ecryptedtexttobytes);
 		String decryptedString = new String(decrypted, Charset.forName("UTF-8"));
 		return decryptedString;
-
 	}
 }

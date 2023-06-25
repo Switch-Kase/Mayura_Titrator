@@ -2051,11 +2051,11 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
-		sql = "SELECT permision FROM burette_factor WHERE SlNo = '1'";
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'trials_altering' and cnfg_param_name = 'permission_to_alter_trial'";
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			temp_result = ((rs.getString("permision").matches("true")) ? true : false);
+			temp_result = ((rs.getString("cnfg_param_value").matches("true")) ? true : false);
 
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
@@ -2238,6 +2238,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		frame1.setResizable(true);
 		frame1.setVisible(true);
 		frame1.repaint();
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		frame1.setIconImage(img.getImage());
 		frame1.setTitle("KF        Logged in as " + user_name);

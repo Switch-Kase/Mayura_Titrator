@@ -90,17 +90,18 @@ public class menubar extends JPanel implements ItemListener {
 			comboBox_dosageRate, comboBox_pot_tendency;
 	BufferedReader br;
 	static int saved = 0;
-	public static boolean saved_file = false;
+	public static boolean saved_file = false, comport_success = false;
 	public static String saved_file_name = null, st;
 
 	static JPanel panel_pot1, panel_pot2, panel_pot3, panel_pot4, panel_pot5;
 	static JLabel pot_predose, pot_stirtime, pot_maxvol, pot_blankvol, pot_burette, pot_threshold, pot_filter,
-			pot_no_of_trials, pot_tendency, pot_f1, pot_f2, pot_f3, pot_f4, pot_epselect, pot_formulaNo, pot_dosagerate,
+			pot_no_of_trials, pot_f1, pot_f2, pot_f3, pot_f4, pot_epselect, pot_formulaNo, pot_dosagerate,
 			pot_resultunit, pot_units_predose, pot_units_stirtime, pot_units_maxvol, pot_units_blankvol,
 			pot_units_dosagerate, pot_units_threshold, pot_sop,jlabel_mv_Value, jlabel_ml_Value, lblEpSelect, text_blank_vol, lblNewLabel_pot_tendency,
 			lblNewLabel_21, lblNewLabel_22;
 	static JTextField pot_tf_predose, pot_tf_stirtime, pot_tf_maxvol, pot_tf_blankvol, pot_tf_burette, pot_tf_factor1,
-			pot_tf_factor2, pot_tf_factor3, pot_tf_factor4, pot_tf_sop_value;
+			pot_tf_factor2, pot_tf_factor3, pot_tf_factor4;
+	static JButton pot_tf_sop_value;
 	static JComboBox pot_cb_threshold, pot_cb_filter, pot_cb_dosagerate, pot_cb_nooftrials, pot_cb_epselect,
 			pot_cb_formula, pot_cb_tendency, pot_cb_resultunit;
 
@@ -120,7 +121,7 @@ public class menubar extends JPanel implements ItemListener {
 	static JTextField ph_tf_stirtime, ph_tf_delay, ph_tf_predose, ph_tf_maxvol, ph_tf_blankvol, ph_tf_burette,
 			ph_tf_endpoint, ph_tf_factor1, ph_tf_factor2, ph_tf_factor3, ph_tf_factor4, ph_tf_slope1, ph_tf_slope2,
 			ph_tf_sop_value;
-	static JComboBox ph_cb_tendency, ph_cb_dosagerate, ph_cb_nooftrials, ph_cb_calibrate, ph_cb_formula,
+	static JComboBox ph_cb_dosagerate, ph_cb_nooftrials, ph_cb_calibrate, ph_cb_formula,
 			ph_cb_resultunit;
 
 	static JPanel panel_amp1, panel_amp2, panel_amp3, panel_amp4, panel_amp5;
@@ -191,6 +192,7 @@ public class menubar extends JPanel implements ItemListener {
 
 		frame1.setResizable(true);
 		frame1.setVisible(true);
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frame1.repaint();
 
 		frame1.addWindowListener(new java.awt.event.WindowAdapter() {
@@ -236,11 +238,7 @@ public class menubar extends JPanel implements ItemListener {
 
 	public static void open_draw_graph(String[] aa) {
 
-		// aa =
-		// {method_name,method_data,ar,batch,sample_name,normality_val,moisture_val,report_name,titrant_name};
-
 		if (serial_port1 != null) {
-			// hiieee
 			try {
 				Thread.sleep(200);
 				output.print("<8888>ESCP*");
@@ -268,6 +266,23 @@ public class menubar extends JPanel implements ItemListener {
 			p = new JPanel();
 			p.revalidate();
 			p.repaint();
+		} else {
+			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
+		}
+	}
+	
+	public static void open_buretter_calibration(String[] aa) {
+
+		if (serial_port1 != null) {
+			try {
+				Thread.sleep(200);
+				output.print("<8888>ESCP*");
+				output.flush();
+			} catch (InterruptedException jkb) {
+			}
+
+			burette_calibration.main(null);
+			burette_calibration.port_setup_bc(serial_port1);
 		} else {
 			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
 		}
@@ -775,7 +790,6 @@ public class menubar extends JPanel implements ItemListener {
 		pot_tf_factor4.setText("1");
 		pot_cb_epselect.setSelectedItem("Auto");
 		pot_cb_formula.setSelectedItem("1");
-		//pot_cb_tendency.setSelectedItem("Up");
 		pot_cb_resultunit.setSelectedItem("%");
 		pot_tf_sop_value.setText("Not Selected");
 
@@ -793,7 +807,6 @@ public class menubar extends JPanel implements ItemListener {
 		ph_tf_factor2.setText("1");
 		ph_tf_factor3.setText("1");
 		ph_tf_factor4.setText("1");
-		ph_cb_tendency.setSelectedItem("Up");
 		ph_cb_resultunit.setSelectedItem("%");
 		ph_cb_calibrate.setSelectedItem("3 Point CUST");
 		ph_tf_slope1.setText("1");
@@ -879,8 +892,6 @@ public class menubar extends JPanel implements ItemListener {
 				pot_tf_factor3.setText(data_arr[11]);
 				pot_tf_factor4.setText(data_arr[12]);
 				pot_cb_epselect.setSelectedItem(data_arr[13]);
-				// pot_cb_formula.setSelectedItem(data_arr[14]);
-				//pot_cb_tendency.setSelectedItem(data_arr[15]);
 				pot_cb_resultunit.setSelectedItem(data_arr[16]);
 				pot_tf_sop_value.setText(data_arr[17]);
 
@@ -899,7 +910,6 @@ public class menubar extends JPanel implements ItemListener {
 				ph_tf_factor2.setText(data_arr[11]);
 				ph_tf_factor3.setText(data_arr[12]);
 				ph_tf_factor4.setText(data_arr[13]);
-				ph_cb_tendency.setSelectedItem(data_arr[14]);
 				ph_cb_resultunit.setSelectedItem(data_arr[15]);
 				ph_cb_calibrate.setSelectedItem(data_arr[16]);
 				ph_tf_slope1.setText(data_arr[17]);
@@ -981,6 +991,15 @@ public class menubar extends JPanel implements ItemListener {
 	}
 
 	public static void comport_success() {
+		if(!comport_success) {
+			comport_success = true;
+			JOptionPane.showMessageDialog(null, "ComPort Connected Succesfully!");
+	
+			try {
+				ReformatBuffer.current_exp = "main";
+				output.print("<8888>CVOL*");
+				output.flush();
+			} catch (NullPointerException ee) {}
 
 		JOptionPane.showMessageDialog(null, "ComPort Connected Succesfully!");
 
@@ -989,10 +1008,7 @@ public class menubar extends JPanel implements ItemListener {
 			output.print("<8888>CVOL*");
 			output.flush();
 		} catch (NullPointerException ee) {
-			
-			
-			
-			// system.out.println(" portport_clickclick = ");
+
 		}
 	}
 
@@ -1098,7 +1114,7 @@ public class menubar extends JPanel implements ItemListener {
 		panel_pot4.setLayout(new BoxLayout(panel_pot4, BoxLayout.Y_AXIS));
 		add(panel_pot4);
 
-		panel_pot5.setBounds(593, 184, 130, 343);
+		panel_pot5.setBounds(593, 184, 130, 260);
 		panel_pot5.setLayout(new BoxLayout(panel_pot5, BoxLayout.Y_AXIS));
 		add(panel_pot5);
 
@@ -1336,8 +1352,6 @@ public class menubar extends JPanel implements ItemListener {
 		pot_epselect.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		pot_formulaNo = new JLabel("Formula No :");
 		pot_formulaNo.setFont(new Font("Times New Roman", Font.BOLD, 20));
-		pot_tendency = new JLabel("Tendency :");
-		pot_tendency.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		pot_resultunit = new JLabel("Result Unit :");
 		pot_resultunit.setFont(new Font("Times New Roman", Font.BOLD, 20));
 		pot_sop = new JLabel("SOP :");
@@ -1351,11 +1365,7 @@ public class menubar extends JPanel implements ItemListener {
 		pot_tf_factor3.setText("1");
 		pot_tf_factor4 = new JTextField();
 		pot_tf_factor4.setText("1");
-		pot_tf_sop_value = new JTextField();
-		pot_tf_sop_value.setText("Not Selected");
-		pot_tf_sop_value.setEditable(false);
-		pot_tf_sop_value.setHorizontalAlignment(SwingConstants.LEFT);
-
+		
 		String[] pot_epselect_arr = { "Auto", "Manual", "Autostat" };
 		pot_cb_epselect = new JComboBox(pot_epselect_arr);
 
@@ -1370,9 +1380,6 @@ public class menubar extends JPanel implements ItemListener {
 				set_formula(pot_cb_formula.getSelectedItem().toString());
 			}
 		});
-
-		String[] pot_tendency_arr = { "Up", "Down" };
-		pot_cb_tendency = new JComboBox(pot_tendency_arr);
 
 		String[] pot_resultunit_arr = { "%", "PPM", "Normality" };// "mL", "mg/gm",
 		pot_cb_resultunit = new JComboBox(pot_resultunit_arr);
@@ -1439,11 +1446,10 @@ public class menubar extends JPanel implements ItemListener {
 		panel_pot4.add(Box.createVerticalStrut(15));
 		panel_pot4.add(pot_formulaNo);
 		panel_pot4.add(Box.createVerticalStrut(15));
-		panel_pot4.add(pot_tendency);
-		panel_pot4.add(Box.createVerticalStrut(15));
 		panel_pot4.add(pot_resultunit);
 		panel_pot4.add(Box.createVerticalStrut(15));
 		panel_pot4.add(pot_sop);
+
 
 		panel_pot5.add(pot_tf_factor1);
 		panel_pot5.add(Box.createVerticalStrut(8));
@@ -1452,16 +1458,14 @@ public class menubar extends JPanel implements ItemListener {
 		panel_pot5.add(pot_tf_factor3);
 		panel_pot5.add(Box.createVerticalStrut(8));
 		panel_pot5.add(pot_tf_factor4);
-		panel_pot5.add(Box.createVerticalStrut(8));
+		panel_pot5.add(Box.createVerticalStrut(15));
 		panel_pot5.add(pot_cb_epselect);
-		panel_pot5.add(Box.createVerticalStrut(15));
+		panel_pot5.add(Box.createVerticalStrut(20));
 		panel_pot5.add(pot_cb_formula);
-		panel_pot5.add(Box.createVerticalStrut(15));
-		panel_pot5.add(pot_cb_tendency);
-		panel_pot5.add(Box.createVerticalStrut(15));
+		panel_pot5.add(Box.createVerticalStrut(18));
 		panel_pot5.add(pot_cb_resultunit);
-		panel_pot5.add(Box.createVerticalStrut(10));
-		panel_pot5.add(pot_tf_sop_value);
+		panel_pot5.add(Box.createVerticalStrut(3));
+
 
 		kf_delay = new JLabel("Delay :");
 		kf_delay.setFont(new Font("Times New Roman", Font.BOLD, 20));
@@ -1769,9 +1773,6 @@ public class menubar extends JPanel implements ItemListener {
 		ph_tf_sop_value.setText("Not Selected");
 		ph_tf_sop_value.setEditable(false);
 
-		String[] ph_tendency_arr = { "Up", "Down" };
-		ph_cb_tendency = new JComboBox(ph_tendency_arr);
-
 		String[] ph_dosage_arr = { "0.5", "1.0", "2.0", "3.0", "4.0", "5.0", "6.0", "8.0", "10.0", "12.0", "14.0",
 				"16.0" };
 		ph_cb_dosagerate = new JComboBox(ph_dosage_arr);
@@ -1887,8 +1888,6 @@ public class menubar extends JPanel implements ItemListener {
 		panel_ph5.add(ph_tf_factor3);
 		panel_ph5.add(Box.createVerticalStrut(10));
 		panel_ph5.add(ph_tf_factor4);
-		panel_ph5.add(Box.createVerticalStrut(10));
-		panel_ph5.add(ph_cb_tendency);
 		panel_ph5.add(Box.createVerticalStrut(10));
 		panel_ph5.add(ph_cb_resultunit);
 		panel_ph5.add(Box.createVerticalStrut(10));
@@ -2150,7 +2149,6 @@ public class menubar extends JPanel implements ItemListener {
 								+ ph_cb_nooftrials.getSelectedItem().toString() + ","
 								+ ph_tf_factor1.getText().toString() + "," + ph_tf_factor2.getText().toString() + ","
 								+ ph_tf_factor3.getText().toString() + "," + ph_tf_factor4.getText().toString() + ","
-								+ ph_cb_tendency.getSelectedItem().toString() + ","
 								+ ph_cb_resultunit.getSelectedItem().toString() + ","
 								+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
 								+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();// www
@@ -2203,7 +2201,6 @@ public class menubar extends JPanel implements ItemListener {
 								+ pot_tf_factor3.getText().toString() + "," + pot_tf_factor4.getText().toString() + ","
 								+ pot_cb_epselect.getSelectedItem().toString() + ","
 								+ pot_cb_formula.getSelectedItem().toString() + ","
-								+ pot_cb_tendency.getSelectedItem().toString() + ","
 								+ pot_cb_resultunit.getSelectedItem().toString() + ","
 								+ pot_tf_sop_value.getText().toString();// www
 						if (selected_methodfile != null) {
@@ -2243,7 +2240,6 @@ public class menubar extends JPanel implements ItemListener {
 								+ ph_cb_nooftrials.getSelectedItem().toString() + ","
 								+ ph_tf_factor1.getText().toString() + "," + ph_tf_factor2.getText().toString() + ","
 								+ ph_tf_factor3.getText().toString() + "," + ph_tf_factor4.getText().toString() + ","
-								+ ph_cb_tendency.getSelectedItem().toString() + ","
 								+ ph_cb_resultunit.getSelectedItem().toString() + ","
 								+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
 								+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();// www
@@ -2372,9 +2368,8 @@ public class menubar extends JPanel implements ItemListener {
 							+ "," + pot_tf_factor4.getText().toString() + ","
 							+ pot_cb_epselect.getSelectedItem().toString() + ","
 							+ pot_cb_formula.getSelectedItem().toString() + ","
-							+ pot_cb_tendency.getSelectedItem().toString() + ","
 							+ pot_cb_resultunit.getSelectedItem().toString() + ","
-							+ pot_tf_sop_value.getText().toString();// www
+							+ pot_tf_sop_value.getText().toString();
 					if (selected_methodfile != null) {
 						save_method save_method1 = new save_method();
 						String[] temp_arr = { data, selected_methodfile, "pot" };
@@ -2397,10 +2392,9 @@ public class menubar extends JPanel implements ItemListener {
 							+ "," + ph_cb_formula.getSelectedItem().toString() + ","
 							+ ph_cb_nooftrials.getSelectedItem().toString() + "," + ph_tf_factor1.getText().toString()
 							+ "," + ph_tf_factor2.getText().toString() + "," + ph_tf_factor3.getText().toString() + ","
-							+ ph_tf_factor4.getText().toString() + "," + ph_cb_tendency.getSelectedItem().toString()
-							+ "," + ph_cb_resultunit.getSelectedItem().toString() + ","
+							+ ph_tf_factor4.getText().toString() + "," + ph_cb_resultunit.getSelectedItem().toString() + ","
 							+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
-							+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();// www
+							+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();
 					if (selected_methodfile != null) {
 						save_method save_method1 = new save_method();
 						String[] temp_arr = { data, selected_methodfile, "ph" };
@@ -2425,7 +2419,7 @@ public class menubar extends JPanel implements ItemListener {
 							+ "," + amp_tf_factor4.getText().toString() + ","
 							+ amp_cb_filter.getSelectedItem().toString() + ","
 							+ amp_cb_resultunit.getSelectedItem().toString() + ","
-							+ amp_tf_sop_value.getText().toString();// www
+							+ amp_tf_sop_value.getText().toString();
 					if (selected_methodfile != null) {
 						save_method save_method1 = new save_method();
 						String[] temp_arr = { data, selected_methodfile, "amp" };
@@ -2510,7 +2504,6 @@ public class menubar extends JPanel implements ItemListener {
 					ph_tf_factor2.setText("1");
 					ph_tf_factor3.setText("1");
 					ph_tf_factor4.setText("1");
-					ph_cb_tendency.setSelectedItem("Up");
 					ph_cb_resultunit.setSelectedItem("%");
 					ph_cb_calibrate.setSelectedItem("3 Point CUST");
 					ph_tf_slope1.setText("1");
@@ -2550,6 +2543,32 @@ public class menubar extends JPanel implements ItemListener {
 				}
 			}
 		});
+		
+		pot_tf_sop_value = new JButton();
+		pot_tf_sop_value.setBounds(593, 451, 130, 34);
+		pot_tf_sop_value.setHorizontalAlignment(SwingConstants.LEFT);
+		pot_tf_sop_value.setText("Not Selected");
+		add(pot_tf_sop_value);
+		pot_tf_sop_value.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(null != pot_tf_sop_value.getText().toString() && !pot_tf_sop_value.getText().toString().contains("Not Selected")) {				
+					try {
+						File file = new File("C:\\SQLite\\SOP\\" +pot_tf_sop_value.getText().toString()+".pdf");
+						
+						if (!Desktop.isDesktopSupported()) {
+							System.out.println("not supported");
+							return;
+						}
+						Desktop desktop = Desktop.getDesktop();
+						if (file.exists())
+							desktop.open(file);
+					} catch (Exception ee) {
+						ee.printStackTrace();
+					}
+				}
+			}
+		});
+		
 
 		btn_esc_mb = new JButton("ESC");
 		btn_esc_mb.setBackground(SystemColor.window);
@@ -3254,7 +3273,7 @@ public class menubar extends JPanel implements ItemListener {
 		menu_item_login = new JMenuItem("Login");
 		menu_item_login.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if(AdminLogin.frame == null) {
+				if(AdminLogin.isIconified == false) {  
 					AdminLogin al = new AdminLogin();
 					if (checked_vaidity == true) {
 						AdminLogin.check_validity = true;
@@ -3264,7 +3283,8 @@ public class menubar extends JPanel implements ItemListener {
 					al.setVisible(true);
 				}
 				else {
-					JOptionPane.showMessageDialog(null, "Window already open!");
+					System.out.println("Maximize");
+					//AdminLogin.frame.setState(JFrame.NORMAL);
 				}
 			}
 		});
@@ -3342,9 +3362,7 @@ public class menubar extends JPanel implements ItemListener {
 		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] temp_aa = { "" };
-				burette_calibration.main(temp_aa);
-				burette_calibration.port_setup_bc(serial_port1);
+				open_buretter_calibration(null);
 			}
 		});
 		mnNewMenu_5.add(menuItem_burette);
@@ -3390,6 +3408,8 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		mnNewMenu_5.add(menu_item_logout);
+
+		menu_item_logout.setEnabled(false);
 
 		JMenu mnNewMenu_6 = new JMenu("Help");
 		mnNewMenu_6.setFont(new Font("Segoe UI", Font.BOLD, 15));
@@ -3469,7 +3489,6 @@ public class menubar extends JPanel implements ItemListener {
 
 			}
 		} catch (SQLException e1) {
-			// JOptionPane.showMessageDialog(null, e1);
 		} finally {
 			try {
 				ps.close();
@@ -3499,12 +3518,13 @@ public class menubar extends JPanel implements ItemListener {
 		String res_formula = "";
 
 		try {
-			sql = "SELECT * FROM formulas";
+			sql = "SELECT cnfg_param_group FROM config_param where cnfg_param_group = 'formulas'";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				count++;
 			}
+			System.out.println("Count  = "+count);
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -3524,10 +3544,10 @@ public class menubar extends JPanel implements ItemListener {
 		String sql;
 		String res_formula = "";
 		try {
-			sql = "SELECT formula FROM formulas where (no  = '" + formula_no + "')";
+			sql = "SELECT formula FROM config_param where cnfg_param_group = 'formulas' and  (cnfg_param_name  = '" + formula_no + "')";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
-			res_formula = rs.getString("formula");
+			res_formula = rs.getString("cnfg_param_value");
 			String[] res_arr = res_formula.split(",");
 			if (res_arr.length == 1) {
 				math = res_arr[0];
@@ -3621,9 +3641,8 @@ public class menubar extends JPanel implements ItemListener {
 		pot_cb_filter.setEnabled(condition);
 		pot_cb_dosagerate.setEnabled(condition);
 		pot_cb_nooftrials.setEnabled(condition);
-		pot_cb_epselect.setEnabled(condition);
+		pot_cb_epselect.setEnabled(false);
 		pot_cb_formula.setEnabled(condition);
-		pot_cb_tendency.setEnabled(false);
 		pot_cb_resultunit.setEnabled(condition);
 
 		kf_tf_delay.setEnabled(condition);
@@ -3653,7 +3672,6 @@ public class menubar extends JPanel implements ItemListener {
 		ph_tf_slope1.setEnabled(condition);
 		ph_tf_slope2.setEnabled(condition);
 		ph_tf_sop_value.setEnabled(condition);
-		ph_cb_tendency.setEnabled(condition);
 		ph_cb_dosagerate.setEnabled(condition);
 		ph_cb_nooftrials.setEnabled(condition);
 		ph_cb_calibrate.setEnabled(condition);
@@ -3684,7 +3702,6 @@ public class menubar extends JPanel implements ItemListener {
 	
 	public static void setRole(String u_name, String roles, String items) {
 
-		System.out.println("SETTTT ROLEEEE");
 		ReformatBuffer.current_exp = "main";
 		user_name = u_name;
 		roles_list = roles;
@@ -3769,20 +3786,17 @@ public class menubar extends JPanel implements ItemListener {
 					}
 				}
 				return data;
-		}
+	}
 	 public static double get_burette_factor() {
-		 	double temp_result = 0;
+		 	double temp_bf = 0;
 			Connection con = DbConnection.connect();
 			PreparedStatement ps = null;
 			String sql;
-
-			sql = "SELECT b_factor FROM burette_factor WHERE SlNo = '1'";
-
+			sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'buretteFactor' and cnfg_param_name = 'buretteFactor'";
 			try {
 				ps = con.prepareStatement(sql);
 				ResultSet rs = ps.executeQuery();
-				String[] ress = rs.getString("b_factor").split(",");
-				temp_result = Double.parseDouble(ress[0]);
+				temp_bf = Double.parseDouble( rs.getString("cnfg_param_value"));
 			} catch (SQLException e1) {
 				JOptionPane.showMessageDialog(null, e1);
 			} finally {
@@ -3794,6 +3808,6 @@ public class menubar extends JPanel implements ItemListener {
 				}
 			}
 
-			return temp_result;
+			return temp_bf;
 		}
 }

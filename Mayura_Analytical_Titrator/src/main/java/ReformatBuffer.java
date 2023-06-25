@@ -36,12 +36,10 @@ public class ReformatBuffer {
 
         	
         	if(!bufferReadToString.contains("T") && !bufferReadToString.contains("N")) {
-        		System.out.println("\n\nGOT SIGNAL= " + bufferReadToString);
-               	System.out.println("State = "+current_state);
+        		System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
         	}
         	if(bufferReadToString.contains("END")) {
-        		System.out.println("\n\nGOT SIGNAL= " + bufferReadToString);
-               	System.out.println("State = "+current_state);
+        		System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
         	}
         	
         	
@@ -124,14 +122,11 @@ public class ReformatBuffer {
 				 System.out.println("Insidee menubar dose end received!");
             	menubar.mb_dose_end_received();
             }
-
-
             else if(current_state.matches("menubar_stpm") && bufferReadToString.contains("OK")) {
 //            	System.out.println("Insidee menubar fill end recieved!");
 //            	menubar.stop_volume_counter();
             	current_state = "";
             }
-            
         	
             else if(current_state.matches("menubar_wash") && bufferReadToString.contains("OK")) {
             	menubar.wash_started();
@@ -157,12 +152,7 @@ public class ReformatBuffer {
             	DrawGraph_pot.cvop_ok_recieved();
             }
             else if(current_state.matches("dg_pot_afil") && bufferReadToString.contains("OK")) {
-            	//DrawGraph_pot.afil_ok_recieved();
             	current_state = "dg_pot_afil_waiting_ok2";
-
-            }
-            else if(current_state.matches("dg_pot_afil") && bufferReadToString.contains("END")) {
-            	//current_state = "dg_pot_afil_waiting_ok2";
             }  
             else if(current_state.matches("dg_pot_afil_waiting_ok2") && bufferReadToString.contains("OK2")) {
             	DrawGraph_pot.afil_ok_recieved(); 
@@ -262,20 +252,22 @@ public class ReformatBuffer {
             	DrawGraph_kf.kf_home_escp();
             	current_state="";
             }
+        	
+            else if(current_state.matches("bc_dosr") && bufferReadToString.contains("OK")) {
+            	burette_calibration.bc_dosr_ok_received();
+            }
+            else if(current_state.matches("dg_bc_cvop") && bufferReadToString.contains("OK")) {
+            	burette_calibration.cvop_ok_received();
+            }
             else if(current_state.matches("bc_afil") && bufferReadToString.contains("OK")) {
-            	//burette_calibration.bc_afill_ok_received();
             	current_state = "bc_afil_waiting_ok2";
             }  
-            else if(current_state.matches("bc_afil") && bufferReadToString.contains("END")) {
-            //	burette_calibration.bc_afill_end_received();
-            }
             else if(current_state.matches("bc_afil_waiting_ok2") && bufferReadToString.contains("OK2")) {
             	burette_calibration.bc_afill_ok_received();
             }
             else if(current_state.matches("bc_afil_waiting_ok2") && bufferReadToString.contains("END")) {
             	burette_calibration.bc_afill_end_received();
             }
-        	
             else if(current_state.matches("bc_dose") && bufferReadToString.contains("OK")) {
             	//burette_calibration.bc_dose_ok_received();
             	current_state = "bc_dose_waiting_ok2";
@@ -286,24 +278,27 @@ public class ReformatBuffer {
             else if(current_state.matches("bc_stpm") && bufferReadToString.contains("END")) {
             	burette_calibration.bc_stpm_ok_received();
             } 
-           
-           
         	
+        	//burette_calibration_test
+        	
+            else if(current_state.matches("bct_dosr") && bufferReadToString.contains("OK")) {
+            	burette_calibration_test.bct_dosr_ok_received();
+            }
+            else if(current_state.matches("dg_bct_cvop") && bufferReadToString.contains("OK")) {
+            	burette_calibration_test.cvop_ok_received();
+            }
             else if(current_state.matches("bct_afil") && bufferReadToString.contains("OK")) {
-            	//burette_calibration_test.bct_afill_ok_received();
             	current_state = "bct_afil_waiting_ok2";
-            } 
+            }  
             else if(current_state.matches("bct_afil_waiting_ok2") && bufferReadToString.contains("OK2")) {
             	burette_calibration_test.bct_afill_ok_received();
             }
             else if(current_state.matches("bct_afil_waiting_ok2") && bufferReadToString.contains("END")) {
             	burette_calibration_test.bct_afill_end_received();
             }
-        	
-        	
             else if(current_state.matches("bct_dose") && bufferReadToString.contains("OK")) {
-            	current_state="bct_dose_waiting_ok2";
-            	//burette_calibration_test.bct_dose_ok_received();
+            	//burette_calibration.bct_dose_ok_received();
+            	current_state = "bct_dose_waiting_ok2";
             } 
             else if(current_state.matches("bct_dose_waiting_ok2") && bufferReadToString.contains("OK2")) {
             	burette_calibration_test.bct_dose_ok_received();
@@ -311,8 +306,7 @@ public class ReformatBuffer {
             else if(current_state.matches("bct_stpm") && bufferReadToString.contains("END")) {
             	burette_calibration_test.bct_stpm_ok_received();
             } 
-            
-        	//dg_kf_dose_timer
+        	
             bufferReadToString="";
 
         }

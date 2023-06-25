@@ -461,7 +461,6 @@ public class users_roles extends JPanel
 			     final LocalDate firstDate = LocalDate.parse(rs.getString("created_date"), formatter);
 			     final LocalDate secondDate = LocalDate.parse(get_date(), formatter);
 			     final long days = ChronoUnit.DAYS.between(firstDate, secondDate);
-			     //System.out.println("Days between: " + days);
 			     
 			     int diff_days = (int) (Integer.parseInt(rs.getString("validity")) - days);
 			     

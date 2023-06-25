@@ -104,14 +104,13 @@ public class calibrate_electrode extends JPanel {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
-		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = 1";
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'electrodeFactor' and cnfg_param_name = 'electrodeFactor'";
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			String[] result = rs.getString("b_factor").split(",");
-			if(result.length == 2) {
-				previous_value.setText("Previous value = "+result[1]+" mV");
-				e_calib = Integer.parseInt(result[1]);
+			if(null != rs.getString("cnfg_param_value")) {
+				previous_value.setText("Previous value = "+rs.getString("cnfg_param_value")+" mV");
+				e_calib = Integer.parseInt(rs.getString("cnfg_param_value"));
 			}
 			else
 				previous_value.setText("Previous value = 0");	
@@ -161,23 +160,16 @@ public class calibrate_electrode extends JPanel {
 		System.out.println("check details Electrode");
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
-		String sql;
-		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = 1";
+	
 		try {
+			String sql = "UPDATE config_param SET cnfg_param_value = ? WHERE cnfg_param_group =?  and cnfg_param_name = ?";
 			ps = con.prepareStatement(sql);
-			ResultSet rs = ps.executeQuery();
-			String[] result = rs.getString("b_factor").split(",");
-				try {
-					sql = "UPDATE burette_factor SET b_factor = ?" +"WHERE SlNo = ?";
-					ps = con.prepareStatement(sql);
-					System.out.println("Updatinggggg value = "+int_temp_mv);
-					ps.setString(1, result[0]+","+int_temp_mv);
-					ps.setString(2, "1");
-					ps.executeUpdate();
-				} catch (SQLException e1) {
-					JOptionPane.showMessageDialog(null, e1);
-				}
-		} catch (SQLException e1) {
+			ps.setString(1, String.valueOf(int_temp_mv));
+			ps.setString(2, "electrodeFactor");
+			ps.setString(2, "electrodeFactor");
+			ps.executeUpdate();
+		} 
+		catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
 			try {

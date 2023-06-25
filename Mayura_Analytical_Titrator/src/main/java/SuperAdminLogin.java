@@ -28,6 +28,8 @@ import javax.crypto.NoSuchPaddingException;
 import javax.crypto.spec.SecretKeySpec;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
+
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -44,7 +46,7 @@ import java.text.SimpleDateFormat;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class SuperAdminLogin extends JFrame  implements ActionListener, KeyListener {
+public class SuperAdminLogin extends JDialog{
 
 	private JPanel contentPane;
 	private JTextField user;
@@ -62,8 +64,6 @@ public class SuperAdminLogin extends JFrame  implements ActionListener, KeyListe
 				try {
 					frame = new SuperAdminLogin();
 					frame.setVisible(true);
-				
-
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -83,17 +83,15 @@ public class SuperAdminLogin extends JFrame  implements ActionListener, KeyListe
 	      JOptionPane.showMessageDialog(null , "Your form has been sent");
 	    }
 	  }
-    @Override
-    public void keyReleased(KeyEvent arg) {}
-    @Override
-    public void keyTyped(KeyEvent arg) {}
-	
 
 	public SuperAdminLogin() {
 		setBounds(100, 200, 400, 220);
 		setTitle("SuperAdmin Login");
 		setLocationRelativeTo(null);
-		
+		setResizable(false);
+
+		setModal(true);
+
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		setIconImage(img.getImage());
 		contentPane = new JPanel();
