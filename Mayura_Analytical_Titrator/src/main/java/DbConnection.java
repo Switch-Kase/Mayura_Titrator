@@ -190,6 +190,7 @@ public class DbConnection {
 
 		String set_company_details = "INSERT OR IGNORE INTO company_data(Slno,instrument_id,company_logo,company_name,company_address,start_date,validity) VALUES('1','HP77','C:\\SQLite\\logo\\logo.png','Mayura Analytical','Bangalore','"+get_date()+"','100000')";
 
+
 		try{  
             Connection con = DriverManager.getConnection(url);  
             Statement sql = con.createStatement();  

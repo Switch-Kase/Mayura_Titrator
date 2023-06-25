@@ -1000,6 +1000,15 @@ public class menubar extends JPanel implements ItemListener {
 				output.print("<8888>CVOL*");
 				output.flush();
 			} catch (NullPointerException ee) {}
+
+		JOptionPane.showMessageDialog(null, "ComPort Connected Succesfully!");
+
+		try {
+			ReformatBuffer.current_exp = "main";
+			output.print("<8888>CVOL*");
+			output.flush();
+		} catch (NullPointerException ee) {
+
 		}
 	}
 

@@ -156,9 +156,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	public static void update_mv_pot(String msg) {
 		
 		DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
-		String date_time244 = dateFormat244.format(new Date()).toString();
-		//System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
-		
+		String date_time244 = dateFormat244.format(new Date()).toString();		
 		
 		msg = msg.replaceAll("\\\n", "");
 		msg = msg.replaceAll("\\\t", "");
