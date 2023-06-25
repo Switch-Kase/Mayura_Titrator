@@ -333,11 +333,11 @@ public class user_device_data extends JFrame {
     	Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql ;
-			sql = "SELECT permision FROM burette_factor WHERE SlNo = '1'"; 
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'trials_altering' and cnfg_param_name = 'permission_to_alter_trial'";
 				try {
 					ps = con.prepareStatement(sql);
 					ResultSet rs = ps.executeQuery();
-					temp_result = rs.getString("permision");
+					temp_result = rs.getString("cnfg_param_value");
 				}
 				catch(SQLException e1) {
 					JOptionPane.showMessageDialog(null,e1);

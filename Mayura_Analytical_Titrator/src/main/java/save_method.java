@@ -340,10 +340,8 @@ public class save_method extends JFrame {
 					String data_final="";
 					
 					for(int j=0;j<(data_arr.length-1);j++) {
-						System.out.println("data+arr = "+data_arr[j]);
 						data_final = data_final.concat(data_arr[j]);
 						data_final = data_final.concat(",");
-						System.out.println("datafinal = "+data_final);
 					}
 					
 					data_final = data_final+cb_sop.getSelectedItem().toString();

@@ -241,7 +241,7 @@ public class DrawReport_kf extends JPanel {
 			checkBox1.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
 			checkBox1.setBounds((int) Math.round(0.7 * wid), (int) Math.round(0.87 * hei), (int) Math.round(0.08 * wid),
 					(int) Math.round(0.04 * hei));
-			add(checkBox1);
+			//add(checkBox1);
 			checkBox1.addItemListener(new ItemListener() {
 				public void itemStateChanged(ItemEvent e) {
 					if (e.getStateChange() == 1) {
@@ -694,7 +694,7 @@ public class DrawReport_kf extends JPanel {
 			permission_report = args[2];
 
 			if (args[2].contains("Certify")) {
-				certify = true;
+				//certify = true;
 			}
 
 		}

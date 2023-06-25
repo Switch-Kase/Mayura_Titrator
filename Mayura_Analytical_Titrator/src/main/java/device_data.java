@@ -93,7 +93,9 @@ public class device_data extends JFrame {
 		System.out.println("constructor == ");
 
 		setBounds(100, 200, 520, 500);
-		setTitle("Input Data");
+		setTitle("Input Company Data");
+		setResizable(false);
+
 		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -287,10 +289,11 @@ public class device_data extends JFrame {
 									ps.executeUpdate();
 								}
 								String temp_permision = (checkBox1.isSelected()?"true":"false");
-								sql = "UPDATE burette_factor SET permision = ? WHERE SlNo = ?";
+								sql = "UPDATE config_param SET cnfg_param_value = ? WHERE cnfg_param_group =?  and cnfg_param_name = ?";
 								ps = con.prepareStatement(sql);
 								ps.setString(1, String.valueOf(temp_permision));
-								ps.setString(2, "1");
+								ps.setString(2, "trials_altering");
+								ps.setString(3, "permission_to_alter_trial");
 								ps.executeUpdate();
 								dispose();
 								JOptionPane.showMessageDialog(null, "Saved Successfully");
@@ -393,11 +396,11 @@ public class device_data extends JFrame {
     	Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql ;
-			sql = "SELECT permision FROM burette_factor WHERE SlNo = '1'"; 
+			sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'trials_altering' and cnfg_param_name = 'permission_to_alter_trial'"; 
 				try {
 					ps = con.prepareStatement(sql);
 					ResultSet rs = ps.executeQuery();
-					temp_result = rs.getString("permision");
+					temp_result = rs.getString("cnfg_param_value");
 				}
 				catch(SQLException e1) {
 					JOptionPane.showMessageDialog(null,e1);

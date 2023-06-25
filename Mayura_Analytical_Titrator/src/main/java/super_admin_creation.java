@@ -28,6 +28,7 @@ import javax.crypto.spec.SecretKeySpec;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -44,7 +45,7 @@ import java.sql.SQLException;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class super_admin_creation extends JFrame  implements ActionListener, KeyListener {
+public class super_admin_creation extends JDialog{
 
 	private JPanel contentPane;
 	private JTextField user;
@@ -82,15 +83,14 @@ public class super_admin_creation extends JFrame  implements ActionListener, Key
 	      JOptionPane.showMessageDialog(null , "Your form has been sent");
 	    }
 	  }
-    @Override
-    public void keyReleased(KeyEvent arg) {}
-    @Override
-    public void keyTyped(KeyEvent arg) {}
-	
+	  
 	public super_admin_creation() {
 		setBounds(100, 200, 400, 280);
 		setTitle("Create Super Admin");
 		setLocationRelativeTo(null);
+		setResizable(false);
+		setModal(true);
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

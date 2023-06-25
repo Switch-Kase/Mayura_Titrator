@@ -257,7 +257,7 @@ public class report {
 				String[] temp = param[10].split(" ");
 				PdfPTable table4 = new PdfPTable(2);
 				table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-				table4.addCell(temp[3] + "\nAnalyzed By ");// +result
+				table4.addCell("\nAnalyzed By ");// +result
 				table4.addCell("\nChecked By ");// +rsd
 				table4.addCell(" ");
 				table4.addCell(" ");
@@ -269,8 +269,8 @@ public class report {
 				String[] temp = param[10].split(" ");
 				PdfPTable table4 = new PdfPTable(2);
 				table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-				table4.addCell(temp[3] + "\nAnalyzed By ");// +result
-				table4.addCell(param[15] + "\nChecked By ");// +rsd
+				table4.addCell("\nAnalyzed By ");// +result
+				table4.addCell("\nChecked By ");// +rsd
 				table4.addCell(" ");
 				table4.addCell(" ");
 				table4.addCell(" ");
@@ -512,7 +512,7 @@ public class report {
 
 			PdfPTable table4 = new PdfPTable(2);
 			table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-			table4.addCell(analyzed_by + "\nAnalyzed By ");// +result
+			table4.addCell("\nAnalyzed By");// +result
 			table4.addCell("\nChecked By ");// +rsd
 			table4.addCell(" ");
 			table4.addCell(" ");
@@ -846,7 +846,7 @@ public class report {
 				String[] temp = param[1].split(" ");
 				PdfPTable table4 = new PdfPTable(2);
 				table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-				table4.addCell(temp[3] + "\nAnalyzed By ");
+				table4.addCell("\nAnalyzed By ");
 				table4.addCell("\nChecked By ");
 				table4.addCell(" ");
 				table4.addCell(" ");
@@ -859,8 +859,8 @@ public class report {
 				String[] temp = param[1].split(" ");
 				PdfPTable table4 = new PdfPTable(2);
 				table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-				table4.addCell(temp[3] + "\nAnalyzed By ");// +result
-				table4.addCell(param[16] + "\nChecked By ");// +rsd
+				table4.addCell("\nAnalyzed By ");// +result
+				table4.addCell("\nChecked By ");// +rsd
 				table4.addCell(" ");
 				table4.addCell(" ");
 				table4.addCell(" ");
@@ -961,7 +961,7 @@ public class report {
 						String[] temp = param[1].split(" ");
 						PdfPTable table4 = new PdfPTable(2);
 						table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-						table4.addCell(temp[3] + "\nAnalyzed By ");// +result
+						table4.addCell("\nAnalyzed By ");// +result
 						table4.addCell("\nChecked By ");// +rsd
 						table4.addCell(" ");
 						table4.addCell(" ");
@@ -974,8 +974,8 @@ public class report {
 						String[] temp = param[1].split(" ");
 						PdfPTable table4 = new PdfPTable(2);
 						table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
-						table4.addCell(temp[3] + "\nAnalyzed By ");// +result
-						table4.addCell(param[16] + "\nChecked By ");// +rsd
+						table4.addCell("\nAnalyzed By ");// +result
+						table4.addCell("\nChecked By ");// +rsd
 						table4.addCell(" ");
 						table4.addCell(" ");
 						table4.addCell(" ");

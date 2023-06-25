@@ -1748,8 +1748,9 @@ public class DrawReport_pot extends JPanel{
     		if (args[2].contains("Certify")) {
 				certify = true;
 			}
+    		certify = false;
     	}
-    	
+		certify = false;
     	Insets screenInsets = Toolkit.getDefaultToolkit().getScreenInsets(frame1.getGraphicsConfiguration());
         int taskHeight=screenInsets.bottom;
         Dimension d = Toolkit.getDefaultToolkit().getScreenSize();

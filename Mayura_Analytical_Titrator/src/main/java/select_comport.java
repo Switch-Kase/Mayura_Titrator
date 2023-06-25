@@ -21,18 +21,16 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
 public class select_comport extends JFrame {
 
 	private JPanel contentPane;
 	private JTextField textField;
-	public static SerialPort firstAvailableComPort;
-    public static SerialPort[] ports;
-    static DefaultListModel<String> l1;
-    String[] port_arr ;
     JComboBox comboBox_port;
     static select_comport frame;
+    int hp77_port =0;
 	/**
 	 * Launch the application.
 	 */
@@ -54,11 +52,8 @@ public class select_comport extends JFrame {
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public select_comport() {
-		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		
 		setBounds(300, 200, 500, 300);
 		setTitle("Select ComPort");
 		setLocationRelativeTo(null);
@@ -71,40 +66,51 @@ public class select_comport extends JFrame {
 		UserName.setFont(new Font("Times New Roman", Font.BOLD, 18));
 		UserName.setBounds(10, 59, 100, 21);
 		contentPane.add(UserName);
-		ports = SerialPort.getCommPorts();
+		SerialPort[] ports = SerialPort.getCommPorts();
+		ArrayList<String> available_ports = new ArrayList<String>(); // Create an ArrayList object
 
-		port_arr = new String[ports.length];
 
-        for(int i=0;i<ports.length;i++) {
-           port_arr[i]=(ports[i].getDescriptivePortName());
-           System.out.println(ports[i].getDescriptivePortName());
+        for(SerialPort temp_port : ports) {
+           if(temp_port.getDescriptivePortName().contains("Silicon Labs CP210x USB to UART Bridge")) { //7  
+        	 if(null != temp_port.getDescriptivePortName().split(" ")[7] && temp_port.getDescriptivePortName().split(" ")[7].contains("COM")) {
+        		 available_ports.add("Mayura Analytical 21CFR_HP77 "+temp_port.getDescriptivePortName().split(" ")[7]);
+        	 }
+           }
+           else {
+        	   available_ports.add(temp_port.getDescriptivePortName());
+           }
+        }
+        
+        
+        for(int port=0;port<available_ports.size();port++) {
+        	if(null!= available_ports.get(port) && available_ports.get(port).contains("Mayura Analytical 21CFR_HP77")) {
+        		hp77_port = port;
+        		String temp_port = available_ports.get(0);
+        		available_ports.set(0,available_ports.get(port));
+        		available_ports.set(port,temp_port);        		
+        	}
         }
 		
-		comboBox_port = new JComboBox(port_arr);
+		comboBox_port = new JComboBox(available_ports.toArray());
 		comboBox_port.setBounds(100, 59,335, 21);
+		comboBox_port.setSelectedIndex(0);		
 		contentPane.add(comboBox_port);
 		
 		JButton btnNewButton = new JButton("Open");
 		btnNewButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String selected_port = comboBox_port.getSelectedItem().toString();
-				int chosenPort = comboBox_port.getSelectedIndex();
-                System.out.println(chosenPort);
-                firstAvailableComPort = ports[chosenPort];
-                menubar.open_port(firstAvailableComPort);
-
-				dispose();
+				if(comboBox_port.getSelectedItem().toString().contains("Mayura Analytical 21CFR_HP77")) {
+	                SerialPort firstAvailableComPort = ports[hp77_port];
+	                menubar.open_port(firstAvailableComPort);
+	                dispose();
+				}
+				else {
+					JOptionPane.showMessageDialog(null, "Please select the 21CFR-HP77 ComPort!");
+				}
 			}
 		});
 		btnNewButton.setFont(new Font("Times New Roman", Font.BOLD, 18));
 		btnNewButton.setBounds(160, 180, 170, 37);
 		contentPane.add(btnNewButton);
-
-        
-//        int chosenPort = list.getSelectedIndex();
-//        System.out.println(chosenPort);
-//        firstAvailableComPort = ports[chosenPort];
-//        firstAvailableComPort.openPort();
-
 	}
 }

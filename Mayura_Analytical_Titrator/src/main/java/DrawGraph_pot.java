@@ -157,7 +157,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		
 		DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
 		String date_time244 = dateFormat244.format(new Date()).toString();
-		System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
+		//System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
 		
 		
 		msg = msg.replaceAll("\\\n", "");
@@ -251,7 +251,6 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			try {
 				Thread.sleep(500);
 				String s = String.format("%03d", dr);
-				// System.out.println("Dosage rate 2 = " + s);
 				output_dg.print("<8888>DOSR," + s + "*");
 				output_dg.flush();
 				ReformatBuffer.current_state = "dg_pot_dosr";
@@ -263,14 +262,13 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	}
 
 	public static void dosr_ok_recieved() {
-		System.out.println("Dose rate ok recieved");
 		JOptionPane.showMessageDialog(null, "Equipment Ready!");
 	}
 
 	public static void send_cvop() {
 		System.out.println("Inside send CVOP");
 		try {
-			Thread.sleep(500);
+			Thread.sleep(150);
 			output_dg.print("<8888>CVOP*");
 			output_dg.flush();
 			ReformatBuffer.current_state = "dg_pot_cvop";
@@ -285,7 +283,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			send_afil();
 		}
 		if (dg_current_process.matches("trial_started")) {
-			System.out.println("AFILL Trial Started Line 321 cvop ok recieved");
+			//System.out.println("AFILL Trial Started Line 321 cvop ok recieved");
 			send_afil();
 		}
 	}
@@ -573,6 +571,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		String aa[] = new String[1];
 		aa[0] = "aa";
 		menubar.main(aa);
+		menubar.menu_item_comport.setEnabled(false);
 		ReformatBuffer.current_exp = "main";
 		menubar.enable_all(true);
 		menubar.send_cvol_kfpot();
@@ -6436,6 +6435,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		frame1.setResizable(true);
 		frame1.setVisible(true);
 		frame1.repaint();
+		frame1.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); //DISPOSE_ON_CLOSE
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		frame1.setIconImage(img.getImage());
 		ReformatBuffer.current_exp = "pot";
@@ -6672,11 +6672,11 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
-		sql = "SELECT permision FROM burette_factor WHERE SlNo = '1'";
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'trials_altering' and cnfg_param_name = 'permission_to_alter_trial'";
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			temp_result = ((rs.getString("permision").matches("true")) ? true : false);
+			temp_result = ((rs.getString("cnfg_param_value").matches("true")) ? true : false);
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -6694,15 +6694,11 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		String sql;
-		sql = "SELECT b_factor FROM burette_factor WHERE SlNo = 1";
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'electrodeFactor' and cnfg_param_name = 'electrodeFactor'";
 		try {
 			ps = con.prepareStatement(sql);
 			ResultSet rs = ps.executeQuery();
-			String[] result = rs.getString("b_factor").split(",");
-			if(result.length == 2)
-				e_calib= Integer.parseInt(result[1]);	
-			else
-				e_calib= 0;	
+			e_calib= Integer.parseInt(rs.getString("cnfg_param_value"));	
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
