@@ -232,10 +232,9 @@ public class save_method extends JFrame {
 
 						}
 					}
-				
-				    else{
+				  else{
 						JOptionPane.showMessageDialog(null, "Method name already exists!");
-					 }
+					 }	
 				}
 				else 
 				{

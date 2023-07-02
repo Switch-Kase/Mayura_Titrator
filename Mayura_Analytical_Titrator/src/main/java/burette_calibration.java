@@ -284,7 +284,7 @@ public class burette_calibration extends JPanel {
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			DecimalFormat df = new DecimalFormat(double_format);  
-			
+
 			double w2 = Double.parseDouble(result);
 			w2 = Double.valueOf(df.format(w2));
 			model.setValueAt(w2, row_cnt, 3);
@@ -306,6 +306,8 @@ public class burette_calibration extends JPanel {
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
 		}
+			if(row_cnt<9)
+				send_afil();
 	}
 
 	public static void update_burette_factor() {
