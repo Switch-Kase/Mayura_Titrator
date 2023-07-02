@@ -36,6 +36,11 @@ public class ReformatBuffer {
 
         	
         	if(!bufferReadToString.contains("T") && !bufferReadToString.contains("N")) {
+        		//System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
+        	}
+        	if(bufferReadToString.contains("END")) {
+        		//System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
+        	}
         	
         	
         	if(bufferReadToString.contains("T")) {
