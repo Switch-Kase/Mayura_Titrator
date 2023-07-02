@@ -75,7 +75,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			moisture = 0, normality = 0, sample_weight = 0, end_point1 = 0, end_point2 = 0, end_point3 = 0,
 			titrant_normality = 0, bvolume = 0, res_unit = 0, user_vol2 = 0, pre_dose, stir_time, max_vol, blank_vol,
 			burette_factor, threshold_val, filter_val, doserate_val, factor1, factor2, factor3, factor4, ep_select,
-			tendency, result_unit, sop_val, end_point_1 = 0, end_point_2 = 0, end_point_3 = 0, new_blank_volume = 0,
+			 result_unit, sop_val, end_point_1 = 0, end_point_2 = 0, end_point_3 = 0, new_blank_volume = 0,
 			filter = 2;
 
 	static boolean draw_graph_state = true, update_front_end = false, select_column = false,
@@ -119,6 +119,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	static JTextArea display;
 
 	private static final XYSeries series = new XYSeries("mL,mV");
+	private static final XYSeries series2 = new XYSeries("a,b");
+
 	static DefaultTableModel model, model2;
 
 	static SerialPort sp1;
@@ -156,7 +158,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	public static void update_mv_pot(String msg) {
 		
 		DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
-		String date_time244 = dateFormat244.format(new Date()).toString();		
+
+		String date_time244 = dateFormat244.format(new Date()).toString();
+		//System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
+		
 		
 		msg = msg.replaceAll("\\\n", "");
 		msg = msg.replaceAll("\\\t", "");
@@ -592,6 +597,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial = 1;
 		data_array.clear();
 		series.clear();
+		series2.clear();
+
 
 		fill = 0;
 		dose = 0;
@@ -676,7 +683,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		method_model = new DefaultTableModel(
 				new Object[][] { { "Metd Name", ":", metd_name, "" }, { "Pre dose", ":", variables[0], "ml" },
 						{ "Stir time", ":", variables[1], "sec" }, { "Max vol", ":", variables[2], "ml" },
-						{ "Dose Rate", ":", variables[7], "ml/min" }, { "Result Unit", ":", variables[16], "" },
+						{ "Dose Rate", ":", variables[7], "ml/min" }, { "Result Unit", ":", variables[15], "" },
 						{ "E.P Select", ":", variables[13], "" }, { "Formula No	", ":", variables[14], "" },
 						{ "Blk_Vol", ":", String.format("%.3f", bvolume), "" }, },
 				new String[] { "Methods", "Parameters", "", "" });
@@ -701,7 +708,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				new Object[][] { { "Burette Factor", ":", variables[4], "" }, { "Trials", ":", variables[8], "" },
 						{ "Filter", ":", "", "" }, { "Threshold", ":", "", "" }, { "factor1", ":", variables[9], "" },
 						{ "factor2", ":", variables[10], "" }, { "factor3", ":", variables[11], "" },
-						{ "factor4", ":", variables[12], "" }, { "Tendency", ":", variables[15], "" }, },
+						{ "factor4", ":", variables[12], "" }, },
 				new String[] { "Methods", "Parameters", "", "" });
 
 		table2.setModel(model2);
@@ -752,7 +759,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		PreparedStatement ps = null;
 		try {
 			String sql = null;
-			sql = "UPDATE pot_method SET Value = ? WHERE Trial_name = ?";
+			sql = "UPDATE potentiometry_methods SET Value = ? WHERE Trial_name = ?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, temp_update);
 			ps.setString(2, metd_name);
@@ -1118,112 +1125,112 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
+//	public static void formula4(boolean pass) {
+//		// res = normality
+//		if (pass == true) {
+//			double result1 = (sample_weight * (1 - (moisture / 100)) * factor3 * factor4)
+//					/ ((end_point_2 - end_point_1) * factor1 * factor2);
+//			if (model.getRowCount() == cur_trial)
+//				model.removeRow(cur_trial - 1);
+//			add_row_to_six_column(cur_trial - 1, String.format("%.3f", end_point_1), String.format("%.3f", end_point_2),
+//					String.valueOf(sample_weight), String.valueOf(moisture), String.format("%.3f", result1));
+//			update_result_scroll("Trial " + cur_trial + " : normality = " + String.format("%.3f", result1) + "\n");
+//
+//		} else {
+//			if (model.getRowCount() == cur_trial)
+//				model.removeRow(cur_trial - 1);
+//			add_row_to_six_column(cur_trial - 1, "NA", "NA", String.valueOf(sample_weight), String.valueOf(moisture),
+//					"NA");
+//			update_result_scroll("Trial " + cur_trial + " : Result = Failed\n");
+//		}
+//		if (cur_trial == no_of_trials && select_column == false) {
+////			try {
+////				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
+////			} catch (ParseException e1) {e1.printStackTrace();}
+//			trials_completed = true;
+//			button_continue.setEnabled(false);
+//			report_saved = 1;
+//		} else if (cur_trial == no_of_trials) {
+////			try {
+////				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
+////			} catch (ParseException e1) {e1.printStackTrace();}
+//			button_continue.setEnabled(false);
+//			report_saved = 1;
+//		}
+//		cur_trial++;
+//	}
+
+//	public static void formula4_non_select_column() {
+//		double res_normality = 0;
+//		ArrayList<Double> temp_res = new ArrayList<Double>();
+//		for (int i = 0; i < no_of_trials; i++) {
+//			if (!model.getValueAt(i, 5).toString().matches("NA")) {
+//				res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 5).toString());
+//				temp_res.add(Double.parseDouble(model.getValueAt(i, 5).toString()));
+//			}
+//			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
+//					+ model.getValueAt(i, 5).toString() + ",";
+//			try {
+//				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//						"Trial " + (i + 1) + " = " + model.getValueAt(i, 5).toString());
+//			} catch (ParseException e1) {
+//				e1.printStackTrace();
+//			}
+//			if (i == 0) {
+//				db_trial_data = db_trial_data + model.getValueAt(i, 0).toString() + ","
+//						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
+//						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//						+ model.getValueAt(i, 5).toString();
+//			} else {
+//				db_trial_data = db_trial_data + ":" + model.getValueAt(i, 0).toString() + ","
+//						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
+//						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//						+ model.getValueAt(i, 5).toString();
+//			}
+//			db_remarks = db_remarks + "," + threshold_array.get(i);
+//
+//		}
+//		res_normality = res_normality / temp_res.size();
+//		double rsd_1 = SD(temp_res);
+//		update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
+//		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
+//		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+//		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
+//
+//		try {
+//			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//					"Normality: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
+//		} catch (ParseException e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
+//
+//		for (int i = 0; i < data_X.size(); i++) {
+//			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
+//			if (i == 0) {
+//				db_graph_x = db_graph_x + data_X.get(i);
+//				db_graph_y = db_graph_y + data_Y.get(i);
+//			} else {
+//				db_graph_x = db_graph_x + ":" + data_X.get(i);
+//				db_graph_y = db_graph_y + ":" + data_Y.get(i);
+//			}
+//		}
+//		update_data();
+//		blankRun.setEnabled(false);
+//		viewReport.setEnabled(true);
+//		try {
+//			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//					"Report - " + db_report_name + " Saved Successfully");
+//		} catch (ParseException e1) {
+//			e1.printStackTrace();
+//		}
+//		JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
+//		button_saveReport.setEnabled(false);
+//		button_generate_result.setEnabled(false);
+//	}
+
 	public static void formula4(boolean pass) {
-		// res = normality
-		if (pass == true) {
-			double result1 = (sample_weight * (1 - (moisture / 100)) * factor3 * factor4)
-					/ ((end_point_2 - end_point_1) * factor1 * factor2);
-			if (model.getRowCount() == cur_trial)
-				model.removeRow(cur_trial - 1);
-			add_row_to_six_column(cur_trial - 1, String.format("%.3f", end_point_1), String.format("%.3f", end_point_2),
-					String.valueOf(sample_weight), String.valueOf(moisture), String.format("%.3f", result1));
-			update_result_scroll("Trial " + cur_trial + " : normality = " + String.format("%.3f", result1) + "\n");
-
-		} else {
-			if (model.getRowCount() == cur_trial)
-				model.removeRow(cur_trial - 1);
-			add_row_to_six_column(cur_trial - 1, "NA", "NA", String.valueOf(sample_weight), String.valueOf(moisture),
-					"NA");
-			update_result_scroll("Trial " + cur_trial + " : Result = Failed\n");
-		}
-		if (cur_trial == no_of_trials && select_column == false) {
-//			try {
-//				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
-//			} catch (ParseException e1) {e1.printStackTrace();}
-			trials_completed = true;
-			button_continue.setEnabled(false);
-			report_saved = 1;
-		} else if (cur_trial == no_of_trials) {
-//			try {
-//				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
-//			} catch (ParseException e1) {e1.printStackTrace();}
-			button_continue.setEnabled(false);
-			report_saved = 1;
-		}
-		cur_trial++;
-	}
-
-	public static void formula4_non_select_column() {
-		double res_normality = 0;
-		ArrayList<Double> temp_res = new ArrayList<Double>();
-		for (int i = 0; i < no_of_trials; i++) {
-			if (!model.getValueAt(i, 5).toString().matches("NA")) {
-				res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 5).toString());
-				temp_res.add(Double.parseDouble(model.getValueAt(i, 5).toString()));
-			}
-			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
-					+ model.getValueAt(i, 5).toString() + ",";
-			try {
-				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-						"Trial " + (i + 1) + " = " + model.getValueAt(i, 5).toString());
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-			if (i == 0) {
-				db_trial_data = db_trial_data + model.getValueAt(i, 0).toString() + ","
-						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
-						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-						+ model.getValueAt(i, 5).toString();
-			} else {
-				db_trial_data = db_trial_data + ":" + model.getValueAt(i, 0).toString() + ","
-						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
-						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-						+ model.getValueAt(i, 5).toString();
-			}
-			db_remarks = db_remarks + "," + threshold_array.get(i);
-
-		}
-		res_normality = res_normality / temp_res.size();
-		double rsd_1 = SD(temp_res);
-		update_result_scroll("\nAverage Normality = " + String.format("%.3f", res_normality) + "\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result = " + String.format("%.3f", res_normality) + ",";
-		update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD = " + String.format("%.3f", rsd_1) + ",";
-
-		try {
-			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Normality: " + String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-
-		db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
-
-		for (int i = 0; i < data_X.size(); i++) {
-			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
-			if (i == 0) {
-				db_graph_x = db_graph_x + data_X.get(i);
-				db_graph_y = db_graph_y + data_Y.get(i);
-			} else {
-				db_graph_x = db_graph_x + ":" + data_X.get(i);
-				db_graph_y = db_graph_y + ":" + data_Y.get(i);
-			}
-		}
-		update_data();
-		blankRun.setEnabled(false);
-		viewReport.setEnabled(true);
-		try {
-			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Report - " + db_report_name + " Saved Successfully");
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-		JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
-		button_saveReport.setEnabled(false);
-		button_generate_result.setEnabled(false);
-	}
-
-	public static void formula5(boolean pass) {
 		// res = normality
 		if (pass == true) {
 			double result1 = ((end_point_2 - end_point_1) * titrant_normality * factor1 * factor2 * res_unit)
@@ -1260,7 +1267,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula5_non_select_column() {
+	public static void formula4_non_select_column() {
 		double res_normality = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		for (int i = 0; i < no_of_trials; i++) {
@@ -1330,7 +1337,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula6(boolean pass) {
+	public static void formula5(boolean pass) {
 		// analyte A and analyte B
 		if (pass == true) {
 			double result1 = (end_point_1 * titrant_normality * factor1 * res_unit) / (sample_weight * factor3);
@@ -1371,7 +1378,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula6_non_select_column() {
+	public static void formula5_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -1477,7 +1484,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula7(boolean pass) {
+	public static void formula6(boolean pass) {
 		// analyte A and analyte B and analyte C
 		if (pass == true) {
 			double result1 = (end_point_1 * titrant_normality * factor1 * factor2 * res_unit)
@@ -1519,7 +1526,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula7_non_select_column() {
+	public static void formula6_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -1653,150 +1660,114 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula8(boolean pass) {
-		if (pass == true) {
-			double result1 = (end_point_1 * titrant_normality * factor1 * res_unit) / (sample_weight * factor3);
-			double result2 = ((user_vol2 - end_point_1) * titrant_normality * factor2 * res_unit)
-					/ (sample_weight * factor4);
-			if (model.getRowCount() == cur_trial)
-				model.removeRow(cur_trial - 1);
-			add_row_to_eight_column(cur_trial - 1, String.format("%.3f", end_point_1),
-					String.format("%.3f", end_point_2), String.valueOf(sample_weight),
-					String.valueOf(titrant_normality), String.valueOf(moisture), String.format("%.3f", result1),
-					String.format("%.3f", result2));
-			update_result_scroll("Trial " + cur_trial + " : Analyte A = " + String.format("%.3f", result1) + "\n");
-			update_result_scroll("Trial " + cur_trial + " : Analyte B = " + String.format("%.3f", result2) + "\n");
-		} else {
-			if (model.getRowCount() == cur_trial)
-				model.removeRow(cur_trial - 1);
-			add_row_to_eight_column(cur_trial - 1, "NA", "NA", String.valueOf(sample_weight),
-					String.valueOf(titrant_normality), String.valueOf(moisture), "NA", "NA");
-			update_result_scroll("Trial " + cur_trial + " : Result = Failed\n");
-		}
-		if (cur_trial == no_of_trials && select_column == false) {
+
+//	public static void formula7_non_select_column() {
+//		double res_analyteA = 0, res_analyteB = 0;
+//		ArrayList<Double> temp_res = new ArrayList<Double>();
+//		ArrayList<Double> temp_resB = new ArrayList<Double>();
+//
+//		for (int i = 0; i < no_of_trials; i++) {
+//			if (!model.getValueAt(i, 6).toString().matches("NA")) {
+//				res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 6).toString());
+//				res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 7).toString());
+//
+//				temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
+//				temp_resB.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
+//			}
+//
+//			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
+//					+ model.getValueAt(i, 6).toString() + ",";
+//			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
+//					+ model.getValueAt(i, 7).toString() + ",";
 //			try {
-//				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
-//			} catch (ParseException e1) {e1.printStackTrace();}
-			trials_completed = true;
-			button_continue.setEnabled(false);
-			report_saved = 1;
-		} else if (cur_trial == no_of_trials) {
+//				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//						"Trial " + (i + 1) + " = " + model.getValueAt(i, 6).toString());
+//			} catch (ParseException e1) {
+//				e1.printStackTrace();
+//			}
 //			try {
-//				audit_log_push.push_to_audit(get_date(), get_time(),user_name,"Experiment Completed");
-//			} catch (ParseException e1) {e1.printStackTrace();}
-			button_continue.setEnabled(false);
-			report_saved = 1;
-		}
-		cur_trial++;
-	}
+//				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//						"Trial " + (i + 1) + " = " + model.getValueAt(i, 7).toString());
+//			} catch (ParseException e1) {
+//				e1.printStackTrace();
+//			}
+//
+//			if (i == 0) {
+//				db_trial_data = db_trial_data + model.getValueAt(i, 0).toString() + ","
+//						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
+//						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//						+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
+//						+ model.getValueAt(i, 7).toString();
+//			} else {
+//				db_trial_data = db_trial_data + ":" + model.getValueAt(i, 0).toString() + ","
+//						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
+//						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//						+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
+//						+ model.getValueAt(i, 7).toString();
+//			}
+//			db_remarks = db_remarks + "," + threshold_array.get(i);
+//
+//		}
+//
+//		res_analyteA = res_analyteA / temp_res.size();
+//		double rsd_1 = SD(temp_res);
+//
+//		res_analyteB = res_analyteB / temp_res.size();
+//		double rsd_2 = SD(temp_resB);
+//
+//		update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+//		update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+//
+//		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
+//		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+//
+//		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
+//		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
+//
+//		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
+//		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
+//
+//		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+//				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
+//
+//		try {
+//			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//					"Analyte A: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
+//		} catch (ParseException e1) {
+//			e1.printStackTrace();
+//		}
+//		try {
+//			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//					"Analyte B: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
+//		} catch (ParseException e1) {
+//			e1.printStackTrace();
+//		}
+//
+//		for (int i = 0; i < data_X.size(); i++) {
+//			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
+//			if (i == 0) {
+//				db_graph_x = db_graph_x + data_X.get(i);
+//				db_graph_y = db_graph_y + data_Y.get(i);
+//			} else {
+//				db_graph_x = db_graph_x + ":" + data_X.get(i);
+//				db_graph_y = db_graph_y + ":" + data_Y.get(i);
+//			}
+//		}
+//		update_data();
+//		blankRun.setEnabled(false);
+//		viewReport.setEnabled(true);
+//		try {
+//			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//					"Report - " + db_report_name + " Saved Successfully");
+//		} catch (ParseException e1) {
+//			e1.printStackTrace();
+//		}
+//		JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
+//		button_saveReport.setEnabled(false);
+//		button_generate_result.setEnabled(false);
+//	}
 
-	public static void formula8_non_select_column() {
-		double res_analyteA = 0, res_analyteB = 0;
-		ArrayList<Double> temp_res = new ArrayList<Double>();
-		ArrayList<Double> temp_resB = new ArrayList<Double>();
-
-		for (int i = 0; i < no_of_trials; i++) {
-			if (!model.getValueAt(i, 6).toString().matches("NA")) {
-				res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 6).toString());
-				res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 7).toString());
-
-				temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
-				temp_resB.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
-			}
-
-			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
-					+ model.getValueAt(i, 6).toString() + ",";
-			db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + (i + 1) + " = "
-					+ model.getValueAt(i, 7).toString() + ",";
-			try {
-				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-						"Trial " + (i + 1) + " = " + model.getValueAt(i, 6).toString());
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-						"Trial " + (i + 1) + " = " + model.getValueAt(i, 7).toString());
-			} catch (ParseException e1) {
-				e1.printStackTrace();
-			}
-
-			if (i == 0) {
-				db_trial_data = db_trial_data + model.getValueAt(i, 0).toString() + ","
-						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
-						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-						+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
-						+ model.getValueAt(i, 7).toString();
-			} else {
-				db_trial_data = db_trial_data + ":" + model.getValueAt(i, 0).toString() + ","
-						+ model.getValueAt(i, 1).toString() + "," + model.getValueAt(i, 2).toString() + ","
-						+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-						+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
-						+ model.getValueAt(i, 7).toString();
-			}
-			db_remarks = db_remarks + "," + threshold_array.get(i);
-
-		}
-
-		res_analyteA = res_analyteA / temp_res.size();
-		double rsd_1 = SD(temp_res);
-
-		res_analyteB = res_analyteB / temp_res.size();
-		double rsd_2 = SD(temp_resB);
-
-		update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
-		update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
-
-		db_details = db_details + "[ " + get_time() + " ]  Analyte A = " + String.format("%.3f", res_analyteA) + ",";
-		update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
-
-		db_details = db_details + "[ " + get_time() + " ]  Analyte B = " + String.format("%.3f", res_analyteB) + ",";
-		update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
-
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1) + ",";
-		db_details = db_details + "[ " + get_time() + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2) + ",";
-
-		db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
-				+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
-
-		try {
-			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte A: " + String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Analyte B: " + String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-
-		for (int i = 0; i < data_X.size(); i++) {
-			System.out.println("SIZEEEEEEEEEEEEEE = " + data_X.size() + "   iiiiiiiiii    = " + i);
-			if (i == 0) {
-				db_graph_x = db_graph_x + data_X.get(i);
-				db_graph_y = db_graph_y + data_Y.get(i);
-			} else {
-				db_graph_x = db_graph_x + ":" + data_X.get(i);
-				db_graph_y = db_graph_y + ":" + data_Y.get(i);
-			}
-		}
-		update_data();
-		blankRun.setEnabled(false);
-		viewReport.setEnabled(true);
-		try {
-			audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-					"Report - " + db_report_name + " Saved Successfully");
-		} catch (ParseException e1) {
-			e1.printStackTrace();
-		}
-		JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
-		button_saveReport.setEnabled(false);
-		button_generate_result.setEnabled(false);
-	}
-
-	public static void formula9(boolean pass) {
+	public static void formula7(boolean pass) {
 		// carbonate and alkali
 		if (pass == true) {
 
@@ -1836,7 +1807,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula9_non_select_column() {
+	public static void formula7_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -1941,7 +1912,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula10(boolean pass) {
+	public static void formula8(boolean pass) {
 		// bicarbonate and carbonate and alkali
 		if (pass == true) {
 			double result1 = (end_point_1 * titrant_normality * factor1 * factor2 * res_unit)
@@ -1984,7 +1955,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula10_non_select_column() {
+	public static void formula8_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -2119,7 +2090,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula11(boolean pass) {
+	public static void formula9(boolean pass) {
 		// bicarbonate and carbonate
 		if (pass == true) {
 			double result1 = (end_point_1 * titrant_normality * factor1 * res_unit) / (sample_weight * factor3);
@@ -2159,7 +2130,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula11_non_select_column() {
+	public static void formula9_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -2266,7 +2237,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		button_generate_result.setEnabled(false);
 	}
 
-	public static void formula12(boolean pass) {
+	public static void formula10(boolean pass) {
 		// analyte A and analyte B
 		if (pass == true) {
 			double result1 = (end_point_1 * titrant_normality * factor1 * res_unit) / (sample_weight * factor3);
@@ -2305,7 +2276,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		cur_trial++;
 	}
 
-	public static void formula12_non_select_column() {
+	public static void formula10_non_select_column() {
 		double res_analyteA = 0, res_analyteB = 0;
 		ArrayList<Double> temp_res = new ArrayList<Double>();
 		ArrayList<Double> temp_resB = new ArrayList<Double>();
@@ -2474,12 +2445,6 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		case 10:
 			formula10(check);
 			break;
-		case 11:
-			formula11(check);
-			break;
-		case 12:
-			formula12(check);
-			break;
 		}
 	}
 
@@ -2515,12 +2480,6 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		case 10:
 			formula10_non_select_column();
 			break;
-		case 11:
-			formula11_non_select_column();
-			break;
-		case 12:
-			formula12_non_select_column();
-			break;
 		}
 	}
 
@@ -2547,15 +2506,6 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		set_dose_speed();
 		res_flag = true;
-//		System.out.println("dossage_speed = " + dossage_speed);
-
-//		System.out.println("cur_val[6] = " + cur_val[6]);
-//		System.out.println("cur_val[7] = " + cur_val[7]);
-//		System.out.println("cur_val[17] = " + burette_factor);
-//		System.out.println("dosage speed = " + dossage_speed);
-//		System.out.println("ep1 = " + End_Point[0]);
-//		System.out.println("ep2 = " + End_Point[1]);
-//		System.out.println("ep2 = " + End_Point[2]);
 
 		try {
 
@@ -2577,6 +2527,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 			else if (math.contains("V_3") || math2.contains("V_3") || math3.contains("V_3")) {
 				if (end_point_no > 2) {
+
 					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					end_point_3 = (((End_Point[2] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
@@ -2613,6 +2564,23 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 							y = y + "," + series.getY(i);
 						}
 					}
+					
+					 double y_shift;
+					 String[] x_arr = x.split(",");
+					 String[] y_arr = y.split(",");
+
+					  if(Double.parseDouble(x_arr[x_arr.length-1]) < Double.parseDouble(x_arr[0]))
+					      y_shift = Double.parseDouble(x_arr[x_arr.length-1]) - 200;
+					  else
+					      y_shift = Double.parseDouble(x_arr[0]) - 200 ;
+  
+					  for(int j=0;j<x_arr.length;j++) {
+						 if(j != x_arr.length - 1) {
+							 series2.addOrUpdate(Double.parseDouble(x_arr[j]),(y_shift + Math.abs(Double.parseDouble(y_arr[j+1]) - Double.parseDouble(y_arr[j]))));
+						 }
+
+					  }
+					
 					data_X.add(x);
 					data_Y.add(y);
 					call_formula(true);
@@ -2636,7 +2604,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					} else {
 						String[] buttons = { "Retry the trial", "Try with different Threshold and Filter" };
 						int rc = JOptionPane.showOptionDialog(null,
-								"Please choose as no End-Point detected for Trial " + cur_trial,
+								"Please choose as 3 End-Points not detected for Trial " + cur_trial,
 								"No End-Point Detected", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
 							if (model.getRowCount() == cur_trial)
@@ -2684,8 +2652,24 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					}
 					data_X.add(x);
 					data_Y.add(y);
+					
+					
+					 double y_shift;
+					 String[] x_arr = x.split(",");
+					 String[] y_arr = y.split(",");
+
+					  if(Double.parseDouble(x_arr[x_arr.length-1]) < Double.parseDouble(x_arr[0]))
+					      y_shift = Double.parseDouble(x_arr[x_arr.length-1]) - 200;
+					  else
+					      y_shift = Double.parseDouble(x_arr[0]) - 200 ;
+ 
+					  for(int j=0;j<x_arr.length;j++) {
+						 if(j != x_arr.length - 1) {
+							 series2.addOrUpdate(Double.parseDouble(x_arr[j]),(y_shift + Math.abs(Double.parseDouble(y_arr[j+1]) - Double.parseDouble(y_arr[j]))));
+						 }
+					  }
+					  
 					call_formula(true);
-					// System.out.println("AADDDDIIIIIINNNNGGGGGGG");
 				} else {
 					if (failed_count == 2) {
 						String x = "", y = "";
@@ -2706,7 +2690,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					} else {
 						String[] buttons = { "Retry the trial", "Try with different Threshold and Filter" };
 						int rc = JOptionPane.showOptionDialog(null,
-								"Please choose as no End-Point detected for Trial " + cur_trial,
+								"Please choose as 2 End-Points not detected for Trial " + cur_trial,
 								"No End-Point Detected ARR", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
 							if (model.getRowCount() == cur_trial)
@@ -2744,6 +2728,24 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					}
 					data_X.add(x);
 					data_Y.add(y);
+					
+					
+					 double y_shift;
+					 String[] x_arr = x.split(",");
+					 String[] y_arr = y.split(",");
+
+					  if(Double.parseDouble(x_arr[x_arr.length-1]) < Double.parseDouble(x_arr[0]))
+					      y_shift = Double.parseDouble(x_arr[x_arr.length-1]) - 200;
+					  else
+					      y_shift = Double.parseDouble(x_arr[0]) - 200 ;
+ 
+					  for(int j=0;j<x_arr.length;j++) {
+						 if(j != x_arr.length - 1) {
+							 series2.addOrUpdate(Double.parseDouble(x_arr[j]),(y_shift + Math.abs(Double.parseDouble(y_arr[j+1]) - Double.parseDouble(y_arr[j]))));
+						 }
+
+					  }
+					
 					call_formula(true);
 					failed_count = 0;
 				} else {
@@ -2766,7 +2768,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					} else {
 						String[] buttons = { "Retry the trial", "Try with different Threshold and Filter" };
 						int rc = JOptionPane.showOptionDialog(null,
-								"Please choose as no End-Point detected for Trial " + cur_trial,
+								"Please choose as 1 End-Point not detected for Trial " + cur_trial,
 								"No End-Point Detected", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
 							if (model.getRowCount() == cur_trial)
@@ -3006,7 +3008,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			if (failed_count == 2) {
 				call_formula(false);
 				failed_count = 0;
-				JOptionPane.showMessageDialog(null, "Trial " + (cur_trial) + " Failed");
+				JOptionPane.showMessageDialog(null, "Trial " + (cur_trial) + " Failed . Continue next Trial");
 			} else {
 				String[] buttons = { "Retry the trial", "Try with different Threshold and Filter" };
 				int rc = JOptionPane.showOptionDialog(null,
@@ -3112,6 +3114,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			vol_pre_dosed.setText("Volume pre-dosed: 00.000 ml");
 			vol_dosed.setText("Volume dosed: 00.000 ml");
 			series.clear();
+			series2.clear();
+
 			try {
 				plot.clearDomainMarkers();
 				plot1.clearDomainMarkers();
@@ -3155,7 +3159,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		method_model = new DefaultTableModel(
 				new Object[][] { { "Metd Name", ":", metd_name, "" }, { "Pre dose", ":", variables[0], "ml" },
 						{ "Stir time", ":", variables[1], "sec" }, { "Max vol", ":", variables[2], "ml" },
-						{ "Dose Rate", ":", variables[7], "ml/min" }, { "Result Unit", ":", variables[16], "" },
+						{ "Dose Rate", ":", variables[7], "ml/min" }, { "Result Unit", ":", variables[15], "" },
 						{ "E.P Select", ":", variables[13], "" }, { "Formula No	", ":", variables[14], "" },
 						{ "Blk_Vol", ":", String.format("%.3f", bvolume), "" }, },
 				new String[] { "Methods", "Parameters", "", "" });
@@ -3188,7 +3192,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				new Object[][] { { "Burette Factor", ":", variables[4], "" }, { "Trials", ":", variables[8], "" },
 						{ "Filter", ":", "", "" }, { "Threshold", ":", "", "" }, { "factor1", ":", variables[9], "" },
 						{ "factor2", ":", variables[10], "" }, { "factor3", ":", variables[11], "" },
-						{ "factor4", ":", variables[12], "" }, { "Tendency", ":", variables[15], "" }, },
+						{ "factor4", ":", variables[12], "" }, },
 				new String[] { "Methods", "Parameters", "", "" });
 
 		table2.setModel(model2);
@@ -3196,7 +3200,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		table2.setBounds((int) Math.round(0.211 * wid), (int) Math.round(0.637 * hei), (int) Math.round(0.16 * wid),
 				(int) Math.round(0.428 * hei));
 		table2.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(0.00651 * wid));
-		table2.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.01953 * wid));
+		table2.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.02553 * wid));
 		table2.setEnabled(false);
 		table2.setShowGrid(false);
 		table2.setOpaque(false);
@@ -3296,6 +3300,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 					data_array.clear();
 //					data_array.add(10.0);
 					series.clear();
+					series2.clear();
+
 					vol_filled.setText("Volume filled: 00.000 ml");
 					vol_pre_dosed.setText("Volume pre-dosed: 00.000 ml");
 					vol_dosed.setText("Volume dosed: 00.000 ml");
@@ -3431,11 +3437,11 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				// variables[17]
-				System.out.println("SOP = " + variables[17]);
+				System.out.println("SOP = " + variables[16]);
 				if (!variables[17].matches("Not Selected")) {
 
 					try {
-						File file = new File("C:\\SQLite\\SOP\\" + variables[17]);
+						File file = new File("C:\\SQLite\\SOP\\" + variables[16]);
 						if (!Desktop.isDesktopSupported()) {
 							System.out.println("not supported");
 							return;
@@ -3525,6 +3531,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				data_array.clear();
 //				data_array.add(10.0);
 				series.clear();
+				series2.clear();
+
 				vol_filled.setText("Volume filled: 00.000 ml");
 				vol_pre_dosed.setText("Volume pre-dosed: 00.000 ml");
 				vol_dosed.setText("Volume dosed: 00.000 ml");
@@ -4238,96 +4246,96 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
+//		if (formula_no == 4) {
+//			trials_completed = true;
+//			button_continue.setEnabled(false);
+//			double res_normality = 0;
+//			ArrayList<Double> temp_res = new ArrayList<Double>();
+//			int k = 1;
+//			for (int i = 0; i < table1.getRowCount(); i++) {
+//				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
+//				if (checked == true) {
+//					if (!model.getValueAt(i, 6).toString().matches("NA")) {
+//						res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 6).toString());
+//						temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
+//					}
+//					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
+//							+ model.getValueAt(i, 6).toString() + ",";
+//					try {
+//						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//								"Trial " + k + " = " + model.getValueAt(i, 6).toString());
+//					} catch (ParseException e1) {
+//						e1.printStackTrace();
+//					}
+//					if (k == 1) {
+//						db_trial_data = db_trial_data + k + "," + model.getValueAt(i, 2).toString() + ","
+//								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString();
+//						db_graph_x = db_graph_x + data_X.get(i);
+//						db_graph_y = db_graph_y + data_Y.get(i);
+//					} else {
+//						db_trial_data = db_trial_data + ":" + k + "," + model.getValueAt(i, 2).toString() + ","
+//								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString();
+//						db_graph_x = db_graph_x + ":" + data_X.get(i);
+//						db_graph_y = db_graph_y + ":" + data_Y.get(i);
+//					}
+//					k++;
+//					db_remarks = db_remarks + "," + threshold_array.get(i);
+//
+//				}
+//			}
+//			if (k != 1) {
+//				res_normality = res_normality / temp_res.size();
+//				double rsd_1 = SD(temp_res);
+//				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+//				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
+//						+ ",";
+//				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+//				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
+//						+ ",";
+//				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
+//
+//				try {
+//					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
+//							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
+//				} catch (ParseException e1) {
+//					e1.printStackTrace();
+//				}
+//
+//				String[] temp_params = db_parameters.split(",");
+//				String temp_db_params = "";
+//
+//				for (int i = 0; i < temp_params.length; i++) {
+//					if (i == 0) {
+//						temp_db_params = temp_db_params + temp_params[0];
+//					} else if (i == 12) {
+//						temp_db_params = temp_db_params + "," + (k - 1);
+//					} else {
+//						temp_db_params = temp_db_params + "," + temp_params[i];
+//					}
+//				}
+//				db_parameters = temp_db_params;
+//
+//				update_data();
+//				button_saveReport.setEnabled(false);
+//				button_generate_result.setEnabled(false);
+//				blankRun.setEnabled(false);
+//				viewReport.setEnabled(true);
+//				try {
+//					audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//							"Report - " + db_report_name + " Saved Successfully");
+//				} catch (ParseException e1) {
+//					e1.printStackTrace();
+//				}
+//				JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
+//				button_saveReport.setEnabled(false);
+//				button_generate_result.setEnabled(false);
+//			} else {
+//				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
+//			}
+//		}
 		if (formula_no == 4) {
-			trials_completed = true;
-			button_continue.setEnabled(false);
-			double res_normality = 0;
-			ArrayList<Double> temp_res = new ArrayList<Double>();
-			int k = 1;
-			for (int i = 0; i < table1.getRowCount(); i++) {
-				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
-				if (checked == true) {
-					if (!model.getValueAt(i, 6).toString().matches("NA")) {
-						res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 6).toString());
-						temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
-					}
-					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
-							+ model.getValueAt(i, 6).toString() + ",";
-					try {
-						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-								"Trial " + k + " = " + model.getValueAt(i, 6).toString());
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
-					if (k == 1) {
-						db_trial_data = db_trial_data + k + "," + model.getValueAt(i, 2).toString() + ","
-								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString();
-						db_graph_x = db_graph_x + data_X.get(i);
-						db_graph_y = db_graph_y + data_Y.get(i);
-					} else {
-						db_trial_data = db_trial_data + ":" + k + "," + model.getValueAt(i, 2).toString() + ","
-								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString();
-						db_graph_x = db_graph_x + ":" + data_X.get(i);
-						db_graph_y = db_graph_y + ":" + data_Y.get(i);
-					}
-					k++;
-					db_remarks = db_remarks + "," + threshold_array.get(i);
-
-				}
-			}
-			if (k != 1) {
-				res_normality = res_normality / temp_res.size();
-				double rsd_1 = SD(temp_res);
-				update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result = " + String.format("%.3f", res_normality)
-						+ ",";
-				update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD = " + String.format("%.3f", rsd_1)
-						+ ",";
-				db_results = String.format("%.3f", res_normality) + "," + String.format("%.3f", rsd_1);
-
-				try {
-					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "Analyte: "
-							+ String.format("%.3f", res_normality) + ", RSD: " + String.format("%.3f", rsd_1));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}
-
-				String[] temp_params = db_parameters.split(",");
-				String temp_db_params = "";
-
-				for (int i = 0; i < temp_params.length; i++) {
-					if (i == 0) {
-						temp_db_params = temp_db_params + temp_params[0];
-					} else if (i == 12) {
-						temp_db_params = temp_db_params + "," + (k - 1);
-					} else {
-						temp_db_params = temp_db_params + "," + temp_params[i];
-					}
-				}
-				db_parameters = temp_db_params;
-
-				update_data();
-				button_saveReport.setEnabled(false);
-				button_generate_result.setEnabled(false);
-				blankRun.setEnabled(false);
-				viewReport.setEnabled(true);
-				try {
-					audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-							"Report - " + db_report_name + " Saved Successfully");
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}
-				JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
-				button_saveReport.setEnabled(false);
-				button_generate_result.setEnabled(false);
-			} else {
-				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
-			}
-		}
-		if (formula_no == 5) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_normality = 0;
@@ -4418,7 +4426,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
-		if (formula_no == 6) {
+		if (formula_no == 5) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
@@ -4546,7 +4554,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
-		if (formula_no == 7) {
+		if (formula_no == 6) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
@@ -4699,135 +4707,135 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
-		if (formula_no == 8) {
-			trials_completed = true;
-			button_continue.setEnabled(false);
-			double res_analyteA = 0, res_analyteB = 0;
-			ArrayList<Double> temp_res = new ArrayList<Double>();
-			ArrayList<Double> temp_resB = new ArrayList<Double>();
-
-			int k = 1;
-			for (int i = 0; i < table1.getRowCount(); i++) {
-				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
-				if (checked == true) {
-					if (!model.getValueAt(i, 7).toString().matches("NA")) {
-						res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 7).toString());
-						res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 8).toString());
-
-						temp_res.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
-						temp_resB.add(Double.parseDouble(model.getValueAt(i, 8).toString()));
-					}
-
-					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
-							+ model.getValueAt(i, 7).toString() + ",";
-					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
-							+ model.getValueAt(i, 8).toString() + ",";
-					try {
-						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-								"Trial " + k + " = " + model.getValueAt(i, 7).toString());
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
-					try {
-						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
-								"Trial " + k + " = " + model.getValueAt(i, 8).toString());
-					} catch (ParseException e1) {
-						e1.printStackTrace();
-					}
-
-					if (k == 1) {
-						db_trial_data = db_trial_data + k + "," + model.getValueAt(i, 2).toString() + ","
-								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
-								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
-						db_graph_x = db_graph_x + data_X.get(i);
-						db_graph_y = db_graph_y + data_Y.get(i);
-					} else {
-						db_trial_data = db_trial_data + ":" + k + "," + model.getValueAt(i, 2).toString() + ","
-								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
-								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
-								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
-						db_graph_x = db_graph_x + ":" + data_X.get(i);
-						db_graph_y = db_graph_y + ":" + data_Y.get(i);
-					}
-					k++;
-					db_remarks = db_remarks + "," + threshold_array.get(i);
-
-				}
-			}
-			if (k != 1) {
-
-				res_analyteA = res_analyteA / temp_res.size();
-				double rsd_1 = SD(temp_res);
-
-				res_analyteB = res_analyteB / temp_res.size();
-				double rsd_2 = SD(temp_resB);
-
-				update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
-				update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
-
-				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
-						+ String.format("%.3f", res_analyteA) + ",";
-				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
-
-				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
-						+ String.format("%.3f", res_analyteB) + ",";
-				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
-
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
-						+ ",";
-				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
-						+ ",";
-
-				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
-						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
-
-				try {
-					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
-							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}
-				try {
-					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
-							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}
-
-				String[] temp_params = db_parameters.split(",");
-				String temp_db_params = "";
-
-				for (int i = 0; i < temp_params.length; i++) {
-					if (i == 0) {
-						temp_db_params = temp_db_params + temp_params[0];
-					} else if (i == 12) {
-						temp_db_params = temp_db_params + "," + (k - 1);
-					} else {
-						temp_db_params = temp_db_params + "," + temp_params[i];
-					}
-				}
-				db_parameters = temp_db_params;
-
-				update_data();
-				button_saveReport.setEnabled(false);
-				button_generate_result.setEnabled(false);
-				blankRun.setEnabled(false);
-				viewReport.setEnabled(true);
-				try {
-					audit_log_push.push_to_audit(get_date(), get_time(), user_name,
-							"Report - " + db_report_name + " Saved Successfully");
-				} catch (ParseException e1) {
-					e1.printStackTrace();
-				}
-				JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
-				button_saveReport.setEnabled(false);
-				button_generate_result.setEnabled(false);
-			} else {
-				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
-			}
-		}
-		if (formula_no == 9) {
+//		if (formula_no == 7) {
+//			trials_completed = true;
+//			button_continue.setEnabled(false);
+//			double res_analyteA = 0, res_analyteB = 0;
+//			ArrayList<Double> temp_res = new ArrayList<Double>();
+//			ArrayList<Double> temp_resB = new ArrayList<Double>();
+//
+//			int k = 1;
+//			for (int i = 0; i < table1.getRowCount(); i++) {
+//				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
+//				if (checked == true) {
+//					if (!model.getValueAt(i, 7).toString().matches("NA")) {
+//						res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 7).toString());
+//						res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 8).toString());
+//
+//						temp_res.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
+//						temp_resB.add(Double.parseDouble(model.getValueAt(i, 8).toString()));
+//					}
+//
+//					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
+//							+ model.getValueAt(i, 7).toString() + ",";
+//					db_details = db_details + "[ " + trial_timings[i] + " ]  Trial " + k + " = "
+//							+ model.getValueAt(i, 8).toString() + ",";
+//					try {
+//						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//								"Trial " + k + " = " + model.getValueAt(i, 7).toString());
+//					} catch (ParseException e1) {
+//						e1.printStackTrace();
+//					}
+//					try {
+//						audit_log_push.push_to_audit(get_date(), trial_timings[i], user_name,
+//								"Trial " + k + " = " + model.getValueAt(i, 8).toString());
+//					} catch (ParseException e1) {
+//						e1.printStackTrace();
+//					}
+//
+//					if (k == 1) {
+//						db_trial_data = db_trial_data + k + "," + model.getValueAt(i, 2).toString() + ","
+//								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
+//								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
+//						db_graph_x = db_graph_x + data_X.get(i);
+//						db_graph_y = db_graph_y + data_Y.get(i);
+//					} else {
+//						db_trial_data = db_trial_data + ":" + k + "," + model.getValueAt(i, 2).toString() + ","
+//								+ model.getValueAt(i, 3).toString() + "," + model.getValueAt(i, 4).toString() + ","
+//								+ model.getValueAt(i, 5).toString() + "," + model.getValueAt(i, 6).toString() + ","
+//								+ model.getValueAt(i, 7).toString() + "," + model.getValueAt(i, 8).toString();
+//						db_graph_x = db_graph_x + ":" + data_X.get(i);
+//						db_graph_y = db_graph_y + ":" + data_Y.get(i);
+//					}
+//					k++;
+//					db_remarks = db_remarks + "," + threshold_array.get(i);
+//
+//				}
+//			}
+//			if (k != 1) {
+//
+//				res_analyteA = res_analyteA / temp_res.size();
+//				double rsd_1 = SD(temp_res);
+//
+//				res_analyteB = res_analyteB / temp_res.size();
+//				double rsd_2 = SD(temp_resB);
+//
+//				update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+//				update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+//
+//				db_details = db_details + "[ " + result_timings + " ]  Analyte A = "
+//						+ String.format("%.3f", res_analyteA) + ",";
+//				update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+//
+//				db_details = db_details + "[ " + result_timings + " ]  Analyte B = "
+//						+ String.format("%.3f", res_analyteB) + ",";
+//				update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
+//
+//				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 1 = " + String.format("%.3f", rsd_1)
+//						+ ",";
+//				db_details = db_details + "[ " + result_timings + " ]  Result  RSD 2 = " + String.format("%.3f", rsd_2)
+//						+ ",";
+//
+//				db_results = String.format("%.3f", res_analyteA) + "," + String.format("%.3f", rsd_1) + ":"
+//						+ String.format("%.3f", res_analyteB) + "," + String.format("%.3f", rsd_2);
+//
+//				try {
+//					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteA: "
+//							+ String.format("%.3f", res_analyteA) + ", RSD: " + String.format("%.3f", rsd_1));
+//				} catch (ParseException e1) {
+//					e1.printStackTrace();
+//				}
+//				try {
+//					audit_log_push.push_to_audit(get_date(), result_timings, user_name, "AnalyteB: "
+//							+ String.format("%.3f", res_analyteB) + ", RSD: " + String.format("%.3f", rsd_2));
+//				} catch (ParseException e1) {
+//					e1.printStackTrace();
+//				}
+//
+//				String[] temp_params = db_parameters.split(",");
+//				String temp_db_params = "";
+//
+//				for (int i = 0; i < temp_params.length; i++) {
+//					if (i == 0) {
+//						temp_db_params = temp_db_params + temp_params[0];
+//					} else if (i == 12) {
+//						temp_db_params = temp_db_params + "," + (k - 1);
+//					} else {
+//						temp_db_params = temp_db_params + "," + temp_params[i];
+//					}
+//				}
+//				db_parameters = temp_db_params;
+//
+//				update_data();
+//				button_saveReport.setEnabled(false);
+//				button_generate_result.setEnabled(false);
+//				blankRun.setEnabled(false);
+//				viewReport.setEnabled(true);
+//				try {
+//					audit_log_push.push_to_audit(get_date(), get_time(), user_name,
+//							"Report - " + db_report_name + " Saved Successfully");
+//				} catch (ParseException e1) {
+//					e1.printStackTrace();
+//				}
+//				JOptionPane.showMessageDialog(null, "Report Saved Successfully!");
+//				button_saveReport.setEnabled(false);
+//				button_generate_result.setEnabled(false);
+//			} else {
+//				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
+//			}
+//		}
+		if (formula_no == 7) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
@@ -4954,7 +4962,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
-		if (formula_no == 10) {
+		if (formula_no == 8) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
@@ -5113,7 +5121,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 			}
 		}
-		if (formula_no == 11) {
+		if (formula_no == 9) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
@@ -5239,7 +5247,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				JOptionPane.showMessageDialog(null, "Select atleast one trial!");
 			}
 		}
-		if (formula_no == 12) {
+		if (formula_no == 10) {
 			trials_completed = true;
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
@@ -5425,25 +5433,25 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
 			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
+//		if (formula_no == 4) {
+//			button_continue.setEnabled(false);
+//			double res_normality = 0;
+//			ArrayList<Double> temp_res = new ArrayList<Double>();
+//			for (int i = 0; i < table1.getRowCount(); i++) {
+//				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
+//				if (checked == true) {
+//					if (!model.getValueAt(i, 6).toString().matches("NA")) {
+//						res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 6).toString());
+//						temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
+//					}
+//				}
+//			}
+//			res_normality = res_normality / temp_res.size();
+//			double rsd_1 = SD(temp_res);
+//			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
+//			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
+//		}
 		if (formula_no == 4) {
-			button_continue.setEnabled(false);
-			double res_normality = 0;
-			ArrayList<Double> temp_res = new ArrayList<Double>();
-			for (int i = 0; i < table1.getRowCount(); i++) {
-				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
-				if (checked == true) {
-					if (!model.getValueAt(i, 6).toString().matches("NA")) {
-						res_normality = res_normality + Double.parseDouble(model.getValueAt(i, 6).toString());
-						temp_res.add(Double.parseDouble(model.getValueAt(i, 6).toString()));
-					}
-				}
-			}
-			res_normality = res_normality / temp_res.size();
-			double rsd_1 = SD(temp_res);
-			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
-			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
-		}
-		if (formula_no == 5) {
 			button_continue.setEnabled(false);
 			double res_normality = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5461,7 +5469,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("\nAverage Analyte = " + String.format("%.3f", res_normality) + "\n");
 			update_result_scroll("Analyte RSD = " + String.format("%.3f", rsd_1) + " %\n");
 		}
-		if (formula_no == 6) {
+		if (formula_no == 5) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5491,7 +5499,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
-		if (formula_no == 7) {
+		if (formula_no == 6) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5527,37 +5535,37 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 			update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 		}
-		if (formula_no == 8) {
-			button_continue.setEnabled(false);
-			double res_analyteA = 0, res_analyteB = 0;
-			ArrayList<Double> temp_res = new ArrayList<Double>();
-			ArrayList<Double> temp_resB = new ArrayList<Double>();
-
-			for (int i = 0; i < table1.getRowCount(); i++) {
-				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
-				if (checked == true) {
-					if (!model.getValueAt(i, 7).toString().matches("NA")) {
-						res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 7).toString());
-						res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 8).toString());
-
-						temp_res.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
-						temp_resB.add(Double.parseDouble(model.getValueAt(i, 8).toString()));
-					}
-				}
-			}
-
-			res_analyteA = res_analyteA / temp_res.size();
-			double rsd_1 = SD(temp_res);
-
-			res_analyteB = res_analyteB / temp_res.size();
-			double rsd_2 = SD(temp_resB);
-
-			update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
-			update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
-			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
-			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
-		}
-		if (formula_no == 9) {
+//		if (formula_no == 7) {
+//			button_continue.setEnabled(false);
+//			double res_analyteA = 0, res_analyteB = 0;
+//			ArrayList<Double> temp_res = new ArrayList<Double>();
+//			ArrayList<Double> temp_resB = new ArrayList<Double>();
+//
+//			for (int i = 0; i < table1.getRowCount(); i++) {
+//				Boolean checked = Boolean.valueOf(table1.getValueAt(i, 0).toString());
+//				if (checked == true) {
+//					if (!model.getValueAt(i, 7).toString().matches("NA")) {
+//						res_analyteA = res_analyteA + Double.parseDouble(model.getValueAt(i, 7).toString());
+//						res_analyteB = res_analyteB + Double.parseDouble(model.getValueAt(i, 8).toString());
+//
+//						temp_res.add(Double.parseDouble(model.getValueAt(i, 7).toString()));
+//						temp_resB.add(Double.parseDouble(model.getValueAt(i, 8).toString()));
+//					}
+//				}
+//			}
+//
+//			res_analyteA = res_analyteA / temp_res.size();
+//			double rsd_1 = SD(temp_res);
+//
+//			res_analyteB = res_analyteB / temp_res.size();
+//			double rsd_2 = SD(temp_resB);
+//
+//			update_result_scroll("\nAverage AnalyteA = " + String.format("%.3f", res_analyteA) + "\n");
+//			update_result_scroll("Average AnalyteB = " + String.format("%.3f", res_analyteB) + "\n");
+//			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
+//			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
+//		}
+		if (formula_no == 7) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5587,7 +5595,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
-		if (formula_no == 10) {
+		if (formula_no == 8) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0, res_analyteC = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5625,7 +5633,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("Analyte RSD 2 = " + String.format("%.3f", rsd_2) + " %\n");
 			update_result_scroll("Analyte RSD 3 = " + String.format("%.3f", rsd_3) + " %\n");
 		}
-		if (formula_no == 11) {
+		if (formula_no == 9) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -5655,7 +5663,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			update_result_scroll("Analyte RSD1 = " + String.format("%.3f", rsd_1) + " %\n");
 			update_result_scroll("Analyte RSD2 = " + String.format("%.3f", rsd_2) + " %\n");
 		}
-		if (formula_no == 12) {
+		if (formula_no == 10) {
 			button_continue.setEnabled(false);
 			double res_analyteA = 0, res_analyteB = 0;
 			ArrayList<Double> temp_res = new ArrayList<Double>();
@@ -6320,6 +6328,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	private XYDataset createDataset() {
 		final XYSeriesCollection dataset = new XYSeriesCollection();
 		dataset.addSeries(series);
+		dataset.addSeries(series2);
 		return dataset;
 	}
 
@@ -6381,8 +6390,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			factor4 = Double.valueOf(variables[12]);
 			String ep_select1 = (variables[13]);
 			formula_no = Integer.parseInt(variables[14]);
-			String tendency1 = variables[15];
-			String result_unit1 = variables[16];
+		//	String tendency1 = variables[15];
+			String result_unit1 = variables[15];
 
 			// res_unit
 
@@ -6394,7 +6403,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				res_unit = 1;
 			}
 
-			String sop_val1 = variables[17];
+			String sop_val1 = variables[16];
 
 			math = args[9];
 			math2 = args[10];
@@ -6409,7 +6418,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			db_parameters = args[12] + "," + get_date() + "," + get_time() + "," + args[0] + "," + pre_dose + ","
 					+ stir_time + "," + max_vol + "," + bvolume + "," + burette_factor + "," + threshold_val + ","
 					+ filter_val + "," + doserate_val + "," + no_of_trials + "," + factor1 + "," + factor2 + ","
-					+ factor3 + "," + factor4 + "," + ep_select1 + "," + formula_no + "," + tendency1 + ","
+					+ factor3 + "," + factor4 + "," + ep_select1 + "," + formula_no + ","
 					+ result_unit1 + "," + sop_val1 + "," + args[2] + "," + args[3] + "," + args[4] + "," + args[5]
 					+ "," + args[6] + "," + args[7] + "," + args[8] + "," + "Not Certified";
 		}
@@ -6494,6 +6503,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				cur_trial = 1;
 				data_array.clear();
 				series.clear();
+				series2.clear();
+
 
 				fill = 0;
 				dose = 0;

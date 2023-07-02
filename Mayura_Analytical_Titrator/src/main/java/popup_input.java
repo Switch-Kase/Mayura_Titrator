@@ -47,22 +47,20 @@ public class popup_input extends JFrame {
 	private JButton btnNewButton,btn_sop,btn_rename; 
 
 	public static String method_data;
-	public static String method_name;
 
 	static popup_input frame;
 	static String status = "false";
-	static String exp = "";
 	static boolean unique = true;
+	static potentiometry potentiometry_obj = null ;
+	static karl_fischer kf_obj = null ;
+	static String method_name = null;
 
 	/**
 	 * Launch the application.
 	 */
 	public static void main(String[] args) {
 		if(args.length >0) {
-		method_data = args[0];
-		method_name = args[1];
-		status = args[2];
-		exp = args[3];
+			status = args[0];
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -268,6 +266,21 @@ public class popup_input extends JFrame {
 								audit_log_push.push_to_audit(get_date(), get_time(),menubar.user_name,"Potentiometry Experiment Started");
 							} catch (ParseException e1) {e1.printStackTrace();}
 							
+							method_data = potentiometry_obj.getPre_dose() + "," + potentiometry_obj.getStir_time()
+							+ "," + potentiometry_obj.getMax_vol() + "," + potentiometry_obj.getBlank_vol()
+							+ "," +potentiometry_obj.getBurette_factor() + ","
+							+ potentiometry_obj.getThreshold() + ","
+							+ potentiometry_obj.getFilter() + ","
+							+ potentiometry_obj.getDosage_rate() + ","
+							+potentiometry_obj.getNo_of_trials() + ","
+							+ potentiometry_obj.getFactor1() + "," +potentiometry_obj.getFactor2() + ","
+							+ potentiometry_obj.getFactor3() + "," + potentiometry_obj.getFactor4() + ","
+							+ potentiometry_obj.getEp_select() + ","
+							+ potentiometry_obj.getFormula_no() + ","
+							+ potentiometry_obj.getResult_unit() + ","
+							+ potentiometry_obj.getSop();// www
+							
+							
 							String[] aa= {method_name,method_data,ar,batch,sample_name,String.valueOf(normality_val),String.valueOf(moisture_val),report_name,titrant_name};
 							menubar.open_draw_graph(aa);
 							dispose();
@@ -300,4 +313,10 @@ public class popup_input extends JFrame {
 		String date_time = dateFormat2.format(new Date()).toString();
 		return date_time;
 	}
+	
+	public static void setPotentimetryObject(potentiometry pot) {
+		potentiometry_obj  = new potentiometry(pot);
+		method_name = potentiometry_obj.getMethod_name();
+	}
+
 }

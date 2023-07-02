@@ -78,7 +78,7 @@ public class DrawReport_pot extends JPanel{
 	static JScrollPane scrollPane = new JScrollPane();
 	static JScrollPane scrollPane2 = new JScrollPane();
 	static JTextField remarks_input_pot = new JTextField();
-    static String[] params = {"User Name","Date","Time","Method Name","Pre Dose","Stir Time","Max Vol","Blank Vol","Burette Factor","Threshold","Filter","Dosage Rate","No of Trials","Factor 1","Factor 2","Factor 3","Factor 4","EP Select","Formula No","Tendency","Result Unit","SOP","AR No","Batch No","Sample Name","Normality","Moisture%","Report Name","Titrant Name","Certified By"};
+    static String[] params = {"User Name","Date","Time","Method Name","Pre Dose","Stir Time","Max Vol","Blank Vol","Burette Factor","Threshold","Filter","Dosage Rate","No of Trials","Factor 1","Factor 2","Factor 3","Factor 4","EP Select","Formula No","Result Unit","SOP","AR No","Batch No","Sample Name","Normality","Moisture%","Report Name","Titrant Name","Certified By"};
     static String report_name = "";
     static String parameter = "";
     static String details = "";
@@ -95,6 +95,8 @@ public class DrawReport_pot extends JPanel{
     static ChartPanel chartPanel ;
 	static JFreeChart chart ;
 	private static final XYSeries series = new XYSeries("mL,mV");
+	private static final XYSeries series2 = new XYSeries("a,b");
+
 	static int cur=0,prev=0;
 	static JRadioButton radio_btn_with_graph,radio_btn_without_graph;
 	static String[] tempx,tempy;
@@ -290,6 +292,7 @@ public class DrawReport_pot extends JPanel{
     private XYDataset createDataset() { 	
         final XYSeriesCollection dataset = new XYSeriesCollection();
         dataset.addSeries(series);
+        dataset.addSeries(series2);
         return dataset;
     }
 
@@ -521,11 +524,11 @@ public class DrawReport_pot extends JPanel{
 		parameter = parameter +",Dosage Speed : "+table2.getValueAt(11, 1);
 		parameter = parameter +",EP Select : "+table2.getValueAt(17, 1);
 		parameter = parameter +",No. of Trials : "+table2.getValueAt(12, 1);
-		parameter = parameter+",Titrant Name : "+table2.getValueAt(28, 1);
+		parameter = parameter+",Titrant Name : "+table2.getValueAt(27, 1);
 		parameter = parameter+",Normality : "+table2.getValueAt(25, 1);
 		parameter = parameter+",Formula No. : "+table2.getValueAt(18, 1);
 		parameter = parameter+","+table2.getValueAt(0, 1);
-		parameter = parameter+","+table2.getValueAt(29, 1);
+		parameter = parameter+","+table2.getValueAt(28, 1);
 		String[] remarks_final = remarks.split(","); 
 		try {
 			boolean graph_print = false;
@@ -562,9 +565,22 @@ public class DrawReport_pot extends JPanel{
 		  String dx[] = tempx[i].split(",");
 		  String dy[] = tempy[i].split(",");
 		  series.clear();
+		  series2.clear();
+		  
+		  double y_shift;
+		  
+		  if(Double.parseDouble(dy[dy.length-1]) < Double.parseDouble(dy[0]))
+		      y_shift = Double.parseDouble(dy[dy.length-1]) - 200;
+		  else
+		      y_shift = Double.parseDouble(dy[0]) - 200 ;
+
 		  
 		  for(int j=0;j<dx.length;j++) {
-			       series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+			 series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+			 if(j!=dx.length - 1) {
+				 series2.addOrUpdate(Double.parseDouble(dx[j]),(y_shift +  Math.abs(Double.parseDouble(dy[j+1]) - Double.parseDouble(dy[j]))));
+			 }
+
 		  }
 		  
 		  try {
@@ -577,7 +593,7 @@ public class DrawReport_pot extends JPanel{
 		  if(params_data[18].matches("1")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 			  }
@@ -586,7 +602,7 @@ public class DrawReport_pot extends JPanel{
 		  if(params_data[18].matches("2")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 			  }
@@ -595,20 +611,33 @@ public class DrawReport_pot extends JPanel{
 		  if(params_data[18].matches("3")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 			  }
 		  catch(NumberFormatException dcw){}
 		  }
+//		  if(params_data[18].matches("4")) {
+//			  try {
+//				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
+//				  marker.setPaint(Color.red);
+//				  plot = (XYPlot) chart.getPlot();
+//				  plot.addDomainMarker(marker);
+//				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
+//				  marker1.setPaint(Color.red);
+//				  plot1 = (XYPlot) chart.getPlot();
+//				  plot1.addDomainMarker(marker1);
+//			  }
+//		  catch(NumberFormatException dcw){}
+//		  }
 		  if(params_data[18].matches("4")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 			  }
@@ -617,105 +646,92 @@ public class DrawReport_pot extends JPanel{
 		  if(params_data[18].matches("5")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 			  }
 		  catch(NumberFormatException dcw){}
 		  }
 		  if(params_data[18].matches("6")) {
-			  try {
-				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
-				  plot = (XYPlot) chart.getPlot();
-				  plot.addDomainMarker(marker);
-				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
-				  plot1 = (XYPlot) chart.getPlot();
-				  plot1.addDomainMarker(marker1);
-			  }
-		  catch(NumberFormatException dcw){}
-		  }
-		  if(params_data[18].matches("7")) {
 			  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-			  marker.setPaint(Color.blue);
+			  marker.setPaint(Color.red);
 			  plot = (XYPlot) chart.getPlot();
 			  plot.addDomainMarker(marker);
 			  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-			  marker1.setPaint(Color.blue);
+			  marker1.setPaint(Color.red);
 			  plot1 = (XYPlot) chart.getPlot();
 			  plot1.addDomainMarker(marker1);
 			  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 3).toString()));
-			  marker2.setPaint(Color.blue);
+			  marker2.setPaint(Color.red);
 			  plot2 = (XYPlot) chart.getPlot();
 			  plot2.addDomainMarker(marker2);
 			  System.out.println("Seevennnnnnnn "+marker.getValue());
 		  }
-		  if(params_data[18].matches("8")) {
+//		  if(params_data[18].matches("7")) {
+//			  try {
+//				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
+//				  marker.setPaint(Color.red);
+//				  plot = (XYPlot) chart.getPlot();
+//				  plot.addDomainMarker(marker);
+//				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
+//				  marker1.setPaint(Color.red);
+//				  plot1 = (XYPlot) chart.getPlot();
+//				  plot1.addDomainMarker(marker1);
+//			  }
+//		  catch(NumberFormatException dcw){}
+//		  }
+		  if(params_data[18].matches("7")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 			  }
 		  catch(NumberFormatException dcw){}
 		  }
+		  if(params_data[18].matches("8")) {
+			  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
+			  marker.setPaint(Color.red);
+			  plot = (XYPlot) chart.getPlot();
+			  plot.addDomainMarker(marker);
+			  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
+			  marker1.setPaint(Color.red);
+			  plot1 = (XYPlot) chart.getPlot();
+			  plot1.addDomainMarker(marker1);
+			  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 3).toString()));
+			  marker2.setPaint(Color.red);
+			  plot2 = (XYPlot) chart.getPlot();
+			  plot2.addDomainMarker(marker2);
+		  }
 		  if(params_data[18].matches("9")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 			  }
 		  catch(NumberFormatException dcw){}
 		  }
 		  if(params_data[18].matches("10")) {
-			  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-			  marker.setPaint(Color.blue);
-			  plot = (XYPlot) chart.getPlot();
-			  plot.addDomainMarker(marker);
-			  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-			  marker1.setPaint(Color.blue);
-			  plot1 = (XYPlot) chart.getPlot();
-			  plot1.addDomainMarker(marker1);
-			  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 3).toString()));
-			  marker2.setPaint(Color.blue);
-			  plot2 = (XYPlot) chart.getPlot();
-			  plot2.addDomainMarker(marker2);
-		  }
-		  if(params_data[18].matches("11")) {
 			  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
-				  plot1 = (XYPlot) chart.getPlot();
-				  plot1.addDomainMarker(marker1);
-			  }
-		  catch(NumberFormatException dcw){}
-		  }
-		  if(params_data[18].matches("12")) {
-			  try {
-				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 1).toString()));
-				  marker.setPaint(Color.blue);
-				  plot = (XYPlot) chart.getPlot();
-				  plot.addDomainMarker(marker);
-				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(i, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 			  }
@@ -744,7 +760,7 @@ public class DrawReport_pot extends JPanel{
 		try {
 			String[] params_data = parameter.split(",");
 			
-			if (!params_data[29].matches("Not Certified")) {
+			if (!params_data[28].matches("Not Certified")) {
 				System.out.println("IF Not certified");
 				checkBox1.setSelected(true);
 				certify_now = true;
@@ -856,7 +872,7 @@ public class DrawReport_pot extends JPanel{
 		   
 			String [] params_data = parameter.split(",");
 			
-			for(int i=0;i<30;i++) {
+			for(int i=0;i<29;i++) {
 				add_row_to_two_column(i,params[i],params_data[i]);
 			}
 				
@@ -944,9 +960,21 @@ public class DrawReport_pot extends JPanel{
 			  tempy = graphY.split(":");
 			  String dx[] = tempx[0].split(",");
 			  String dy[] = tempy[0].split(",");
+			  double y_shift;
+			  
+			  if(Double.parseDouble(dy[dy.length-1]) < Double.parseDouble(dy[0]))
+			      y_shift = Double.parseDouble(dy[dy.length-1]) - 200;
+			  else
+			      y_shift = Double.parseDouble(dy[0]) - 200 ;
+
+			  
 			  for(int j=0;j<dx.length;j++) {
-				//System.out.println("X = "+dx[j]+" : Y = "+dy[j]);
-				       series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+				 series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+				 if(j!=dx.length - 1) {
+					 series2.addOrUpdate(Double.parseDouble(dx[j]),(y_shift +  Math.abs(Double.parseDouble(dy[j+1]) - Double.parseDouble(dy[j]))));
+					 System.out.println("Y2  = "+ Double.parseDouble(dy[j+1]) + "  : Y1 = "+Double.parseDouble(dy[j])+"  :  Y_Shift Value = "+(Double.parseDouble(dy[j+1]) - Double.parseDouble(dy[j])));
+				 }
+
 			  }
 			  
 			}
@@ -957,7 +985,7 @@ public class DrawReport_pot extends JPanel{
 			  if(params_data[18].matches("1")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  }
@@ -968,7 +996,7 @@ public class DrawReport_pot extends JPanel{
 			  if(params_data[18].matches("2")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  }
@@ -979,7 +1007,7 @@ public class DrawReport_pot extends JPanel{
 			  if(params_data[18].matches("3")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  }
@@ -987,14 +1015,29 @@ public class DrawReport_pot extends JPanel{
 				  
 			  }
 			  }
+//			  if(params_data[18].matches("4")) {
+//				  try {
+//				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
+//				  marker.setPaint(Color.red);
+//				  plot = (XYPlot) chart.getPlot();
+//				  plot.addDomainMarker(marker);
+//				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
+//				  marker1.setPaint(Color.red);
+//				  plot1 = (XYPlot) chart.getPlot();
+//				  plot1.addDomainMarker(marker1);
+//				  }
+//				  catch(NumberFormatException f) {
+//					  
+//				  }
+//			  } 	
 			  if(params_data[18].matches("4")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 				  }
@@ -1005,26 +1048,11 @@ public class DrawReport_pot extends JPanel{
 			  if(params_data[18].matches("5")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
-				  plot1 = (XYPlot) chart.getPlot();
-				  plot1.addDomainMarker(marker1);
-				  }
-				  catch(NumberFormatException f) {
-					  
-				  }
-			  } 	
-			  if(params_data[18].matches("6")) {
-				  try {
-				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
-				  plot = (XYPlot) chart.getPlot();
-				  plot.addDomainMarker(marker);
-				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 				  }
@@ -1032,20 +1060,50 @@ public class DrawReport_pot extends JPanel{
 					  
 				  }
 			  } 
-			  if(params_data[18].matches("7")) {
+			  if(params_data[18].matches("6")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 				  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 3).toString()));
-				  marker2.setPaint(Color.blue);
+				  marker2.setPaint(Color.red);
 				  plot2 = (XYPlot) chart.getPlot();
 				  plot2.addDomainMarker(marker2);}
+				  catch(NumberFormatException f) {
+					  
+				  }
+			  } 
+//			  if(params_data[18].matches("7")) {
+//				  try {
+//				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
+//				  marker.setPaint(Color.red);
+//				  plot = (XYPlot) chart.getPlot();
+//				  plot.addDomainMarker(marker);
+//				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
+//				  marker1.setPaint(Color.red);
+//				  plot1 = (XYPlot) chart.getPlot();
+//				  plot1.addDomainMarker(marker1);
+//				  }
+//				  catch(NumberFormatException f) {
+//					  
+//				  }
+//			  } 
+			  if(params_data[18].matches("7")) {
+				  try {
+				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
+				  marker.setPaint(Color.red);
+				  plot = (XYPlot) chart.getPlot();
+				  plot.addDomainMarker(marker);
+				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
+				  marker1.setPaint(Color.red);
+				  plot1 = (XYPlot) chart.getPlot();
+				  plot1.addDomainMarker(marker1);
+				  }
 				  catch(NumberFormatException f) {
 					  
 				  }
@@ -1053,45 +1111,15 @@ public class DrawReport_pot extends JPanel{
 			  if(params_data[18].matches("8")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
-				  plot1 = (XYPlot) chart.getPlot();
-				  plot1.addDomainMarker(marker1);
-				  }
-				  catch(NumberFormatException f) {
-					  
-				  }
-			  } 
-			  if(params_data[18].matches("9")) {
-				  try {
-				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
-				  plot = (XYPlot) chart.getPlot();
-				  plot.addDomainMarker(marker);
-				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
-				  plot1 = (XYPlot) chart.getPlot();
-				  plot1.addDomainMarker(marker1);
-				  }
-				  catch(NumberFormatException f) {
-					  
-				  }
-			  } 
-			  if(params_data[18].matches("10")) {
-				  try {
-				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
-				  plot = (XYPlot) chart.getPlot();
-				  plot.addDomainMarker(marker);
-				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 				  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 3).toString()));
-				  marker2.setPaint(Color.blue);
+				  marker2.setPaint(Color.red);
 				  plot2 = (XYPlot) chart.getPlot();
 				  plot2.addDomainMarker(marker2);
 				  }
@@ -1099,27 +1127,27 @@ public class DrawReport_pot extends JPanel{
 					  
 				  }
 			  } 
-			  if(params_data[18].matches("11")) {
+			  if(params_data[18].matches("9")) {
 				  try {
 					  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-					  marker.setPaint(Color.blue);
+					  marker.setPaint(Color.red);
 					  plot = (XYPlot) chart.getPlot();
 					  plot.addDomainMarker(marker);
 					  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-					  marker1.setPaint(Color.blue);
+					  marker1.setPaint(Color.red);
 					  plot1 = (XYPlot) chart.getPlot();
 					  plot1.addDomainMarker(marker1);
 				  }
 				  catch(NumberFormatException f) {}
 			  } 
-			  if(params_data[18].matches("12")) {
+			  if(params_data[18].matches("10")) {
 				  try {
 				  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 1).toString()));
-				  marker.setPaint(Color.blue);
+				  marker.setPaint(Color.red);
 				  plot = (XYPlot) chart.getPlot();
 				  plot.addDomainMarker(marker);
 				  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(0, 2).toString()));
-				  marker1.setPaint(Color.blue);
+				  marker1.setPaint(Color.red);
 				  plot1 = (XYPlot) chart.getPlot();
 				  plot1.addDomainMarker(marker1);
 				  }
@@ -1136,10 +1164,22 @@ public class DrawReport_pot extends JPanel{
 		    		  String dx[] = tempx[cur-1].split(",");
 					  String dy[] = tempy[cur-1].split(",");
 					  series.clear();
+					  series2.clear();
+
+					  double y_shift;
 					  
+					  if(Double.parseDouble(dy[dy.length-1]) < Double.parseDouble(dy[0]))
+					      y_shift = Double.parseDouble(dy[dy.length-1]) - 200;
+					  else
+					      y_shift = Double.parseDouble(dy[0]) - 200 ;
+
 					  
 					  for(int j=0;j<dx.length;j++) {
-						       series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+						 series.addOrUpdate(Double.parseDouble(dx[j]),Double.parseDouble(dy[j]));
+						 if(j!=dx.length - 1) {
+							 series2.addOrUpdate(Double.parseDouble(dx[j]),(y_shift + Math.abs(Double.parseDouble(dy[j+1]) - Double.parseDouble(dy[j]))));
+						 }
+
 					  }
 					  
 					  
@@ -1154,7 +1194,7 @@ public class DrawReport_pot extends JPanel{
 					  if(params_data[18].matches("1")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 						  }
@@ -1163,7 +1203,7 @@ public class DrawReport_pot extends JPanel{
 					  if(params_data[18].matches("2")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 						  }
@@ -1172,20 +1212,33 @@ public class DrawReport_pot extends JPanel{
 					  if(params_data[18].matches("3")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 						  }
 					  catch(NumberFormatException dcw){}
 					  }
+//					  if(params_data[18].matches("4")) {
+//						  try {
+//							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
+//							  marker.setPaint(Color.red);
+//							  plot = (XYPlot) chart.getPlot();
+//							  plot.addDomainMarker(marker);
+//							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
+//							  marker1.setPaint(Color.red);
+//							  plot1 = (XYPlot) chart.getPlot();
+//							  plot1.addDomainMarker(marker1);
+//						  }
+//					  catch(NumberFormatException dcw){}
+//					  }
 					  if(params_data[18].matches("4")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
+							  marker1.setPaint(Color.red);
 							  plot1 = (XYPlot) chart.getPlot();
 							  plot1.addDomainMarker(marker1);
 						  }
@@ -1194,105 +1247,92 @@ public class DrawReport_pot extends JPanel{
 					  if(params_data[18].matches("5")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
+							  marker1.setPaint(Color.red);
 							  plot1 = (XYPlot) chart.getPlot();
 							  plot1.addDomainMarker(marker1);
 						  }
 					  catch(NumberFormatException dcw){}
 					  }
 					  if(params_data[18].matches("6")) {
-						  try {
-							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
-							  plot = (XYPlot) chart.getPlot();
-							  plot.addDomainMarker(marker);
-							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
-							  plot1 = (XYPlot) chart.getPlot();
-							  plot1.addDomainMarker(marker1);
-						  }
-					  catch(NumberFormatException dcw){}
-					  }
-					  if(params_data[18].matches("7")) {
 						  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-						  marker.setPaint(Color.blue);
+						  marker.setPaint(Color.red);
 						  plot = (XYPlot) chart.getPlot();
 						  plot.addDomainMarker(marker);
 						  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-						  marker1.setPaint(Color.blue);
+						  marker1.setPaint(Color.red);
 						  plot1 = (XYPlot) chart.getPlot();
 						  plot1.addDomainMarker(marker1);
 						  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 3).toString()));
-						  marker2.setPaint(Color.blue);
+						  marker2.setPaint(Color.red);
 						  plot2 = (XYPlot) chart.getPlot();
 						  plot2.addDomainMarker(marker2);
 						  System.out.println("Seevennnnnnnn "+marker.getValue());
 					  }
-					  if(params_data[18].matches("8")) {
+//					  if(params_data[18].matches("7")) {
+//						  try {
+//							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
+//							  marker.setPaint(Color.red);
+//							  plot = (XYPlot) chart.getPlot();
+//							  plot.addDomainMarker(marker);
+//							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
+//							  marker1.setPaint(Color.red);
+//							  plot1 = (XYPlot) chart.getPlot();
+//							  plot1.addDomainMarker(marker1);
+//						  }
+//					  catch(NumberFormatException dcw){}
+//					  }
+					  if(params_data[18].matches("7")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
+							  marker1.setPaint(Color.red);
 							  plot1 = (XYPlot) chart.getPlot();
 							  plot1.addDomainMarker(marker1);
 						  }
 					  catch(NumberFormatException dcw){}
 					  }
+					  if(params_data[18].matches("8")) {
+						  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
+						  marker.setPaint(Color.red);
+						  plot = (XYPlot) chart.getPlot();
+						  plot.addDomainMarker(marker);
+						  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
+						  marker1.setPaint(Color.red);
+						  plot1 = (XYPlot) chart.getPlot();
+						  plot1.addDomainMarker(marker1);
+						  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 3).toString()));
+						  marker2.setPaint(Color.red);
+						  plot2 = (XYPlot) chart.getPlot();
+						  plot2.addDomainMarker(marker2);
+					  }
 					  if(params_data[18].matches("9")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
+							  marker1.setPaint(Color.red);
 							  plot1 = (XYPlot) chart.getPlot();
 							  plot1.addDomainMarker(marker1);
 						  }
 					  catch(NumberFormatException dcw){}
 					  }
 					  if(params_data[18].matches("10")) {
-						  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-						  marker.setPaint(Color.blue);
-						  plot = (XYPlot) chart.getPlot();
-						  plot.addDomainMarker(marker);
-						  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-						  marker1.setPaint(Color.blue);
-						  plot1 = (XYPlot) chart.getPlot();
-						  plot1.addDomainMarker(marker1);
-						  ValueMarker marker2 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 3).toString()));
-						  marker2.setPaint(Color.blue);
-						  plot2 = (XYPlot) chart.getPlot();
-						  plot2.addDomainMarker(marker2);
-					  }
-					  if(params_data[18].matches("11")) {
 						  try {
 							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
+							  marker.setPaint(Color.red);
 							  plot = (XYPlot) chart.getPlot();
 							  plot.addDomainMarker(marker);
 							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
-							  plot1 = (XYPlot) chart.getPlot();
-							  plot1.addDomainMarker(marker1);
-						  }
-					  catch(NumberFormatException dcw){}
-					  }
-					  if(params_data[18].matches("12")) {
-						  try {
-							  ValueMarker marker = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 1).toString()));
-							  marker.setPaint(Color.blue);
-							  plot = (XYPlot) chart.getPlot();
-							  plot.addDomainMarker(marker);
-							  ValueMarker marker1 = new ValueMarker(Double.parseDouble(table1.getValueAt(table1.getSelectedRow(), 2).toString()));
-							  marker1.setPaint(Color.blue);
+							  marker1.setPaint(Color.red);
 							  plot1 = (XYPlot) chart.getPlot();
 							  plot1.addDomainMarker(marker1);
 						  }
@@ -1775,6 +1815,7 @@ public class DrawReport_pot extends JPanel{
 			    	already_certified = false;
 			    	already_remarked = false;
 			    	series.clear();
+			    	series2.clear();
 			    	frame1.dispose();
 					frame1 = new JFrame();
 			        p=new JPanel();	

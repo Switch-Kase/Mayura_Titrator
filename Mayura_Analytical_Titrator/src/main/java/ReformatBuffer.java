@@ -36,11 +36,6 @@ public class ReformatBuffer {
 
         	
         	if(!bufferReadToString.contains("T") && !bufferReadToString.contains("N")) {
-        		System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
-        	}
-        	if(bufferReadToString.contains("END")) {
-        		System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
-        	}
         	
         	
         	if(bufferReadToString.contains("T")) {
@@ -103,7 +98,7 @@ public class ReformatBuffer {
             }
         	
             else if(current_state.matches("menubar_fill_waiting_ok2") && bufferReadToString.contains("END")) {
-            	System.out.println("Insidee menubar fill end recieved!");
+            	//System.out.println("Insidee menubar fill end recieved!");
             	menubar.mb_fill_end_received();
             }
             
@@ -119,7 +114,7 @@ public class ReformatBuffer {
             	menubar.start_dose_counter();
             }
             else if(current_state.matches("menubar_dose_waiting_ok2") && bufferReadToString.contains("END")) {
-				 System.out.println("Insidee menubar dose end received!");
+				// System.out.println("Insidee menubar dose end received!");
             	menubar.mb_dose_end_received();
             }
             else if(current_state.matches("menubar_stpm") && bufferReadToString.contains("OK")) {

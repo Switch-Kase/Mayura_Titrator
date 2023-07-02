@@ -125,6 +125,7 @@ public class open_method extends JFrame {
 				String value = table1.getModel().getValueAt(row, column).toString();
 				//system.out.println("Selected Row = "+value);
 				menubar.update_data(value);
+				menubar.saved_file=true;
 				dispose();
 				}
 				catch(ArrayIndexOutOfBoundsException e2) {
@@ -167,16 +168,16 @@ public class open_method extends JFrame {
 					String sql ;
 					try {
 						if(exp.matches("pot")) {
-							sql = "SELECT Trial_name,Date,Value FROM pot_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')"; //
+							sql = "SELECT method_name,created_date FROM potentiometry_methods where (created_date BETWEEN '"+from_date+"' AND '"+to_date+"')"; //
 						}
-						else if(exp.matches("amp")) {
-							sql = "SELECT Trial_name,Date,Value FROM amp_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')";
-						}
-						else if(exp.matches("ph")){
-							sql = "SELECT Trial_name,Date,Value FROM ph_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')";
-						}
+//						else if(exp.matches("amp")) {
+//							sql = "SELECT Trial_name,Date,Value FROM amp_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')";
+//						}
+//						else if(exp.matches("ph")){
+//							sql = "SELECT Trial_name,Date,Value FROM ph_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')";
+//						}
 						else {
-							sql = "SELECT Trial_name,Date,Value FROM kf_method where (Date BETWEEN '"+from_date+"' AND '"+to_date+"')";
+							sql = "SELECT method_name,created_date FROM kf_methods where (created_date BETWEEN '"+from_date+"' AND '"+to_date+"')";
 						}
 						ps = con.prepareStatement(sql);
 						rs = ps.executeQuery();
@@ -184,8 +185,8 @@ public class open_method extends JFrame {
 						int i=0;
 						 while (rs.next()) {
 							 model.addRow(new Object[0]);
-							 model.setValueAt(rs.getString("Trial_name"), i, 0);			
-							 model.setValueAt(rs.getString("Date"), i, 1);
+							 model.setValueAt(rs.getString("method_name"), i, 0);			
+							 model.setValueAt(rs.getString("created_date"), i, 1);
 							 i++;
 						 }
 						model.fireTableDataChanged();
@@ -245,16 +246,16 @@ public class open_method extends JFrame {
 		String sql ;
 		try {
 			if(exp.matches("pot")) {
-				sql = "SELECT Trial_name,Date,Value FROM pot_method";
+				sql = "SELECT method_name,created_date FROM potentiometry_methods";
 			}
-			else if(exp.matches("amp")) {
-				sql = "SELECT Trial_name,Date,Value FROM amp_method";
-			}
-			else if(exp.matches("ph")){
-				sql = "SELECT Trial_name,Date,Value FROM ph_method";
-			}
-			else {
-				sql = "SELECT Trial_name,Date,Value FROM kf_method";
+//			else if(exp.matches("amp")) {
+//				sql = "SELECT Trial_name,Date,Value FROM amp_method";
+//			}
+//			else if(exp.matches("ph")){
+//				sql = "SELECT Trial_name,Date,Value FROM ph_method";
+//			}
+			else  {
+				sql = "SELECT method_name,created_date FROM kf_methods";
 			}
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
@@ -262,8 +263,8 @@ public class open_method extends JFrame {
 			int i=0;
 			 while (rs.next()) {
 				 model.addRow(new Object[0]);
-				 model.setValueAt(rs.getString("Trial_name"), i, 0);			
-				 model.setValueAt(rs.getString("Date"), i, 1);
+				 model.setValueAt(rs.getString("method_name"), i, 0);			
+				 model.setValueAt(rs.getString("created_date"), i, 1);
 				 i++;
 			 }
 		}
