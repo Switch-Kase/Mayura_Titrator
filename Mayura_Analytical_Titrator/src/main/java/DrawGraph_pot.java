@@ -158,6 +158,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	public static void update_mv_pot(String msg) {
 		
 		DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
+
 		String date_time244 = dateFormat244.format(new Date()).toString();
 		//System.out.println("Dattaaaaa POTT = "+msg + "   -   pot = "+ date_time244);
 		
@@ -2526,7 +2527,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 			else if (math.contains("V_3") || math2.contains("V_3") || math3.contains("V_3")) {
 				if (end_point_no > 2) {
-					
+
 					end_point_1 = (((End_Point[0] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					end_point_2 = (((End_Point[1] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;
 					end_point_3 = (((End_Point[2] * dossage_speed / burette_factor) / 1000)- corres_fact) + pre_dose;

@@ -90,6 +90,7 @@ public class DbConnection {
                 + " created_date date, \n"
                 + " updated_by text, \n"
                 + " updated_date date, \n"
+
                 + " pre_dose text, \n"
                 + " stir_time text, \n"
                 + " max_vol text, \n"
@@ -191,6 +192,7 @@ public class DbConnection {
 		String set_trial_alter_prmission = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('trials_altering','permission_to_alter_trial','false')";
 
 		String set_company_details = "INSERT OR IGNORE INTO company_data(Slno,instrument_id,company_logo,company_name,company_address,start_date,validity) VALUES('1','HP77','C:\\SQLite\\logo\\logo.png','Mayura Analytical','Bangalore','"+get_date()+"','100000')";
+
 
 		try{  
             Connection con = DriverManager.getConnection(url);  

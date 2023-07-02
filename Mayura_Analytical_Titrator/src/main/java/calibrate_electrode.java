@@ -167,6 +167,7 @@ public class calibrate_electrode extends JPanel {
 			ps.setString(1, String.valueOf(e_calib + (int_temp_mv-e_calib)));
 			ps.setString(2, "electrodeFactor");
 			ps.setString(3, "electrodeFactor");
+
 			ps.executeUpdate();
 		} 
 		catch (SQLException e1) {
