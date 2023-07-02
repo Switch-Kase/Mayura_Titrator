@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -279,7 +280,6 @@ public class menubar extends JPanel implements ItemListener {
 	
 	public static void open_buretter_calibration(String[] aa) {
 
-
 		if (serial_port1 != null) {
 			try {
 				Thread.sleep(200);
@@ -293,8 +293,6 @@ public class menubar extends JPanel implements ItemListener {
 		} else {
 			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
 		}
-	}
-
 	}
 	public static void open_electrode_calibration(String[] aa) {
 
@@ -894,7 +892,6 @@ public class menubar extends JPanel implements ItemListener {
 			res = "";
 			if (selected_experiment.matches("potentiometry")) {
 
-
 				pot_tf_predose.setText(rs.getString("pre_dose"));
 				pot_tf_stirtime.setText(rs.getString("stir_time"));
 				pot_tf_maxvol.setText(rs.getString("max_vol"));
@@ -1026,7 +1023,6 @@ public class menubar extends JPanel implements ItemListener {
 				output.print("<8888>CVOL*");
 				output.flush();
 			} catch (NullPointerException ee) {}
-
 		}
 	}
 
@@ -2157,8 +2153,7 @@ public class menubar extends JPanel implements ItemListener {
 						if (no_update == true) {
 							String[] temp = {"false"};
 							dg.main(temp);
-
-				} else 
+						} else {
 							String[] temp = {"true"};
 							dg.main(temp);
 						}
@@ -2345,6 +2340,7 @@ public class menubar extends JPanel implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				if(null != pot_tf_sop_value.getText().toString() && !pot_tf_sop_value.getText().toString().contains("Not Selected")) {				
 					try {
+						System.out.println("SOP NAME = "+pot_tf_sop_value.getText().toString());
 						File file = new File("C:\\SQLite\\SOP\\" +pot_tf_sop_value.getText().toString());
 						
 						if (!Desktop.isDesktopSupported()) {
@@ -3194,7 +3190,7 @@ public class menubar extends JPanel implements ItemListener {
 			}
 		});
 		mnNewMenu_5.add(menuItem_calibrate_electrode);
-
+		
 		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -3277,7 +3273,6 @@ public class menubar extends JPanel implements ItemListener {
 		initialize();
 		enable_all(false);
 		get_electrode_calibration();
-
 		
 		if (check_validity()) {
 			ScheduledExecutorService exec_temp1 = Executors.newSingleThreadScheduledExecutor();
@@ -3362,7 +3357,7 @@ public class menubar extends JPanel implements ItemListener {
 			while (rs.next()) {
 				count++;
 			}
-
+			//System.out.println("Count  = "+count);
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -3383,7 +3378,6 @@ public class menubar extends JPanel implements ItemListener {
 		String res_formula = "";
 		try {
 			sql = "SELECT cnfg_param_value FROM config_param where cnfg_param_group = 'formulas' and  (cnfg_param_name  = '" + formula_no + "')";
-
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			res_formula = rs.getString("cnfg_param_value");
@@ -3633,7 +3627,6 @@ public class menubar extends JPanel implements ItemListener {
 				return data;
 	}
 	public static void get_burette_factor() {
-
 		 	double temp_bf = 0;
 			Connection con = DbConnection.connect();
 			PreparedStatement ps = null;
@@ -3653,7 +3646,6 @@ public class menubar extends JPanel implements ItemListener {
 					System.out.println(e1.toString());
 				}
 			}
-
 			if(selected_experiment.matches("potentiometry")) {
 				pot_tf_burette.setText(String.valueOf(temp_bf));
 			}
