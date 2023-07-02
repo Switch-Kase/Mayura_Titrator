@@ -13,6 +13,7 @@ import java.util.Arrays;
 import java.util.Date;
 
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 
 import com.itextpdf.text.BaseColor;
 import com.itextpdf.text.Chunk;
@@ -655,6 +656,8 @@ public class report {
 
 		} catch (Exception e) {
 			e.printStackTrace();
+			JOptionPane.showMessageDialog(null, "Check if all the company date is uptodate Eg, Logo");
+
 		}
 	}
 

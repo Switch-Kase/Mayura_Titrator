@@ -87,8 +87,9 @@ public class DbConnection {
         String create_pot_methods_table = "CREATE TABLE IF NOT EXISTS potentiometry_methods (\n"  
                 + " method_name text ,\n"
                 + " created_by text, \n"
-                + " created_date text, \n"
-                + " updated_date text, \n"
+                + " created_date date, \n"
+                + " updated_by text, \n"
+                + " updated_date date, \n"
                 + " pre_dose text, \n"
                 + " stir_time text, \n"
                 + " max_vol text, \n"
@@ -111,8 +112,9 @@ public class DbConnection {
         String create_kf_methods_table = "CREATE TABLE IF NOT EXISTS kf_methods (\n"  
         		 + " method_name text ,\n"
                  + " created_by text, \n"
-                 + " created_date text, \n"
-                 + " updated_date text, \n"
+                 + " created_date date, \n"
+                 + " updated_by text, \n"
+                 + " updated_date date, \n"
                  + " delay text, \n"
                  + " stir_time text, \n"
                  + " max_vol text, \n"
@@ -185,7 +187,7 @@ public class DbConnection {
 		String formula10 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','10','Analyte A= \\frac {V_1*N*F_1*Unit}{W*F_3},Analyte B= \\frac {V_2*N*F_2*Unit}{W*F_4}')";
 
 		String set_bf = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('buretteFactor','buretteFactor','1')";
-		String set_electrode_factor = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('electrodeFactor','electrodeFactor','1')";
+		String set_electrode_factor = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('electrodeFactor','electrodeFactor','0')";
 		String set_trial_alter_prmission = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('trials_altering','permission_to_alter_trial','false')";
 
 		String set_company_details = "INSERT OR IGNORE INTO company_data(Slno,instrument_id,company_logo,company_name,company_address,start_date,validity) VALUES('1','HP77','C:\\SQLite\\logo\\logo.png','Mayura Analytical','Bangalore','"+get_date()+"','100000')";

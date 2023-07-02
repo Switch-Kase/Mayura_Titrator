@@ -77,7 +77,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	static PrintWriter output_dg;
 	static ScheduledExecutorService exec_dg_kf_fill, exec_dg_kf_one, exec_dg_kf_dosr;
 	static ScheduledExecutorService exec_dg_kf_timer = Executors.newSingleThreadScheduledExecutor();
-	static int j = 1, row = 0, int_mv_val = 0, time = 15, trial_cnt = 0, cur_trial = 0, v;
+	static int j = 1, row = 0, int_mv_val = 0, time = 15, trial_cnt = 0, cur_trial = 0, v,e_calib=0;
 	static double fill, dose, predose, double_mv_val, sample_weight = 0;
 	static boolean start_checking = true, pre_run_completed = false, sent_cvok = false, pre_run_middle = false,
 			blank_run_conducted = false, std_h20_conducted = false, std_disodium_conducted = false,
@@ -189,7 +189,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		double_mv_val = Double.parseDouble(mv_val_str);
 		if (msg.contains("N"))
 			int_mv_val = -int_mv_val;
-		kf_mv_display.setText(int_mv_val + " mV");
+		int_mv_val = int_mv_val - e_calib;
+		kf_mv_display.setText((int_mv_val)  + " mV");
 		if (current_process.matches("pre_run_started") || current_process.matches("blank_run_started")) {
 			check_mv(int_mv_val);
 		}
@@ -647,7 +648,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		PreparedStatement ps = null;
 		try {
 			String sql = null;
-			sql = "UPDATE kf_method SET Value = ? WHERE Trial_name = ?";
+			sql = "UPDATE kf_methods SET Value = ? WHERE Trial_name = ?";
 			System.out.println("Checking");
 			ps = con.prepareStatement(sql);
 			ps.setString(1, temp_update);
@@ -708,7 +709,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		try {
-			String sql = "UPDATE kf_method SET Value = ? WHERE Trial_name = ?";
+			String sql = "UPDATE kf_methods SET Value = ? WHERE Trial_name = ?";
 			ps = con.prepareStatement(sql);
 			ps.setString(1, temp_update);
 			ps.setString(2, metd_name);

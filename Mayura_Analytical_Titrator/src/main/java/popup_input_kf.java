@@ -50,9 +50,10 @@ public class popup_input_kf extends JFrame {
 	static popup_input_kf frame;
 	private JButton btnNewButton,btn_sop,btn_rename; 
 	static String status = "false";
-	static String exp = "";
 	
 	static boolean unique = true;
+	static karl_fischer kf_obj = null ;
+
 
 	/**
 	 * Launch the application.
@@ -60,10 +61,7 @@ public class popup_input_kf extends JFrame {
 	public static void main(String[] args) {
 		
 		if(args.length !=0) {
-		method_data = args[0];
-		method_name = args[1];
-		status = args[2];
-		exp = args[3];
+		status = args[0];
 		}
 		
 		EventQueue.invokeLater(new Runnable() {
@@ -281,5 +279,18 @@ public class popup_input_kf extends JFrame {
 		DateFormat dateFormat2 = new SimpleDateFormat("hh:mm:ss aa");
 		String date_time = dateFormat2.format(new Date()).toString();
 		return date_time;
+	}
+	
+	public static void setKFObject(karl_fischer kf) {
+		kf_obj  = new karl_fischer(kf);
+		method_name = kf_obj.getMethod_name();
+		method_data = kf_obj.getDelay() + "," + kf_obj.getStir_time() + ","
+				+ kf_obj.getMax_vol() + "," + kf_obj.getBlank_vol() + ","
+				+ kf_obj.getBurette_factor() + "," + kf_obj.getDensity() + ","
+				+ kf_obj.getKf_factor()+ "," + kf_obj.getEnd_point() + ","
+				+ kf_obj.getDosage_rate() + ","
+				+ kf_obj.getResult_unit() + ","
+				+ kf_obj.getNo_of_trials() + ","
+				+ kf_obj.getSop();
 	}
 }

@@ -27,8 +27,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.Date;
 import java.awt.event.ActionEvent;
 import java.awt.Desktop;  
 
@@ -40,25 +43,26 @@ public class save_method extends JFrame {
 	static JLabel sop;
 	static save_method frame;
 	static String method_name=null;
-	static String data="";
+	//static String data="";
 	static String exp="";
 	static JButton btn_save,btn_open;
 	static JComboBox cb_sop;
 	static String[] data_arr;
-	boolean exists = false;
 	static String[] exists_arr;
 	ResultSet rs1;
 	String final_name="";
+	static potentiometry potentiometry_obj = null ;
+	static karl_fischer kf_obj = null ;
+
 	
 	public static void main(String[] args) {
 		
 		if(args.length != 0) {
-		data=args[0];
-		data_arr = data.split(",");
-		method_name=args[1];
-		exp=args[2];
+		//data=args[0];
+		//data_arr = data.split(",");
+		//method_name=args[1];
+		exp=args[0];
 		}
-		//System.out.println("data = "+data+" -- method_name = "+method_name+" -- exp = "+exp);
 	
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
@@ -91,7 +95,6 @@ public class save_method extends JFrame {
 	public save_method() {
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		
-		//System.out.println("MMMMMMMMethod Name  = "+method_name);
 		setBounds(100, 200, 520, 450);
 		setTitle("Enter the Method Name");
 		setLocationRelativeTo(null);
@@ -111,9 +114,11 @@ public class save_method extends JFrame {
 		method.setColumns(10);
 		
 		
-		if(method_name != null ) {
+		if(null != method.getText()) {
+			
 			try {
 			if(!method_name.matches("")) {
+				
 			method.setText(method_name);
 			
 			JButton btn_update_data = new JButton("Update Method");
@@ -123,79 +128,39 @@ public class save_method extends JFrame {
 			btn_update_data.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					
-					//data_arr
-					String final_name1="";
+					if(null!= method_name && method.getText().matches(method_name)) {
+						
+						
+							String sql = null;
+							if(exp.matches("pot")) 
+							{
+								update_pot_method();
+								menubar.pot_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
+								menubar.setPotentimetryObject(potentiometry_obj);
+								menubar.metd_header.setText("Method Name : "+method_name);
+								menubar.saved_file=true;
+								menubar.saved_file_name = method_name;
+								potentiometry_obj =null;
+
+							}
+							else if(exp.matches("karl")) {
+								update_kf_method();
+								menubar.kf_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
+								menubar.setKFObject(kf_obj);
+								menubar.metd_header.setText("Method Name : "+method_name);
+								menubar.saved_file=true;
+								menubar.saved_file_name = method_name;
+								kf_obj =null;
+
+							}
+							dispose();
+						
+						}
 					
-				    for(int i=0;i<(data_arr.length-1);i++) {
-						final_name1 = final_name1.concat(data_arr[i]);
-						final_name1 = final_name1.concat(",");
+					else {
+						JOptionPane.showMessageDialog(null, "Please Save it as a new Method!");
 					}
-					final_name1 = final_name1.concat(cb_sop.getSelectedItem().toString());
-					
-					Connection con = DbConnection.connect();
-					PreparedStatement ps = null;
-					try 
-					{
-						String sql = null;
-						if(exp.matches("pot")) 
-						{
-							sql = "UPDATE pot_method SET Value = ? WHERE Trial_name = ?";
-						}
-						else if(exp.matches("amp"))
-						{
-							sql = "UPDATE amp_method SET Value = ? WHERE Trial_name = ?";
-						}
-						else if(exp.matches("ph"))
-						{
-							sql = "UPDATE ph_method SET Value = ? WHERE Trial_name = ?";
-						}
-						else {
-							sql = "UPDATE kf_method SET Value = ? WHERE Trial_name = ?";
-						}
-								
-						System.out.println("Checking");
-						ps = con.prepareStatement(sql);
-						ps.setString(1, final_name1);
-						ps.setString(2, method_name);
-						
-						ps.executeUpdate();
-						
-						if(exp.matches("pot")) 
-						{
-							menubar.pot_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-						}
-						else if(exp.matches("amp"))
-						{
-							menubar.amp_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-						}
-						else if(exp.matches("ph"))
-						{
-							menubar.ph_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-						}
-						else {
-							menubar.kf_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-						}
-						
-						menubar.res = final_name;
-						
-						JOptionPane.showMessageDialog(null, "Updated Successfully");
-						menubar.metd_header.setText("Method Name : "+method_name);
-						//menubar.saved_file=true;
-						menubar.saved_file_name = method_name;
-						menubar.res = final_name1;
-						dispose();
-					}
-					catch(SQLException e1) {
-						System.out.println(e1.toString());
-					}
-					finally {
-					    try{
-					    ps.close();
-					    con.close();
-					    } catch(SQLException e1) {
-					      System.out.println(e1.toString());
-					    }
-					}	
+
 					
 				}
 			});
@@ -227,19 +192,17 @@ public class save_method extends JFrame {
 		  {
 			sop_files_arr[k] = listOfFiles[i].getName();  
 			k++;
-		   // System.out.println(listOfFiles[i].getName());
 		  } 
-		  else if (listOfFiles[i].isDirectory())
-		  {
-		   // System.out.println("Directory " + listOfFiles[i].getName());
-		  }
 		}
 		
 		cb_sop = new JComboBox(sop_files_arr);
 		cb_sop.setBounds(20, 150, 465, 30);
 		contentPane.add(cb_sop);
 		try {
-		cb_sop.setSelectedItem(data_arr[data_arr.length-1]);
+			if(null!= exp && exp.matches("pot"))
+				cb_sop.setSelectedItem(potentiometry_obj.getSop());
+			else if(null!= exp && exp.matches("karl"))
+				cb_sop.setSelectedItem(kf_obj.getSop());
 		}
 		catch(NullPointerException e) {
 			
@@ -251,155 +214,34 @@ public class save_method extends JFrame {
 		contentPane.add(btn_save);
 		btn_save.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String mn=method.getText();
-				System.out.println("Method Name="+mn+".....");
-				if(!mn.matches(""))
+				String method_name = method.getText();
+				if(!method_name.matches(""))
 				{
-					
-					Connection con1 = DbConnection.connect();
-					PreparedStatement ps1 = null;
-					rs1 = null;
-					String sql1 ;
-					try {
+					if(!methodName_exists(method_name)) {	
+						System.out.println("Experiment = "+exp);
 						if(exp.matches("pot")) {
-							sql1 = "SELECT Trial_name FROM pot_method";
-						}
-						else if(exp.matches("amp")) {
-							sql1 = "SELECT Trial_name FROM amp_method";
-						}
-						else if(exp.matches("ph")){
-							sql1 = "SELECT Trial_name FROM ph_method";
-						}
-						else {
-							sql1 = "SELECT Trial_name FROM kf_method";
-						}
-						ps1 = con1.prepareStatement(sql1);
-						rs1 = ps1.executeQuery();
+							potentiometry_obj.setMethod_name(method_name);
+							insert_new_pot_method();
+							potentiometry_obj =null;
 
-						int i=0;
-						 while (rs1.next()) {
-							// exists_arr[i] = rs1.getString("Trial_name");
-							 System.out.println("Inside = "+rs1.getString("Trial_name") );//+ " ==arr== "+exists_arr[i]
-							 i++;
-							 final_name = final_name+rs1.getString("Trial_name") +",";
-						 }
-						 
-					}
-					catch(SQLException e1) {
-						JOptionPane.showMessageDialog(null,e1);
-					}
-					finally {
-					    try{
-					    ps1.close();
-					    con1.close();
-					    } 
-					    catch(SQLException e1) 
-					    {
-					      System.out.println(e1.toString());
-					    }
-					}
-					
-					System.out.println("Final Name"+final_name);
-					
-					exists_arr = final_name.split(","); 
-					
-					for(int i=0;i<exists_arr.length;i++) {
-						System.out.println("MN = "+mn);
-						if(mn.matches(exists_arr[i]))
-						{
-							exists = true;
-							break;
+						}
+						else if(exp.matches("karl")) {
+							kf_obj.setMethod_name(method_name);
+							insert_new_kf_method();
+							kf_obj =null;
+
 						}
 					}
-					
-				if(exists == false) {	
-				Connection con = DbConnection.connect();
-				PreparedStatement ps = null;
-				try 
+				
+				    else{
+						JOptionPane.showMessageDialog(null, "Method name already exists!");
+					 }
+				}
+				else 
 				{
-					DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd");  
-					LocalDateTime now = LocalDateTime.now();  
-					System.out.println(dtf.format(now));  
-					String sql = null;
-					if(exp.matches("pot")) 
-					{
-						sql = "INSERT INTO pot_method(Trial_name, Date,Value) VALUES(?,?,?)";
-					}
-					else if(exp.matches("amp"))
-					{
-						sql = "INSERT INTO amp_method(Trial_name, Date,Value) VALUES(?,?,?)";
-					}
-					else if(exp.matches("ph"))
-					{
-						sql = "INSERT INTO ph_method(Trial_name, Date,Value) VALUES(?,?,?)";
-					}
-					else {
-						sql = "INSERT INTO kf_method(Trial_name, Date,Value) VALUES(?,?,?)";
-					}
-										
-					String data_final="";
-					
-					for(int j=0;j<(data_arr.length-1);j++) {
-						data_final = data_final.concat(data_arr[j]);
-						data_final = data_final.concat(",");
-					}
-					
-					data_final = data_final+cb_sop.getSelectedItem().toString();
-					
-					System.out.println("datafinal = "+data_final);
-					
-					System.out.println("Checking");
-					ps = con.prepareStatement(sql);
-					ps.setString(1, mn);
-					ps.setString(2, String.valueOf(dtf.format(now)));
-					ps.setString(3, data_final);
-					ps.execute();
-					menubar.metd_header.setText("Method Name : "+mn);
-					dispose();
-					//JOptionPane.showOptionDialog(null, "Hello","Empty?", JOptionPane.DEFAULT_OPTION,JOptionPane.INFORMATION_MESSAGE, null, new Object[]{}, null);
-					JOptionPane.showMessageDialog(null, "Saved Successfully");
-					menubar.saved_file=true;
-					menubar.saved_file_name = mn;
-					if(exp.matches("pot")) {
-						menubar.pot_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-					}
-					else if(exp.matches("amp")) {
-						menubar.amp_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-					}
-					else if(exp.matches("ph")) {
-						menubar.ph_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-					}
-					else {
-						menubar.kf_tf_sop_value.setText(cb_sop.getSelectedItem().toString());
-					}
-					System.out.println("Data Inserted!");
+					JOptionPane.showMessageDialog(null, "Please enter the method name!");
 				}
-				catch(SQLException e1) {
-					System.out.println(e1.toString());
-				}//always remember to close database connections
-				finally {
-				    try{
-				    ps.close();
-				    con.close();
-				    } catch(SQLException e1) {
-				      System.out.println(e1.toString());
-				    }
-				}
-			  }
-		      else
-		      {
-				exists = false;
-				JOptionPane.showMessageDialog(null, "Method already exists!");
-			  }
-			}
-				
-			else 
-			{
-				JOptionPane.showMessageDialog(null, "Please enter the method name!");
-			}
-				
-				
-			}
+			}			
 		});
 		
 		btn_open = new JButton("Open SOP");
@@ -425,11 +267,290 @@ public class save_method extends JFrame {
 				{  
 				ee.printStackTrace();  
 				} 
-				
-				
 			}
 		});
-		
-		
+	}
+	
+	private boolean methodName_exists(String cur_method_name) {
+		Connection con1 = DbConnection.connect();
+		PreparedStatement ps1 = null;
+		rs1 = null;
+		String sql1 =null ;
+		try {
+			if(exp.matches("pot")) {
+				sql1 = "SELECT * FROM potentiometry_methods where method_name = '"+cur_method_name+"'";
+			}
+			else if(exp.matches("karl")) {
+				sql1 = "SELECT * FROM kf_methods where method_name = '"+cur_method_name+"'";
+			}
+			ps1 = con1.prepareStatement(sql1);
+			rs1 = ps1.executeQuery();
+
+			if(null!= rs1 && rs1.getRow()>0)
+				return true;
+		}
+		catch(SQLException e1) {
+			JOptionPane.showMessageDialog(null,e1);
+		}
+		finally {
+		    try{
+		    ps1.close();
+		    con1.close();
+		    } 
+		    catch(SQLException e1) 
+		    {
+		      System.out.println(e1.toString());
+		    }
+		}
+		return false;
+	}
+	
+	
+	 public static void insert_new_pot_method() {
+		 
+		 if(null != potentiometry_obj) {
+			 
+			Connection con = DbConnection.connect();
+			PreparedStatement ps = null;
+			try 
+			{
+				String sql = "INSERT INTO potentiometry_methods ( method_name, created_by, created_date, updated_date, updated_by, pre_dose, stir_time, max_vol, blank_vol, burette_factor, threshold, filter, dosage_rate, no_of_trials, factor1, factor2, factor3, factor4, ep_select, formula_no, result_unit, sop) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";				
+				
+				if(!potentiometry_obj.getSop().matches(cb_sop.getSelectedItem().toString()))
+					potentiometry_obj.setSop(cb_sop.getSelectedItem().toString());
+				
+				ps = con.prepareStatement(sql);
+				ps.setString(1, potentiometry_obj.getMethod_name());
+				ps.setString(2, potentiometry_obj.getCreated_by());
+				ps.setString(3, potentiometry_obj.getCreated_date());
+				ps.setString(4, potentiometry_obj.getUpdated_date());
+				ps.setString(5, potentiometry_obj.getUpdated_by());
+				ps.setString(6, potentiometry_obj.getPre_dose());
+				ps.setString(7, potentiometry_obj.getStir_time());
+				ps.setString(8, potentiometry_obj.getMax_vol());
+				ps.setString(9, potentiometry_obj.getBlank_vol());
+				ps.setString(10, potentiometry_obj.getBurette_factor());
+				ps.setString(11, potentiometry_obj.getThreshold());
+				ps.setString(12, potentiometry_obj.getFilter());
+				ps.setString(13, potentiometry_obj.getDosage_rate());
+				ps.setString(14, potentiometry_obj.getNo_of_trials());
+				ps.setString(15, potentiometry_obj.getFactor1());
+				ps.setString(16, potentiometry_obj.getFactor2());
+				ps.setString(17, potentiometry_obj.getFactor3());
+				ps.setString(18, potentiometry_obj.getFactor4());
+				ps.setString(19, potentiometry_obj.getEp_select());
+				ps.setString(20, potentiometry_obj.getFormula_no());
+				ps.setString(21, potentiometry_obj.getResult_unit());
+				ps.setString(22, cb_sop.getSelectedItem().toString());
+				
+
+				ps.execute();
+				menubar.metd_header.setText("Method Name : "+potentiometry_obj.getMethod_name());
+				frame.dispose();
+				JOptionPane.showMessageDialog(null, "Saved Successfully");
+				menubar.saved_file=true;
+				menubar.saved_file_name = potentiometry_obj.getMethod_name();
+				menubar.pot_tf_sop_value.setText(potentiometry_obj.getSop());
+				menubar.setPotentimetryObject(potentiometry_obj);
+				potentiometry_obj = null;
+			}
+			catch(SQLException e1) {
+				System.out.println(e1.toString());
+			}//always remember to close database connections
+			finally {
+			    try{
+			    ps.close();
+			    con.close();
+			    } catch(SQLException e1) {
+			      System.out.println(e1.toString());
+			    }
+			}
+		 }
+	 }
+	 
+	 public static void update_pot_method() {
+		 
+		 if(null != potentiometry_obj) {
+			 
+			Connection con = DbConnection.connect();
+			PreparedStatement ps = null;
+			try 
+			{
+				String sql = "Update potentiometry_methods set  updated_date = ? , updated_by = ? , pre_dose = ? , stir_time = ? , max_vol = ? , blank_vol = ? , burette_factor = ? , threshold = ? , filter = ? , dosage_rate = ? , no_of_trials = ? , factor1 = ? , factor2 = ? , factor3 = ? , factor4 = ? , ep_select = ? , formula_no = ? , result_unit = ? , sop = ?  WHERE method_name = ?";				
+				
+				if(!potentiometry_obj.getSop().matches(cb_sop.getSelectedItem().toString()))
+					potentiometry_obj.setSop(cb_sop.getSelectedItem().toString());
+				
+				ps = con.prepareStatement(sql);
+
+				ps.setString(1, potentiometry_obj.getUpdated_date());
+				ps.setString(2, potentiometry_obj.getUpdated_by());
+				ps.setString(3, potentiometry_obj.getPre_dose());
+				ps.setString(4, potentiometry_obj.getStir_time());
+				ps.setString(5, potentiometry_obj.getMax_vol());
+				ps.setString(6, potentiometry_obj.getBlank_vol());
+				ps.setString(7, potentiometry_obj.getBurette_factor());
+				ps.setString(8, potentiometry_obj.getThreshold());
+				ps.setString(9, potentiometry_obj.getFilter());
+				ps.setString(10, potentiometry_obj.getDosage_rate());
+				ps.setString(11, potentiometry_obj.getNo_of_trials());
+				ps.setString(12, potentiometry_obj.getFactor1());
+				ps.setString(13, potentiometry_obj.getFactor2());
+				ps.setString(14, potentiometry_obj.getFactor3());
+				ps.setString(15, potentiometry_obj.getFactor4());
+				ps.setString(16, potentiometry_obj.getEp_select());
+				ps.setString(17, potentiometry_obj.getFormula_no());
+				ps.setString(18, potentiometry_obj.getResult_unit());
+				ps.setString(19, potentiometry_obj.getSop());
+				ps.setString(20, potentiometry_obj.getMethod_name());
+
+				ps.execute();
+				menubar.metd_header.setText("Method Name : "+potentiometry_obj.getMethod_name());
+				frame.dispose();
+				JOptionPane.showMessageDialog(null, "Saved Successfully");
+				menubar.saved_file=true;
+				menubar.saved_file_name = potentiometry_obj.getMethod_name();
+				menubar.pot_tf_sop_value.setText(potentiometry_obj.getSop());
+
+			}
+			catch(SQLException e1) {
+				System.out.println(e1.toString());
+			}//always remember to close database connections
+			finally {
+			    try{
+			    ps.close();
+			    con.close();
+			    } catch(SQLException e1) {
+			      System.out.println(e1.toString());
+			    }
+			}
+		 }
+	 }
+	 
+	 public static void insert_new_kf_method() {
+		 
+		 if(null != kf_obj) {
+			 
+			Connection con = DbConnection.connect();
+			PreparedStatement ps = null;
+			try 
+			{
+				String sql = "INSERT INTO kf_methods ( method_name, created_by, created_date, updated_by, updated_date, delay, stir_time, max_vol, blank_vol, burette_factor, density, kf_factor, end_point, dosage_rate, result_unit, no_of_trials, sop) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)";				
+				
+				if(!kf_obj.getSop().matches(cb_sop.getSelectedItem().toString()))
+					kf_obj.setSop(cb_sop.getSelectedItem().toString());
+				
+				ps = con.prepareStatement(sql);
+				ps.setString(1, kf_obj.getMethod_name());
+				ps.setString(2, kf_obj.getCreated_by());
+				ps.setString(3, kf_obj.getCreated_date());
+				ps.setString(4, kf_obj.getUpdated_by());
+				ps.setString(5, kf_obj.getUpdated_date());
+				ps.setString(6, kf_obj.getDelay());
+				ps.setString(7, kf_obj.getStir_time());
+				ps.setString(8, kf_obj.getMax_vol());
+				ps.setString(9, kf_obj.getBlank_vol());
+				ps.setString(10, kf_obj.getBurette_factor());
+				ps.setString(11, kf_obj.getDensity());
+				ps.setString(12, kf_obj.getKf_factor());
+				ps.setString(13, kf_obj.getEnd_point());
+				ps.setString(14, kf_obj.getDosage_rate());
+				ps.setString(15, kf_obj.getResult_unit());
+				ps.setString(16, kf_obj.getNo_of_trials());
+				ps.setString(17, kf_obj.getSop());
+				
+				ps.execute();
+				menubar.metd_header.setText("Method Name : "+kf_obj.getMethod_name());
+				frame.dispose();
+				JOptionPane.showMessageDialog(null, "Saved Successfully");
+				menubar.saved_file=true;
+				menubar.saved_file_name = kf_obj.getMethod_name();
+				menubar.kf_tf_sop_value.setText(kf_obj.getSop());
+				menubar.setKFObject(kf_obj);
+				kf_obj =null;
+
+			}
+			catch(SQLException e1) {
+				System.out.println(e1.toString());
+			}//always remember to close database connections
+			finally {
+			    try{
+			    ps.close();
+			    con.close();
+			    } catch(SQLException e1) {
+			      System.out.println(e1.toString());
+			    }
+			}
+		 }
+	 }
+	 
+	 public static void update_kf_method() {
+		 
+		 if(null != kf_obj) {
+			 
+			Connection con = DbConnection.connect();
+			PreparedStatement ps = null;
+			try 
+			{
+				String sql = "Update kf_methods set updated_by = ?, updated_date = ?, delay = ?, stir_time = ?, max_vol = ?, blank_vol = ?, burette_factor = ?, density = ?, kf_factor = ?, end_point = ?, dosage_rate = ?, result_unit = ?, no_of_trials = ?, sop = ? where method_name = ?";				
+				
+				if(!kf_obj.getSop().matches(cb_sop.getSelectedItem().toString()))
+					kf_obj.setSop(cb_sop.getSelectedItem().toString());
+				
+				ps = con.prepareStatement(sql);
+			
+				ps.setString(1, kf_obj.getUpdated_by());
+				ps.setString(2, kf_obj.getUpdated_date());
+				ps.setString(3, kf_obj.getDelay());
+				ps.setString(4, kf_obj.getStir_time());
+				ps.setString(5, kf_obj.getMax_vol());
+				ps.setString(6, kf_obj.getBlank_vol());
+				ps.setString(7, kf_obj.getBurette_factor());
+				ps.setString(8, kf_obj.getDensity());
+				ps.setString(9, kf_obj.getKf_factor());
+				ps.setString(10, kf_obj.getEnd_point());
+				ps.setString(11, kf_obj.getDosage_rate());
+				ps.setString(12, kf_obj.getResult_unit());
+				ps.setString(13, kf_obj.getNo_of_trials());
+				ps.setString(14, kf_obj.getSop());
+				ps.setString(15, kf_obj.getMethod_name());
+
+				
+				ps.execute();
+				menubar.metd_header.setText("Method Name : "+kf_obj.getMethod_name());
+				frame.dispose();
+				JOptionPane.showMessageDialog(null, "Saved Successfully");
+				menubar.saved_file=true;
+				menubar.saved_file_name = kf_obj.getMethod_name();
+				menubar.kf_tf_sop_value.setText(kf_obj.getSop());
+
+			}
+			catch(SQLException e1) {
+				System.out.println(e1.toString());
+			}//always remember to close database connections
+			finally {
+			    try{
+			    ps.close();
+			    con.close();
+			    } catch(SQLException e1) {
+			      System.out.println(e1.toString());
+			    }
+			}
+		 }
+	 }
+	 
+	 public static String get_date() {
+			DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+			String date_time = dateFormat2.format(new Date()).toString();
+			return date_time;
+	}
+	
+	public static void setPotentimetryObject(potentiometry pot) {
+		potentiometry_obj  = new potentiometry(pot);
+		method_name = potentiometry_obj.getMethod_name();
+	}
+	public static void setKFObject(karl_fischer kf) {
+		kf_obj  = new karl_fischer(kf);
+		method_name = kf_obj.getMethod_name();
 	}
 }

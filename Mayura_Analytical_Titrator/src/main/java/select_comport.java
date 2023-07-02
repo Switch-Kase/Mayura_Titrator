@@ -56,7 +56,10 @@ public class select_comport extends JFrame {
 		
 		setBounds(300, 200, 500, 300);
 		setTitle("Select ComPort");
+		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
+		setIconImage(img.getImage());
 		setLocationRelativeTo(null);
+		setResizable(false);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

@@ -137,7 +137,7 @@ public class rename_metd_name extends JFrame {
 					String sql = null;
 					if(exp.matches("Potentiometry")) 
 					{
-						sql = "UPDATE pot_method SET Trial_name = ? WHERE Trial_name = ?";
+						sql = "UPDATE potentiometry_methods SET Trial_name = ? WHERE Trial_name = ?";
 					}
 					else if(exp.matches("Amperometry"))
 					{
@@ -148,7 +148,7 @@ public class rename_metd_name extends JFrame {
 						sql = "UPDATE ph_method SET Trial_name = ? WHERE Trial_name = ?";
 					}
 					else {
-						sql = "UPDATE kf_method SET Trial_name = ? WHERE Trial_name = ?";
+						sql = "UPDATE kf_methods SET Trial_name = ? WHERE Trial_name = ?";
 					}
 					
 					System.out.println("Checking");

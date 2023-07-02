@@ -90,7 +90,7 @@ public class calibrate_electrode extends JPanel {
 					close_page();
 				}
 				else {
-					check_details_from_db();
+					update_electrode_calibration();
 				}
 			}
 		});
@@ -146,17 +146,17 @@ public class calibrate_electrode extends JPanel {
 		int_temp_mv = Integer.parseInt(mv_val_str);
 		if(stop_updating == false) {
 			if (msg.contains("T")) {
-				text_mV.setText("<html>mV <br/>" + int_temp_mv + " mV</html>");
-				text_ph.setText("<html>pH <br/>" +String.format("%.2f", (7-((float)int_temp_mv / 54)))+ "</html>");
+				text_mV.setText("<html>mV <br/>" + (int_temp_mv-e_calib) + " mV</html>");
+				text_ph.setText("<html>pH <br/>" +String.format("%.2f", (7-((float)(int_temp_mv-e_calib) / 54)))+ "</html>");
 			} else if (msg.contains("N")) {
-				text_mV.setText("<html>mV <br/> " + (int_temp_mv*(-1)) + " mV</html>");
-				text_ph.setText("<html>pH <br/> " +String.format("%.2f", (7-((float)int_temp_mv / 54)))+ "</html>");
+				text_mV.setText("<html>mV <br/> " + ((int_temp_mv*(-1))-e_calib)+ " mV</html>");
+				text_ph.setText("<html>pH <br/> " +String.format("%.2f", (7-((float)(int_temp_mv-e_calib) / 54)))+ "</html>");
 				int_temp_mv = int_temp_mv*(-1);
 			}
 		}
 	}
 	
-	public static void check_details_from_db() {
+	public static void update_electrode_calibration() {
 		System.out.println("check details Electrode");
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
@@ -164,9 +164,9 @@ public class calibrate_electrode extends JPanel {
 		try {
 			String sql = "UPDATE config_param SET cnfg_param_value = ? WHERE cnfg_param_group =?  and cnfg_param_name = ?";
 			ps = con.prepareStatement(sql);
-			ps.setString(1, String.valueOf(int_temp_mv));
+			ps.setString(1, String.valueOf(e_calib + (int_temp_mv-e_calib)));
 			ps.setString(2, "electrodeFactor");
-			ps.setString(2, "electrodeFactor");
+			ps.setString(3, "electrodeFactor");
 			ps.executeUpdate();
 		} 
 		catch (SQLException e1) {
@@ -184,8 +184,10 @@ public class calibrate_electrode extends JPanel {
 		} catch (ParseException e1) {
 			e1.printStackTrace();
 		}
-		text_mV.setText("<html>mV <br/> 0 mV</html>");
-		text_ph.setText("<html>pH <br/> 7</html>");
+		e_calib = (e_calib + (int_temp_mv-e_calib));
+		menubar.e_calibration = e_calib;
+		text_mV.setText("<html>mV <br/>0</html>");
+		text_ph.setText("<html>pH <br/>7</html>");
 		previous_value.setText("Current value = "+int_temp_mv+" mV");	
 		JOptionPane.showMessageDialog(null, "Electrode calibrated to "+int_temp_mv);
 		button_calibrate.setText("Check completed for pH 4.0");
@@ -256,6 +258,8 @@ public class calibrate_electrode extends JPanel {
 				p.repaint();
 			}
 		});
+		JOptionPane.showMessageDialog(null, "Place the electrode in pH 7 solution");
+
 	}
 
 }

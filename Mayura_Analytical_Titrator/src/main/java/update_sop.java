@@ -168,7 +168,7 @@ public class update_sop extends JFrame {
 				res="";
 				try {
 					if(exp.matches("Potentiometry")) {
-						sql1 = "SELECT Value FROM pot_method where (Trial_name  = '"+method_name+"')";
+						sql1 = "SELECT Value FROM potentiometry_methods where (Trial_name  = '"+method_name+"')";
 					}
 					else if(exp.matches("Ph")) {
 						sql1 = "SELECT Value FROM ph_method where (Trial_name  = '"+method_name+"')";
@@ -177,7 +177,7 @@ public class update_sop extends JFrame {
 						sql1 = "SELECT Value FROM amp_method where (Trial_name  = '"+method_name+"')";
 					}
 					else {
-						sql1 = "SELECT Value FROM kf_method where (Trial_name  = '"+method_name+"')";
+						sql1 = "SELECT Value FROM kf_methods where (Trial_name  = '"+method_name+"')";
 					}
 					ps1 = con1.prepareStatement(sql1);
 					rs1 = ps1.executeQuery();
@@ -214,8 +214,8 @@ public class update_sop extends JFrame {
 					String sql = null;
 					if(exp.matches("Potentiometry")) 
 					{
-						//sql = "INSERT INTO pot_method(Value) VALUES(?)";
-						sql = "UPDATE pot_method SET Value = ? WHERE Trial_name = ?";
+						//sql = "INSERT INTO potentiometry_methods(Value) VALUES(?)";
+						sql = "UPDATE potentiometry_methods SET Value = ? WHERE Trial_name = ?";
 					}
 					else if(exp.matches("Amperometry"))
 					{
@@ -230,9 +230,9 @@ public class update_sop extends JFrame {
 						sql = "UPDATE ph_method SET Value = ? WHERE Trial_name = ?";
 					}
 					else {
-						//sql = "INSERT INTO kf_method(Value) VALUES(?)";
-						//sql = "UPDATE kf_method SET Value = ? , "+ "WHERE Trial_name = ?";
-						sql = "UPDATE kf_method SET Value = ? WHERE Trial_name = ?";
+						//sql = "INSERT INTO kf_methods(Value) VALUES(?)";
+						//sql = "UPDATE kf_methods SET Value = ? , "+ "WHERE Trial_name = ?";
+						sql = "UPDATE kf_methods SET Value = ? WHERE Trial_name = ?";
 					}
 							
 					System.out.println("Checking");

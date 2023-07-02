@@ -30,6 +30,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -71,6 +72,9 @@ import com.itextpdf.text.DocumentException;
 
 public class menubar extends JPanel implements ItemListener {
 
+	static potentiometry potentiometry_obj = null ;
+	static karl_fischer kf_obj = null ;
+	
 	static boolean checked_vaidity = false;
 
 	static float dose_rate_variable = 20;
@@ -110,7 +114,8 @@ public class menubar extends JPanel implements ItemListener {
 			kf_endpoint, kf_dosagerate, kf_resultunit, kf_units_stir, kf_units_delay, kf_units_maxvol,
 			kf_units_blankvol, kf_units_dosagerate, kf_units_endpoint, kf_sop;
 	static JTextField kf_tf_delay, kf_tf_stirtime, kf_tf_maxvol, kf_tf_blankvol, kf_tf_burette, kf_tf_density,
-			kf_tf_factor, kf_tf_endpoint, kf_tf_sop_value;
+			kf_tf_factor, kf_tf_endpoint;
+	static JButton kf_tf_sop_value;
 	static JComboBox kf_cb_dosagerate, kf_cb_nooftrials, kf_cb_resultunit;
 
 	static JPanel panel_ph1, panel_ph2, panel_ph3, panel_ph4, panel_ph5;
@@ -133,7 +138,7 @@ public class menubar extends JPanel implements ItemListener {
 			amp_tf_endpoint, amp_tf_factor1, amp_tf_factor2, amp_tf_factor3, amp_tf_factor4, amp_tf_sop_value;
 	static JComboBox amp_cb_filter, amp_cb_dosagerate, amp_cb_nooftrials, amp_cb_formula, amp_cb_resultunit;
 
-	static int counter = 0;
+	static int counter = 0,e_calibration = 0;
 	static String res;
 	static JLabel metd_header;
 	boolean vol_counter = false;
@@ -150,7 +155,7 @@ public class menubar extends JPanel implements ItemListener {
 
 	static JMenuItem mnNewMenu_7, menuItem_burette, menu_item_log, menu_item_print_report, menu_item_print_method,
 			menu_item_print_log, menu_item_exit, menu_item_mv_display, menu_item_measure, menu_item_calibrate,
-			menu_item_pot, menu_item_kf, menu_item_ph, menu_item_amp, menu_item_login, menu_item_sa_login,
+			menu_item_pot, menu_item_kf, menu_item_ph, menu_item_amp, menu_item_login, menu_item_sa_login, menu_item_get_buretteFactor,
 			menu_item_view_reports, menu_item_comport, menu_item_logout, menuItem_add_sop, menuItem_custom_formula,
 			menuItem_device_data,menuItem_calibrate_electrode;
 	static JRadioButton rdbtnNewRadioButton, rdbtnNewRadioButton_1, rdbtnNewRadioButton_2, rdbtnNewRadioButton_3;
@@ -261,6 +266,8 @@ public class menubar extends JPanel implements ItemListener {
 
 			DrawGraph_pot.main(b);
 			DrawGraph_pot.port_setup(serial_port1);
+			DrawGraph_pot.e_calib = e_calibration;
+			potentiometry_obj = null;
 			frame1.dispose();
 			frame1 = new JFrame();
 			p = new JPanel();
@@ -287,7 +294,14 @@ public class menubar extends JPanel implements ItemListener {
 			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
 		}
 	}
+	public static void open_electrode_calibration(String[] aa) {
 
+		if (serial_port1 != null) {
+			calibrate_electrode.main(aa);
+		} else {
+			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
+		}
+	}
 	public static void open_draw_graph_kf(String[] aa) {
 
 		if (serial_port1 != null) {
@@ -306,6 +320,7 @@ public class menubar extends JPanel implements ItemListener {
 
 			DrawGraph_kf.main(temp_array);
 			DrawGraph_kf.port_setup(serial_port1);
+			DrawGraph_kf.e_calib = e_calibration;
 			frame1.dispose();
 			frame1 = new JFrame();
 			p = new JPanel();
@@ -756,10 +771,11 @@ public class menubar extends JPanel implements ItemListener {
 		}
 		int int_temp_mv = Integer.parseInt(mv_val_str);
 		if (msg.contains("T")) {
-			jlabel_mv_Value.setText(int_temp_mv + " mV");
+			jlabel_mv_Value.setText((int_temp_mv-e_calibration) + " mV");
 		} else if (msg.contains("N")) {
-			jlabel_mv_Value.setText("-" + int_temp_mv + " mV");
+			jlabel_mv_Value.setText(((int_temp_mv * (-1)) -e_calibration)+ " mV");
 		}
+		//System.out.println("Menubar MV Raw = "+int_temp_mv);
 	}
 
 	public static String get_date() {
@@ -855,103 +871,110 @@ public class menubar extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		String[] data_arr = null;
 
-		String sql;
+		String sql = null;
+		
+		String pot_formula_no = null;
 		res = "";
 		try {
 			if (selected_experiment.matches("potentiometry")) {
-				sql = "SELECT Value FROM pot_method where (Trial_name  = '" + data_got + "')";
+				sql = "SELECT * FROM potentiometry_methods where (method_name  = '" + data_got + "')";
 			} else if (selected_experiment.matches("phstat")) {
-				sql = "SELECT Value FROM ph_method where (Trial_name  = '" + data_got + "')";
+				sql = "SELECT * FROM ph_method where (method_name  = '" + data_got + "')";
 			} else if (selected_experiment.matches("amperometry")) {
-				sql = "SELECT Value FROM amp_method where (Trial_name  = '" + data_got + "')";
-			} else {
-				sql = "SELECT Value FROM kf_method where (Trial_name  = '" + data_got + "')";
+				sql = "SELECT * FROM amp_method where (method_name  = '" + data_got + "')";
+			} else if(selected_experiment.matches("karl")) {
+				sql = "SELECT * FROM kf_methods where (method_name  = '" + data_got + "')";
 			}
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 
-			// ////system.out.println("got got got" + rs.getString("Value"));
-			res = rs.getString("Value");
-			data_arr = res.split(",");
+			res = "";
 			if (selected_experiment.matches("potentiometry")) {
-				// //system.out.println("inside if temp = " + res);
 
-				pot_tf_predose.setText(data_arr[0]);
-				pot_tf_stirtime.setText(data_arr[1]);
-				pot_tf_maxvol.setText(data_arr[2]);
-				pot_tf_blankvol.setText(data_arr[3]);
-				pot_tf_burette.setText(data_arr[4]);
-				pot_cb_threshold.setSelectedItem(data_arr[5]);
-				pot_cb_filter.setSelectedItem(data_arr[6]);
-				pot_cb_dosagerate.setSelectedItem(data_arr[7]);
-				pot_cb_nooftrials.setSelectedItem(data_arr[8]);
-				pot_tf_factor1.setText(data_arr[9]);
-				pot_tf_factor2.setText(data_arr[10]);
-				pot_tf_factor3.setText(data_arr[11]);
-				pot_tf_factor4.setText(data_arr[12]);
-				pot_cb_epselect.setSelectedItem(data_arr[13]);
-				pot_cb_resultunit.setSelectedItem(data_arr[16]);
-				pot_tf_sop_value.setText(data_arr[17]);
+				pot_tf_predose.setText(rs.getString("pre_dose"));
+				pot_tf_stirtime.setText(rs.getString("stir_time"));
+				pot_tf_maxvol.setText(rs.getString("max_vol"));
+				pot_tf_blankvol.setText(rs.getString("blank_vol"));
+				pot_tf_burette.setText(rs.getString("burette_factor"));
+				pot_cb_threshold.setSelectedItem(rs.getString("threshold"));
+				pot_cb_filter.setSelectedItem(rs.getString("filter"));
+				pot_cb_dosagerate.setSelectedItem(rs.getString("dosage_rate"));
+				pot_cb_nooftrials.setSelectedItem(rs.getString("no_of_trials"));
+				pot_tf_factor1.setText(rs.getString("factor1"));
+				pot_tf_factor2.setText(rs.getString("factor2"));
+				pot_tf_factor3.setText(rs.getString("factor3"));
+				pot_tf_factor4.setText(rs.getString("factor4"));
+				pot_cb_epselect.setSelectedItem(rs.getString("ep_select"));
+				pot_cb_resultunit.setSelectedItem(rs.getString("result_unit"));
+				pot_tf_sop_value.setText(rs.getString("sop"));
+				pot_formula_no = rs.getString("formula_no");
+				
+				potentiometry_obj = new potentiometry(data_got, rs.getString("created_by"),rs.getString("created_date"),rs.getString("updated_date"),rs.getString("updated_by")
+						,rs.getString("pre_dose"),rs.getString("stir_time"),rs.getString("max_vol"),rs.getString("blank_vol"),rs.getString("burette_factor"),rs.getString("threshold"),rs.getString("filter"),
+						rs.getString("dosage_rate"),rs.getString("no_of_trials"),rs.getString("factor1"),rs.getString("factor2"),rs.getString("factor3"),rs.getString("factor4"),rs.getString("ep_select"),
+						rs.getString("formula_no"),rs.getString("result_unit"),rs.getString("sop"));
 
-			} else if (selected_experiment.matches("phstat")) {
-				ph_tf_stirtime.setText(data_arr[0]);
-				ph_tf_delay.setText(data_arr[1]);
-				ph_tf_predose.setText(data_arr[2]);
-				ph_tf_maxvol.setText(data_arr[3]);
-				ph_tf_blankvol.setText(data_arr[4]);
-				ph_tf_burette.setText(data_arr[5]);
-				ph_tf_endpoint.setText(data_arr[6]);
-				ph_cb_dosagerate.setSelectedItem(data_arr[7]);
-				ph_cb_formula.setSelectedItem(data_arr[8]);
-				ph_cb_nooftrials.setSelectedItem(data_arr[9]);
-				ph_tf_factor1.setText(data_arr[10]);
-				ph_tf_factor2.setText(data_arr[11]);
-				ph_tf_factor3.setText(data_arr[12]);
-				ph_tf_factor4.setText(data_arr[13]);
-				ph_cb_resultunit.setSelectedItem(data_arr[15]);
-				ph_cb_calibrate.setSelectedItem(data_arr[16]);
-				ph_tf_slope1.setText(data_arr[17]);
-				ph_tf_slope2.setText(data_arr[18]);
-				ph_tf_sop_value.setText(data_arr[19]);
-
-			} else if (selected_experiment.matches("amperometry")) {
-				amp_tf_stirtime.setText(data_arr[0]);
-				amp_tf_delay.setText(data_arr[1]);
-				amp_tf_predose.setText(data_arr[2]);
-				amp_tf_maxvol.setText(data_arr[3]);
-				amp_tf_blankvol.setText(data_arr[4]);
-				amp_tf_burette.setText(data_arr[5]);
-				amp_tf_endpoint.setText(data_arr[6]);
-				amp_cb_dosagerate.setSelectedItem(data_arr[7]);
-				amp_cb_formula.setSelectedItem(data_arr[8]);
-				amp_cb_nooftrials.setSelectedItem(data_arr[9]);
-				amp_tf_factor1.setText(data_arr[10]);
-				amp_tf_factor2.setText(data_arr[11]);
-				amp_tf_factor3.setText(data_arr[12]);
-				amp_tf_factor4.setText(data_arr[13]);
-				amp_cb_filter.setSelectedItem(data_arr[14]);
-				amp_cb_resultunit.setSelectedItem(data_arr[15]);
-				amp_tf_sop_value.setText(data_arr[16]);
-			}
+			} 
+//else if (selected_experiment.matches("phstat")) {
+//				ph_tf_stirtime.setText(data_arr[0]);
+//				ph_tf_delay.setText(data_arr[1]);
+//				ph_tf_predose.setText(data_arr[2]);
+//				ph_tf_maxvol.setText(data_arr[3]);
+//				ph_tf_blankvol.setText(data_arr[4]);
+//				ph_tf_burette.setText(data_arr[5]);
+//				ph_tf_endpoint.setText(data_arr[6]);
+//				ph_cb_dosagerate.setSelectedItem(data_arr[7]);
+//				ph_cb_formula.setSelectedItem(data_arr[8]);
+//				ph_cb_nooftrials.setSelectedItem(data_arr[9]);
+//				ph_tf_factor1.setText(data_arr[10]);
+//				ph_tf_factor2.setText(data_arr[11]);
+//				ph_tf_factor3.setText(data_arr[12]);
+//				ph_tf_factor4.setText(data_arr[13]);
+//				ph_cb_resultunit.setSelectedItem(data_arr[15]);
+//				ph_cb_calibrate.setSelectedItem(data_arr[16]);
+//				ph_tf_slope1.setText(data_arr[17]);
+//				ph_tf_slope2.setText(data_arr[18]);
+//				ph_tf_sop_value.setText(data_arr[19]);
+//
+//			} else if (selected_experiment.matches("amperometry")) {
+//				amp_tf_stirtime.setText(data_arr[0]);
+//				amp_tf_delay.setText(data_arr[1]);
+//				amp_tf_predose.setText(data_arr[2]);
+//				amp_tf_maxvol.setText(data_arr[3]);
+//				amp_tf_blankvol.setText(data_arr[4]);
+//				amp_tf_burette.setText(data_arr[5]);
+//				amp_tf_endpoint.setText(data_arr[6]);
+//				amp_cb_dosagerate.setSelectedItem(data_arr[7]);
+//				amp_cb_formula.setSelectedItem(data_arr[8]);
+//				amp_cb_nooftrials.setSelectedItem(data_arr[9]);
+//				amp_tf_factor1.setText(data_arr[10]);
+//				amp_tf_factor2.setText(data_arr[11]);
+//				amp_tf_factor3.setText(data_arr[12]);
+//				amp_tf_factor4.setText(data_arr[13]);
+//				amp_cb_filter.setSelectedItem(data_arr[14]);
+//				amp_cb_resultunit.setSelectedItem(data_arr[15]);
+//				amp_tf_sop_value.setText(data_arr[16]);
+//			}
 
 			else if (selected_experiment.matches("karl")) {
-				kf_tf_delay.setText(data_arr[0]);
-				kf_tf_stirtime.setText(data_arr[1]);
-				kf_tf_maxvol.setText(data_arr[2]);
-				kf_tf_blankvol.setText(data_arr[3]);
-				kf_tf_burette.setText(data_arr[4]);
-				kf_tf_density.setText(data_arr[5]);
-				kf_tf_factor.setText(data_arr[6]);
-				kf_tf_endpoint.setText(data_arr[7]);
-				kf_cb_dosagerate.setSelectedItem(data_arr[8]);
-				kf_cb_resultunit.setSelectedItem(data_arr[9]);
-				kf_cb_nooftrials.setSelectedItem(data_arr[10]);
-				kf_tf_sop_value.setText(data_arr[11]);
-
+				kf_tf_delay.setText(rs.getString("delay"));
+				kf_tf_stirtime.setText(rs.getString("stir_time"));
+				kf_tf_maxvol.setText(rs.getString("max_vol"));
+				kf_tf_blankvol.setText(rs.getString("blank_vol"));
+				kf_tf_burette.setText(rs.getString("burette_factor"));
+				kf_tf_density.setText(rs.getString("density"));
+				kf_tf_factor.setText(rs.getString("kf_factor"));
+				kf_tf_endpoint.setText(rs.getString("end_point"));
+				kf_cb_dosagerate.setSelectedItem(rs.getString("dosage_rate"));
+				kf_cb_resultunit.setSelectedItem(rs.getString("result_unit"));
+				kf_cb_nooftrials.setSelectedItem(rs.getString("no_of_trials"));
+				kf_tf_sop_value.setText(rs.getString("sop"));
+				
+				kf_obj = new karl_fischer(data_got,rs.getString("created_by"), rs.getString("created_date"), rs.getString("updated_by"), rs.getString("updated_date"), rs.getString("delay"), rs.getString("stir_time"), 
+						rs.getString("max_vol"),rs.getString("blank_vol"),rs.getString("burette_factor"), rs.getString("density"),rs.getString("kf_factor"),rs.getString("end_point"),rs.getString("dosage_rate"),rs.getString("result_unit"),
+						rs.getString("no_of_trials"), rs.getString("sop"));
 			}
-
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -959,7 +982,7 @@ public class menubar extends JPanel implements ItemListener {
 				ps.close();
 				con.close();
 				if (selected_experiment.matches("potentiometry")) {
-					pot_cb_formula.setSelectedItem(data_arr[14]);
+					pot_cb_formula.setSelectedItem(pot_formula_no);
 				}
 			} catch (SQLException e1) {
 				// system.out.println(e1.toString());
@@ -1129,7 +1152,7 @@ public class menubar extends JPanel implements ItemListener {
 		add(panel_kf4);
 		panel_kf4.setVisible(false);
 
-		panel_kf5.setBounds(593, 184, 130, 145);
+		panel_kf5.setBounds(593, 184, 130, 118);
 		panel_kf5.setLayout(new BoxLayout(panel_kf5, BoxLayout.Y_AXIS));
 		add(panel_kf5);
 		panel_kf5.setVisible(false);
@@ -1603,9 +1626,6 @@ public class menubar extends JPanel implements ItemListener {
 		kf_tf_factor.setText("5");
 		kf_tf_endpoint = new JTextField();
 		kf_tf_endpoint.setText("30");
-		kf_tf_sop_value = new JTextField();
-		kf_tf_sop_value.setText("Not Selected");
-		kf_tf_sop_value.setEditable(false);
 
 		String[] kf_dosage_arr = { "0.5", "1.0", "2.0", "3.0", "4.0", "5.0", "6.0", "8.0", "10.0", "12.0", "14.0",
 				"16.0" };
@@ -1684,12 +1704,12 @@ public class menubar extends JPanel implements ItemListener {
 		panel_kf4.add(kf_sop);
 
 		panel_kf5.add(kf_cb_dosagerate);
-		panel_kf5.add(Box.createVerticalStrut(15));
+		panel_kf5.add(Box.createVerticalStrut(5));
 		panel_kf5.add(kf_cb_resultunit);
-		panel_kf5.add(Box.createVerticalStrut(15));
+		panel_kf5.add(Box.createVerticalStrut(5));
 		panel_kf5.add(kf_cb_nooftrials);
 		panel_kf5.add(Box.createVerticalStrut(15));
-		panel_kf5.add(kf_tf_sop_value);
+
 
 		// PH
 
@@ -2110,231 +2130,65 @@ public class menubar extends JPanel implements ItemListener {
 		btn_run_mb.setBackground(SystemColor.text);
 		btn_run_mb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (saved_file == true) {
-					//// system.out.println(" Inside If If");
-					if (selected_experiment.matches("potentiometry")) {
-						String data = pot_tf_predose.getText().toString() + "," + pot_tf_stirtime.getText().toString()
-								+ "," + pot_tf_maxvol.getText().toString() + "," + pot_tf_blankvol.getText().toString()
-								+ "," + pot_tf_burette.getText().toString() + ","
-								+ pot_cb_threshold.getSelectedItem().toString() + ","
-								+ pot_cb_filter.getSelectedItem().toString() + ","
-								+ pot_cb_dosagerate.getSelectedItem().toString() + ","
-								+ pot_cb_nooftrials.getSelectedItem().toString() + ","
-								+ pot_tf_factor1.getText().toString() + "," + pot_tf_factor2.getText().toString() + ","
-								+ pot_tf_factor3.getText().toString() + "," + pot_tf_factor4.getText().toString() + ","
-								+ pot_cb_epselect.getSelectedItem().toString() + ","
-								+ pot_cb_formula.getSelectedItem().toString() + ","
-								+ pot_cb_tendency.getSelectedItem().toString() + ","
-								+ pot_cb_resultunit.getSelectedItem().toString() + ","
-								+ pot_tf_sop_value.getText().toString();// www
+				if (selected_experiment.matches("potentiometry")) {
+					potentiometry pot_var = get_potentiometryObj();
+					
+					//the user is trying to run a unsaved method OR the user is trying to run a param_changed saved method
+					if(null == potentiometry_obj && no_update == true) {
+						JOptionPane.showMessageDialog(null, "Please use a existing Method File");
+					}
+						
+					else if((null == potentiometry_obj && no_update == false) || (null != potentiometry_obj && !getTemp_potentiometryObj().equals(potentiometry_obj))) {
+						save_method save_method1 = new save_method();
+						String[] temp_arr = {"pot"};
+						save_method1.main(temp_arr);
+						saved = 0;
+						pot_var.setMethod_name(selected_methodfile);
+						save_method1.setPotentimetryObject(pot_var);
+					}
+					
+					//the user is trying to run a saved method
+					else if(null != potentiometry_obj && getTemp_potentiometryObj().equals(potentiometry_obj)) {
 						popup_input dg = new popup_input();
-						String[] temp = { data, saved_file_name, "false", "pot" };
-						dg.main(temp);
-					} else if (selected_experiment.matches("phstat")) {
-						String data = ph_tf_stirtime.getText().toString() + "," + ph_tf_delay.getText().toString() + ","
-								+ ph_tf_predose.getText().toString() + "," + ph_tf_maxvol.getText().toString() + ","
-								+ ph_tf_blankvol.getText().toString() + "," + ph_tf_burette.getText().toString() + ","
-								+ ph_tf_endpoint.getText().toString() + ","
-								+ ph_cb_dosagerate.getSelectedItem().toString() + ","
-								+ ph_cb_formula.getSelectedItem().toString() + ","
-								+ ph_cb_nooftrials.getSelectedItem().toString() + ","
-								+ ph_tf_factor1.getText().toString() + "," + ph_tf_factor2.getText().toString() + ","
-								+ ph_tf_factor3.getText().toString() + "," + ph_tf_factor4.getText().toString() + ","
-								+ ph_cb_resultunit.getSelectedItem().toString() + ","
-								+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
-								+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();// www
-//						popup_input_ph dg = new popup_input_ph();
-//						String[] temp = { data, saved_file_name, "false", "ph" };
-//						dg.main(temp);
-					} else if (selected_experiment.matches("amperometry")) {
-						String data = amp_tf_stirtime.getText().toString() + "," + amp_tf_delay.getText().toString()
-								+ "," + amp_tf_predose.getText().toString() + "," + amp_tf_maxvol.getText().toString()
-								+ "," + amp_tf_blankvol.getText().toString() + "," + amp_tf_burette.getText().toString()
-								+ "," + amp_tf_endpoint.getText().toString() + ","
-								+ amp_cb_dosagerate.getSelectedItem().toString() + ","
-								+ amp_cb_formula.getSelectedItem().toString() + ","
-								+ amp_cb_nooftrials.getSelectedItem().toString() + ","
-								+ amp_tf_factor1.getText().toString() + "," + amp_tf_factor2.getText().toString() + ","
-								+ amp_tf_factor3.getText().toString() + "," + amp_tf_factor4.getText().toString() + ","
-								+ amp_cb_filter.getSelectedItem().toString() + ","
-								+ amp_cb_resultunit.getSelectedItem().toString() + ","
-								+ amp_tf_sop_value.getText().toString();// www
-//						popup_input_amp dg = new popup_input_amp();
-//						String[] temp = { data, saved_file_name, "false", "amp" };
-//						dg.main(temp);
+						if (no_update == true) {
+							String[] temp = {"false"};
+							dg.main(temp);
+						} else {
+							String[] temp = {"true"};
+							dg.main(temp);
+						}
+						dg.setPotentimetryObject(potentiometry_obj);
 					}
+				}
+				
+				else if (selected_experiment.matches("karl")) {
+					
+					karl_fischer kf_var = get_kfObj();
 
-					else if (selected_experiment.matches("karl")) {
-						String data = kf_tf_delay.getText().toString() + "," + kf_tf_stirtime.getText().toString() + ","
-								+ kf_tf_maxvol.getText().toString() + "," + kf_tf_blankvol.getText().toString() + ","
-								+ kf_tf_burette.getText().toString() + "," + kf_tf_density.getText().toString() + ","
-								+ kf_tf_factor.getText().toString() + "," + kf_tf_endpoint.getText().toString() + ","
-								+ kf_cb_dosagerate.getSelectedItem().toString() + ","
-								+ kf_cb_resultunit.getSelectedItem().toString() + ","
-								+ kf_cb_nooftrials.getSelectedItem().toString() + ","
-								+ kf_tf_sop_value.getText().toString();// www
+					if(null == kf_obj && no_update == true) {
+						JOptionPane.showMessageDialog(null, "Please use a existing Method File");
+					}
+					//the user is trying to run a unsaved method OR the user is trying to run a param_changed saved method
+					else if((null == kf_obj && no_update == false) || (null != kf_obj && !getTemp_KFObj().equals(kf_obj))) {
+						save_method save_method1 = new save_method();
+						String[] temp_arr = {"karl"};
+						save_method1.main(temp_arr);
+						saved = 0;
+						kf_var.setMethod_name(selected_methodfile);
+						save_method1.setKFObject(kf_var);
+					}
+					
+					//the user is trying to run a saved method
+					else if(null != kf_obj && getTemp_KFObj().equals(kf_obj)) {
 						popup_input_kf dg = new popup_input_kf();
-						String[] temp = { data, saved_file_name, "false", "kf" };
-						dg.main(temp);
-					}
-				} else {
-					// system.out.println("Inside Inside else");
-
-					if (selected_experiment.matches("potentiometry")) {
-						String data = pot_tf_predose.getText().toString() + "," + pot_tf_stirtime.getText().toString()
-								+ "," + pot_tf_maxvol.getText().toString() + "," + pot_tf_blankvol.getText().toString()
-								+ "," + pot_tf_burette.getText().toString() + ","
-								+ pot_cb_threshold.getSelectedItem().toString() + ","
-								+ pot_cb_filter.getSelectedItem().toString() + ","
-								+ pot_cb_dosagerate.getSelectedItem().toString() + ","
-								+ pot_cb_nooftrials.getSelectedItem().toString() + ","
-								+ pot_tf_factor1.getText().toString() + "," + pot_tf_factor2.getText().toString() + ","
-								+ pot_tf_factor3.getText().toString() + "," + pot_tf_factor4.getText().toString() + ","
-								+ pot_cb_epselect.getSelectedItem().toString() + ","
-								+ pot_cb_formula.getSelectedItem().toString() + ","
-								+ pot_cb_resultunit.getSelectedItem().toString() + ","
-								+ pot_tf_sop_value.getText().toString();// www
-						if (selected_methodfile != null) {
-							if (res.matches(data)) {
-
-								if (no_update == true) {
-									popup_input dg = new popup_input();
-									String[] temp = { data, selected_methodfile, "false", "pot" };
-									dg.main(temp);
-								} else {
-									popup_input dg = new popup_input();
-									String[] temp = { data, selected_methodfile, "true", "pot" };
-									dg.main(temp);
-								}
-
-							} else {
-								save_method save_method1 = new save_method();
-								String[] temp_arr = { data, selected_methodfile, "pot" };
-								save_method1.main(temp_arr);
-								saved = 0;
-							}
+						if (no_update == true) {
+							String[] temp = {"false"};
+							dg.main(temp);
 						} else {
-							save_method save_method1 = new save_method();
-							String[] temp_arr = { data, "", "pot" };
-							save_method1.main(temp_arr);
-							saved = 0;
+							String[] temp = {"true"};
+							dg.main(temp);
 						}
-					}
-
-					else if (selected_experiment.matches("phstat")) {
-						String data = ph_tf_stirtime.getText().toString() + "," + ph_tf_delay.getText().toString() + ","
-								+ ph_tf_predose.getText().toString() + "," + ph_tf_maxvol.getText().toString() + ","
-								+ ph_tf_blankvol.getText().toString() + "," + ph_tf_burette.getText().toString() + ","
-								+ ph_tf_endpoint.getText().toString() + ","
-								+ ph_cb_dosagerate.getSelectedItem().toString() + ","
-								+ ph_cb_formula.getSelectedItem().toString() + ","
-								+ ph_cb_nooftrials.getSelectedItem().toString() + ","
-								+ ph_tf_factor1.getText().toString() + "," + ph_tf_factor2.getText().toString() + ","
-								+ ph_tf_factor3.getText().toString() + "," + ph_tf_factor4.getText().toString() + ","
-								+ ph_cb_resultunit.getSelectedItem().toString() + ","
-								+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
-								+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();// www
-						if (selected_methodfile != null) {
-							if (res.matches(data)) {
-
-//								if (no_update == true) {
-//									popup_input_ph dg = new popup_input_ph();
-//									String[] temp = { data, selected_methodfile, "false", "ph" };
-//									dg.main(temp);
-//								} else {
-//									popup_input_ph dg = new popup_input_ph();
-//									String[] temp = { data, selected_methodfile, "true", "ph" };
-//									dg.main(temp);
-//								}
-							} else {
-								save_method save_method1 = new save_method();
-								String[] temp_arr = { data, selected_methodfile, "ph" };
-								save_method1.main(temp_arr);
-								saved = 0;
-							}
-						} else {
-							save_method save_method1 = new save_method();
-							String[] temp_arr = { data, "", "ph" };
-							save_method1.main(temp_arr);
-							saved = 0;
-						}
-
-					} else if (selected_experiment.matches("amperometry")) {
-						String data = amp_tf_stirtime.getText().toString() + "," + amp_tf_delay.getText().toString()
-								+ "," + amp_tf_predose.getText().toString() + "," + amp_tf_maxvol.getText().toString()
-								+ "," + amp_tf_blankvol.getText().toString() + "," + amp_tf_burette.getText().toString()
-								+ "," + amp_tf_endpoint.getText().toString() + ","
-								+ amp_cb_dosagerate.getSelectedItem().toString() + ","
-								+ amp_cb_formula.getSelectedItem().toString() + ","
-								+ amp_cb_nooftrials.getSelectedItem().toString() + ","
-								+ amp_tf_factor1.getText().toString() + "," + amp_tf_factor2.getText().toString() + ","
-								+ amp_tf_factor3.getText().toString() + "," + amp_tf_factor4.getText().toString() + ","
-								+ amp_cb_filter.getSelectedItem().toString() + ","
-								+ amp_cb_resultunit.getSelectedItem().toString() + ","
-								+ amp_tf_sop_value.getText().toString();// www
-						if (selected_methodfile != null) {
-							if (res.matches(data)) {
-
-//								if (no_update == true) {
-//									popup_input_amp dg = new popup_input_amp();
-//									String[] temp = { data, selected_methodfile, "false", "amp" };
-//									dg.main(temp);
-//								} else {
-//									popup_input_amp dg = new popup_input_amp();
-//									String[] temp = { data, selected_methodfile, "true", "amp" };
-//									dg.main(temp);
-//								}
-							} else {
-								save_method save_method1 = new save_method();
-								String[] temp_arr = { data, selected_methodfile, "amp" };
-								save_method1.main(temp_arr);
-								saved = 0;
-							}
-						} else {
-							save_method save_method1 = new save_method();
-							String[] temp_arr = { data, "", "amp" };
-							save_method1.main(temp_arr);
-							saved = 0;
-						}
-					}
-
-					else if (selected_experiment.matches("karl")) {
-						String data = kf_tf_delay.getText().toString() + "," + kf_tf_stirtime.getText().toString() + ","
-								+ kf_tf_maxvol.getText().toString() + "," + kf_tf_blankvol.getText().toString() + ","
-								+ kf_tf_burette.getText().toString() + "," + kf_tf_density.getText().toString() + ","
-								+ kf_tf_factor.getText().toString() + "," + kf_tf_endpoint.getText().toString() + ","
-								+ kf_cb_dosagerate.getSelectedItem().toString() + ","
-								+ kf_cb_resultunit.getSelectedItem().toString() + ","
-								+ kf_cb_nooftrials.getSelectedItem().toString() + ","
-								+ kf_tf_sop_value.getText().toString();// www
-						// //system.out.println("Data ELse If KF = "+data);
-						if (selected_methodfile != null) {
-							// //system.out.println("Data ELse first If KF = "+selected_methodfile);
-							if (res.matches(data)) {
-								if (no_update == true) {
-									popup_input_kf dg = new popup_input_kf();
-									String[] temp = { data, selected_methodfile, "false", "kf" };
-									dg.main(temp);
-								} else {
-									popup_input_kf dg = new popup_input_kf();
-									String[] temp = { data, selected_methodfile, "true", "kf" };
-									dg.main(temp);
-								}
-							} else {
-								/// //system.out.println("Data ELse first If else KF = "+res);
-								save_method save_method1 = new save_method();
-								String[] temp_arr = { data, selected_methodfile, "kf" };
-								save_method1.main(temp_arr);
-								saved = 0;
-							}
-						} else {
-							// //system.out.println("Data ELse first else KF = "+res);
-
-							save_method save_method1 = new save_method();
-							String[] temp_arr = { data, "", "kf" };
-							save_method1.main(temp_arr);
-							saved = 0;
-						}
+						dg.setKFObject(kf_obj);
 					}
 				}
 			}
@@ -2349,104 +2203,46 @@ public class menubar extends JPanel implements ItemListener {
 		btn_save_mb.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (selected_experiment.matches("potentiometry")) {
-					String data = pot_tf_predose.getText().toString() + "," + pot_tf_stirtime.getText().toString() + ","
-							+ pot_tf_maxvol.getText().toString() + "," + pot_tf_blankvol.getText().toString() + ","
-							+ pot_tf_burette.getText().toString() + "," + pot_cb_threshold.getSelectedItem().toString()
-							+ "," + pot_cb_filter.getSelectedItem().toString() + ","
-							+ pot_cb_dosagerate.getSelectedItem().toString() + ","
-							+ pot_cb_nooftrials.getSelectedItem().toString() + "," + pot_tf_factor1.getText().toString()
-							+ "," + pot_tf_factor2.getText().toString() + "," + pot_tf_factor3.getText().toString()
-							+ "," + pot_tf_factor4.getText().toString() + ","
-							+ pot_cb_epselect.getSelectedItem().toString() + ","
-							+ pot_cb_formula.getSelectedItem().toString() + ","
-							+ pot_cb_resultunit.getSelectedItem().toString() + ","
-							+ pot_tf_sop_value.getText().toString();
-					if (selected_methodfile != null) {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, selected_methodfile, "pot" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					} else {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, "", "pot" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					}
+					potentiometry pot_var = get_potentiometryObj();
+					save_method save_method1 = new save_method();
 
+					if (selected_methodfile != null) {
+						String[] temp_arr = {"pot"};
+						save_method1.main(temp_arr);
+						saved = 0;
+						pot_var.setMethod_name(selected_methodfile);
+
+					} else {
+						String[] temp_arr = {"pot"};
+						save_method1.main(temp_arr);
+						saved = 0;
+						pot_var.setMethod_name(null);
+					}
+					save_method1.setPotentimetryObject(pot_var);
 				}
-
-				else if (selected_experiment.matches("phstat")) {
-					String data = ph_tf_stirtime.getText().toString() + "," + ph_tf_delay.getText().toString() + ","
-							+ ph_tf_predose.getText().toString() + "," + ph_tf_maxvol.getText().toString() + ","
-							+ ph_tf_blankvol.getText().toString() + "," + ph_tf_burette.getText().toString() + ","
-							+ ph_tf_endpoint.getText().toString() + "," + ph_cb_dosagerate.getSelectedItem().toString()
-							+ "," + ph_cb_formula.getSelectedItem().toString() + ","
-							+ ph_cb_nooftrials.getSelectedItem().toString() + "," + ph_tf_factor1.getText().toString()
-							+ "," + ph_tf_factor2.getText().toString() + "," + ph_tf_factor3.getText().toString() + ","
-							+ ph_tf_factor4.getText().toString() + "," + ph_cb_resultunit.getSelectedItem().toString() + ","
-							+ ph_cb_calibrate.getSelectedItem().toString() + "," + ph_tf_slope1.getText().toString()
-							+ "," + ph_tf_slope2.getText().toString() + "," + ph_tf_sop_value.getText().toString();
-					if (selected_methodfile != null) {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, selected_methodfile, "ph" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					} else {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, "", "ph" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					}
-
-				} else if (selected_experiment.matches("amperometry")) {
-					String data = amp_tf_stirtime.getText().toString() + "," + amp_tf_delay.getText().toString() + ","
-							+ amp_tf_predose.getText().toString() + "," + amp_tf_maxvol.getText().toString() + ","
-							+ amp_tf_blankvol.getText().toString() + "," + amp_tf_burette.getText().toString() + ","
-							+ amp_tf_endpoint.getText().toString() + ","
-							+ amp_cb_dosagerate.getSelectedItem().toString() + ","
-							+ amp_cb_formula.getSelectedItem().toString() + ","
-							+ amp_cb_nooftrials.getSelectedItem().toString() + "," + amp_tf_factor1.getText().toString()
-							+ "," + amp_tf_factor2.getText().toString() + "," + amp_tf_factor3.getText().toString()
-							+ "," + amp_tf_factor4.getText().toString() + ","
-							+ amp_cb_filter.getSelectedItem().toString() + ","
-							+ amp_cb_resultunit.getSelectedItem().toString() + ","
-							+ amp_tf_sop_value.getText().toString();
-					if (selected_methodfile != null) {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, selected_methodfile, "amp" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					} else {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, "", "amp" };
-						save_method1.main(temp_arr);
-						saved = 0;
-					}
-				}
-
+				
 				else if (selected_experiment.matches("karl")) {
-					String data = kf_tf_delay.getText().toString() + "," + kf_tf_stirtime.getText().toString() + ","
-							+ kf_tf_maxvol.getText().toString() + "," + kf_tf_blankvol.getText().toString() + ","
-							+ kf_tf_burette.getText().toString() + "," + kf_tf_density.getText().toString() + ","
-							+ kf_tf_factor.getText().toString() + "," + kf_tf_endpoint.getText().toString() + ","
-							+ kf_cb_dosagerate.getSelectedItem().toString() + ","
-							+ kf_cb_resultunit.getSelectedItem().toString() + ","
-							+ kf_cb_nooftrials.getSelectedItem().toString() + ","
-							+ kf_tf_sop_value.getText().toString();// www
+					karl_fischer kf_var = get_kfObj();
+					
+					save_method save_method1 = new save_method();
+
 					if (selected_methodfile != null) {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, selected_methodfile, "kf" };
+						String[] temp_arr = {"karl"};
 						save_method1.main(temp_arr);
 						saved = 0;
+						kf_var.setMethod_name(selected_methodfile);
+
 					} else {
-						save_method save_method1 = new save_method();
-						String[] temp_arr = { data, "", "kf" };
+						String[] temp_arr = {"karl"};
 						save_method1.main(temp_arr);
 						saved = 0;
+						kf_var.setMethod_name(null);
 					}
+					save_method1.setKFObject(kf_var);
 				}
 			}
 		});
+		
 		btn_refresh_mb = new JButton("Refresh");
 		btn_refresh_mb.setBackground(SystemColor.window);
 		btn_refresh_mb.setBounds(504, 600, 113, 34);
@@ -2544,7 +2340,35 @@ public class menubar extends JPanel implements ItemListener {
 			public void actionPerformed(ActionEvent e) {
 				if(null != pot_tf_sop_value.getText().toString() && !pot_tf_sop_value.getText().toString().contains("Not Selected")) {				
 					try {
-						File file = new File("C:\\SQLite\\SOP\\" +pot_tf_sop_value.getText().toString()+".pdf");
+						System.out.println("SOP NAME = "+pot_tf_sop_value.getText().toString());
+						File file = new File("C:\\SQLite\\SOP\\" +pot_tf_sop_value.getText().toString());
+						
+						if (!Desktop.isDesktopSupported()) {
+							System.out.println("not supported");
+							return;
+						}
+						Desktop desktop = Desktop.getDesktop();
+						if (file.exists())
+							desktop.open(file);
+					} catch (Exception ee) {
+						ee.printStackTrace();
+					}
+				}
+			}
+		});
+		
+		
+		kf_tf_sop_value = new JButton();
+		kf_tf_sop_value.setBounds(593, 295, 130, 34);
+		kf_tf_sop_value.setHorizontalAlignment(SwingConstants.LEFT);
+		kf_tf_sop_value.setText("Not Selected");
+		kf_tf_sop_value.setVisible(false);
+		add(kf_tf_sop_value);
+		kf_tf_sop_value.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if(null != pot_tf_sop_value.getText().toString() && !kf_tf_sop_value.getText().toString().contains("Not Selected")) {				
+					try {
+						File file = new File("C:\\SQLite\\SOP\\" +kf_tf_sop_value.getText().toString());
 						
 						if (!Desktop.isDesktopSupported()) {
 							System.out.println("not supported");
@@ -2612,6 +2436,8 @@ public class menubar extends JPanel implements ItemListener {
 		rdbtnNewRadioButton = new JRadioButton("Potentiometry");
 		rdbtnNewRadioButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				potentiometry_obj = null;
+				kf_obj=null;
 				saved_file = false;
 				selected_methodfile = null;
 				res = "";
@@ -2623,6 +2449,7 @@ public class menubar extends JPanel implements ItemListener {
 				panel_pot3.setVisible(true);
 				panel_pot4.setVisible(true);
 				panel_pot5.setVisible(true);
+				pot_tf_sop_value.setVisible(true);
 				panel_kf1.setVisible(false);
 				panel_kf2.setVisible(false);
 				panel_kf3.setVisible(false);
@@ -2638,6 +2465,7 @@ public class menubar extends JPanel implements ItemListener {
 				panel_amp3.setVisible(false);
 				panel_amp4.setVisible(false);
 				panel_amp5.setVisible(false);
+				kf_tf_sop_value.setVisible(true);
 				p_formula.setVisible(true);
 				p_formula2.setVisible(true);
 				p_formula3.setVisible(true);
@@ -2811,6 +2639,8 @@ public class menubar extends JPanel implements ItemListener {
 		rdbtnNewRadioButton_3 = new JRadioButton("Karl Fischer");
 		rdbtnNewRadioButton_3.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				potentiometry_obj = null;
+				kf_obj=null;
 				selected_experiment = "karl";
 				saved_file = false;
 				selected_methodfile = null;
@@ -2822,11 +2652,13 @@ public class menubar extends JPanel implements ItemListener {
 				panel_pot3.setVisible(false);
 				panel_pot4.setVisible(false);
 				panel_pot5.setVisible(false);
+				pot_tf_sop_value.setVisible(false);
 				panel_kf1.setVisible(true);
 				panel_kf2.setVisible(true);
 				panel_kf3.setVisible(true);
 				panel_kf4.setVisible(true);
 				panel_kf5.setVisible(true);
+				kf_tf_sop_value.setVisible(true);
 				panel_ph1.setVisible(false);
 				panel_ph2.setVisible(false);
 				panel_ph3.setVisible(false);
@@ -2837,7 +2669,7 @@ public class menubar extends JPanel implements ItemListener {
 				panel_amp3.setVisible(false);
 				panel_amp4.setVisible(false);
 				panel_amp5.setVisible(false);
-
+				
 				p_formula.setVisible(true);
 				p_formula2.setVisible(true);
 				p_formula3.setVisible(true);
@@ -3138,7 +2970,6 @@ public class menubar extends JPanel implements ItemListener {
 							parameter = parameter +",Factor4: "+ pot_tf_factor4.getText();
 							parameter = parameter +",EP Select: "+ pot_cb_epselect.getSelectedItem().toString();
 							parameter = parameter +",Formula No: " +pot_cb_formula.getSelectedItem().toString();
-							parameter = parameter +",Tendency: " +pot_cb_tendency.getSelectedItem().toString();
 							parameter = parameter +",Result Unit: "+ pot_cb_resultunit.getSelectedItem().toString();
 							parameter = parameter +",SOP: "+ pot_tf_sop_value.getText();
 						}
@@ -3291,6 +3122,14 @@ public class menubar extends JPanel implements ItemListener {
 		});
 		mnNewMenu_5.add(menu_item_sa_login);
 
+		menu_item_get_buretteFactor = new JMenuItem("Get Latest Burette Factor");
+		menu_item_get_buretteFactor.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				get_burette_factor();
+			}
+		});
+		mnNewMenu_5.add(menu_item_get_buretteFactor);
+		
 		menuItem_add_sop = new JMenuItem("Add SOP");
 		menuItem_add_sop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -3346,10 +3185,12 @@ public class menubar extends JPanel implements ItemListener {
 				String[] aa = {user_name};
 				ReformatBuffer.current_exp = "calibrate";
 				calibrate_electrode.stop_updating = false;
-				calibrate_electrode.main(aa);
+				open_electrode_calibration(aa);
+				//calibrate_electrode.main(aa);
 			}
 		});
 		mnNewMenu_5.add(menuItem_calibrate_electrode);
+		
 		menuItem_burette = new JMenuItem("Burette Calibration");
 		menuItem_burette.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -3431,6 +3272,7 @@ public class menubar extends JPanel implements ItemListener {
 
 		initialize();
 		enable_all(false);
+		get_electrode_calibration();
 		
 		if (check_validity()) {
 			ScheduledExecutorService exec_temp1 = Executors.newSingleThreadScheduledExecutor();
@@ -3515,7 +3357,7 @@ public class menubar extends JPanel implements ItemListener {
 			while (rs.next()) {
 				count++;
 			}
-			System.out.println("Count  = "+count);
+			//System.out.println("Count  = "+count);
 		} catch (SQLException e1) {
 			JOptionPane.showMessageDialog(null, e1);
 		} finally {
@@ -3535,7 +3377,7 @@ public class menubar extends JPanel implements ItemListener {
 		String sql;
 		String res_formula = "";
 		try {
-			sql = "SELECT formula FROM config_param where cnfg_param_group = 'formulas' and  (cnfg_param_name  = '" + formula_no + "')";
+			sql = "SELECT cnfg_param_value FROM config_param where cnfg_param_group = 'formulas' and  (cnfg_param_name  = '" + formula_no + "')";
 			ps = con.prepareStatement(sql);
 			rs = ps.executeQuery();
 			res_formula = rs.getString("cnfg_param_value");
@@ -3608,6 +3450,7 @@ public class menubar extends JPanel implements ItemListener {
 		menu_item_kf.setEnabled(condition);
 		menu_item_ph.setEnabled(condition);
 		menu_item_amp.setEnabled(condition);
+		menu_item_get_buretteFactor.setEnabled(condition);
 		menuItem_add_sop.setEnabled(condition);
 		menuItem_custom_formula.setEnabled(condition);
 		menuItem_device_data.setEnabled(condition);
@@ -3635,6 +3478,7 @@ public class menubar extends JPanel implements ItemListener {
 		pot_cb_epselect.setEnabled(false);
 		pot_cb_formula.setEnabled(condition);
 		pot_cb_resultunit.setEnabled(condition);
+		pot_tf_sop_value.setEnabled(condition);
 
 		kf_tf_delay.setEnabled(condition);
 		kf_tf_stirtime.setEnabled(condition);
@@ -3686,6 +3530,7 @@ public class menubar extends JPanel implements ItemListener {
 		amp_cb_nooftrials.setEnabled(condition);
 		amp_cb_formula.setEnabled(condition);
 		amp_cb_resultunit.setEnabled(condition);
+		
 		btn_save_mb.setEnabled(condition);
 
 	}
@@ -3704,6 +3549,8 @@ public class menubar extends JPanel implements ItemListener {
 		} else {
 			frame1.setTitle("Mayura Analytical    Logged in as - " + u_name);
 		}
+		
+		//System.out.println("Roles = "+items);
 
 		if (!items.contains("Recall")) {
 			menu_item_pot.setEnabled(false);
@@ -3730,6 +3577,7 @@ public class menubar extends JPanel implements ItemListener {
 		if (!items.contains("Method")) {
 			enable_table_items(false);
 			no_update = true;
+			menu_item_get_buretteFactor.setEnabled(false);
 		}
 		if (!items.contains("Analysis")) {
 			enable_table_items(false);
@@ -3778,7 +3626,7 @@ public class menubar extends JPanel implements ItemListener {
 				}
 				return data;
 	}
-	 public static double get_burette_factor() {
+	public static void get_burette_factor() {
 		 	double temp_bf = 0;
 			Connection con = DbConnection.connect();
 			PreparedStatement ps = null;
@@ -3798,7 +3646,154 @@ public class menubar extends JPanel implements ItemListener {
 					System.out.println(e1.toString());
 				}
 			}
-
-			return temp_bf;
+			if(selected_experiment.matches("potentiometry")) {
+				pot_tf_burette.setText(String.valueOf(temp_bf));
+			}
+			else if(selected_experiment.matches("karl")) {
+				kf_tf_burette.setText(String.valueOf(temp_bf));
+			}
+	}
+	
+	public static void get_electrode_calibration() {
+		Connection con = DbConnection.connect();
+		PreparedStatement ps = null;
+		String sql;
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'electrodeFactor' and cnfg_param_name = 'electrodeFactor'";
+		try {
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			if(null != rs.getString("cnfg_param_value")) {
+				e_calibration = Integer.parseInt(rs.getString("cnfg_param_value"));
+			}	
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException e1) {
+				System.out.println(e1.toString());
+			}
 		}
+	}
+	
+	public static void setPotentimetryObject(potentiometry pot) {
+		potentiometry_obj  = new potentiometry(pot);
+	}
+	public static void setKFObject(karl_fischer kf) {
+		kf_obj  = new karl_fischer(kf);
+	}	 
+	public static potentiometry get_potentiometryObj() {
+		potentiometry pot_var = new potentiometry();
+		pot_var.setCreated_by(user_name);
+		pot_var.setCreated_date(get_date());
+		pot_var.setUpdated_by(user_name);
+		pot_var.setUpdated_date(get_date());
+		pot_var.setPre_dose(pot_tf_predose.getText().toString());
+		pot_var.setStir_time(pot_tf_stirtime.getText().toString());
+		pot_var.setMax_vol(pot_tf_maxvol.getText().toString());
+		pot_var.setBlank_vol(pot_tf_blankvol.getText().toString());
+		pot_var.setBurette_factor( pot_tf_burette.getText().toString());
+		pot_var.setThreshold(pot_cb_threshold.getSelectedItem().toString());
+		pot_var.setFilter(pot_cb_filter.getSelectedItem().toString());
+		pot_var.setDosage_rate( pot_cb_dosagerate.getSelectedItem().toString());
+		pot_var.setNo_of_trials(pot_cb_nooftrials.getSelectedItem().toString());
+		pot_var.setFactor1(pot_tf_factor1.getText().toString());
+		pot_var.setFactor2(pot_tf_factor2.getText().toString());
+		pot_var.setFactor3(pot_tf_factor3.getText().toString());
+		pot_var.setFactor4(pot_tf_factor4.getText().toString());
+		pot_var.setEp_select(pot_cb_epselect.getSelectedItem().toString());
+		pot_var.setFormula_no(pot_cb_formula.getSelectedItem().toString());
+		pot_var.setResult_unit(pot_cb_resultunit.getSelectedItem().toString());
+		pot_var.setSop(pot_tf_sop_value.getText().toString());
+		return pot_var;
+	}
+	public static karl_fischer get_kfObj() {
+		karl_fischer kf_var = new karl_fischer();
+		
+		kf_var.setCreated_by(user_name);
+		kf_var.setCreated_date(get_date());
+		kf_var.setUpdated_by(user_name);
+		kf_var.setUpdated_date(get_date());
+		kf_var.setDelay(kf_tf_delay.getText().toString());
+		kf_var.setStir_time(kf_tf_stirtime.getText().toString());
+		kf_var.setMax_vol(kf_tf_maxvol.getText().toString());
+		kf_var.setBlank_vol(kf_tf_blankvol.getText().toString());
+		kf_var.setBurette_factor(kf_tf_burette.getText().toString());
+		kf_var.setDensity(kf_tf_density.getText().toString());
+		kf_var.setKf_factor(kf_tf_factor.getText().toString());
+		kf_var.setEnd_point(kf_tf_endpoint.getText().toString());
+		kf_var.setDosage_rate(kf_cb_dosagerate.getSelectedItem().toString());
+		kf_var.setNo_of_trials(kf_cb_nooftrials.getSelectedItem().toString());
+		kf_var.setResult_unit(kf_cb_resultunit.getSelectedItem().toString());
+		kf_var.setSop(kf_tf_sop_value.getText().toString());
+		return kf_var;
+	}
+	public static potentiometry getTemp_potentiometryObj() {
+		potentiometry temp_potVar= new potentiometry();
+		if(null != potentiometry_obj && null!= potentiometry_obj.getMethod_name()) {
+			temp_potVar.setCreated_by(potentiometry_obj.getCreated_by());
+			temp_potVar.setCreated_date(potentiometry_obj.getCreated_date());
+			temp_potVar.setUpdated_by(potentiometry_obj.getUpdated_by());
+			temp_potVar.setUpdated_date(potentiometry_obj.getUpdated_date());
+			temp_potVar.setMethod_name(potentiometry_obj.getMethod_name());
+		}
+		else {
+			temp_potVar.setCreated_by(user_name);
+			temp_potVar.setCreated_date(get_date());
+			temp_potVar.setUpdated_by(user_name);
+			temp_potVar.setUpdated_date(get_date());
+			temp_potVar.setMethod_name(null);
+		}
+		temp_potVar.setPre_dose(pot_tf_predose.getText().toString());
+		temp_potVar.setStir_time(pot_tf_stirtime.getText().toString());
+		temp_potVar.setMax_vol(pot_tf_maxvol.getText().toString());
+		temp_potVar.setBlank_vol(pot_tf_blankvol.getText().toString());
+		temp_potVar.setBurette_factor( pot_tf_burette.getText().toString());
+		temp_potVar.setThreshold(pot_cb_threshold.getSelectedItem().toString());
+		temp_potVar.setFilter(pot_cb_filter.getSelectedItem().toString());
+		temp_potVar.setDosage_rate( pot_cb_dosagerate.getSelectedItem().toString());
+		temp_potVar.setNo_of_trials(pot_cb_nooftrials.getSelectedItem().toString());
+		temp_potVar.setFactor1(pot_tf_factor1.getText().toString());
+		temp_potVar.setFactor2(pot_tf_factor2.getText().toString());
+		temp_potVar.setFactor3(pot_tf_factor3.getText().toString());
+		temp_potVar.setFactor4(pot_tf_factor4.getText().toString());
+		temp_potVar.setEp_select(pot_cb_epselect.getSelectedItem().toString());
+		temp_potVar.setFormula_no(pot_cb_formula.getSelectedItem().toString());
+		temp_potVar.setResult_unit(pot_cb_resultunit.getSelectedItem().toString());
+		temp_potVar.setSop(pot_tf_sop_value.getText().toString());
+		return temp_potVar;
+	}
+	public static karl_fischer getTemp_KFObj() {
+		karl_fischer temp_kfVar= new karl_fischer();
+		if(null != kf_obj && null!= kf_obj.getMethod_name()) {
+
+		temp_kfVar.setCreated_by(kf_obj.getCreated_by());
+		temp_kfVar.setCreated_date(kf_obj.getCreated_date());
+		temp_kfVar.setUpdated_by(kf_obj.getUpdated_by());
+		temp_kfVar.setUpdated_date(kf_obj.getUpdated_date());
+		temp_kfVar.setMethod_name(kf_obj.getMethod_name());
+		}
+		else {
+			temp_kfVar.setCreated_by(user_name);
+			temp_kfVar.setCreated_date(get_date());
+			temp_kfVar.setUpdated_by(user_name);
+			temp_kfVar.setUpdated_date(get_date());
+			temp_kfVar.setMethod_name(null);
+		}
+		
+		temp_kfVar.setDelay(kf_tf_delay.getText().toString());
+		temp_kfVar.setStir_time(kf_tf_stirtime.getText().toString());
+		temp_kfVar.setMax_vol(kf_tf_maxvol.getText().toString());
+		temp_kfVar.setBlank_vol(kf_tf_blankvol.getText().toString());
+		temp_kfVar.setBurette_factor(kf_tf_burette.getText().toString());
+		temp_kfVar.setDensity(kf_tf_density.getText().toString());
+		temp_kfVar.setKf_factor(kf_tf_factor.getText().toString());
+		temp_kfVar.setEnd_point(kf_tf_endpoint.getText().toString());
+		temp_kfVar.setDosage_rate(kf_cb_dosagerate.getSelectedItem().toString());
+		temp_kfVar.setNo_of_trials(kf_cb_nooftrials.getSelectedItem().toString());
+		temp_kfVar.setResult_unit(kf_cb_resultunit.getSelectedItem().toString());
+		temp_kfVar.setSop(kf_tf_sop_value.getText().toString());
+		return temp_kfVar;
+	}
 }
