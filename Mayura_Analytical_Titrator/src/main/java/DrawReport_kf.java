@@ -430,7 +430,7 @@ public class DrawReport_kf extends JPanel {
 	}
 	
 	public static String get_company_details() {
-		String data = "";
+			String data = "";
 			Connection con = DbConnection.connect();
 			PreparedStatement ps = null;
 			ResultSet rs = null;
