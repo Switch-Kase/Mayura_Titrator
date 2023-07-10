@@ -74,7 +74,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			slope, corres_fact, ep_continue1, ep_continue2, ep_continue3, dossage_speed, fill, dose, predose,
 			moisture = 0, normality = 0, sample_weight = 0, end_point1 = 0, end_point2 = 0, end_point3 = 0,
 			titrant_normality = 0, bvolume = 0, res_unit = 0, user_vol2 = 0, pre_dose, stir_time, max_vol, blank_vol,
-			burette_factor, threshold_val, filter_val, doserate_val, factor1, factor2, factor3, factor4, ep_select,
+			burette_factor, threshold_val,temp_threshold_val, temp_filter_val, filter_val, doserate_val, factor1, factor2, factor3, factor4, ep_select,
 			 result_unit, sop_val, end_point_1 = 0, end_point_2 = 0, end_point_3 = 0, new_blank_volume = 0,
 			filter = 2;
 
@@ -2609,8 +2609,14 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 								"Please choose as 3 End-Points not detected for Trial " + cur_trial,
 								"No End-Point Detected", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
-							if (model.getRowCount() == cur_trial)
+							if (model.getRowCount() == cur_trial) {
 								model.removeRow(cur_trial - 1);
+								data_X.remove(cur_trial - 1);
+								data_Y.remove(cur_trial - 1);
+								tf_threshold.setText(String.valueOf(threshold_val));
+								tf_filter.setText(String.valueOf(filter_val));
+								
+							}
 							failed_count++;
 							try {
 								threshold_array.pop();
@@ -2695,8 +2701,14 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 								"Please choose as 2 End-Points not detected for Trial " + cur_trial,
 								"No End-Point Detected ARR", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
-							if (model.getRowCount() == cur_trial)
+							if (model.getRowCount() == cur_trial) {
 								model.removeRow(cur_trial - 1);
+								data_X.remove(cur_trial - 1);
+								data_Y.remove(cur_trial - 1);
+								tf_threshold.setText(String.valueOf(threshold_val));
+								tf_filter.setText(String.valueOf(filter_val));
+								
+							}
 							failed_count++;
 							try {
 								threshold_array.pop();
@@ -2773,8 +2785,14 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 								"Please choose as 1 End-Point not detected for Trial " + cur_trial,
 								"No End-Point Detected", JOptionPane.WARNING_MESSAGE, 0, null, buttons, buttons[1]);
 						if (rc == 0) {
-							if (model.getRowCount() == cur_trial)
+							if (model.getRowCount() == cur_trial) {
 								model.removeRow(cur_trial - 1);
+								data_X.remove(cur_trial - 1);
+								data_Y.remove(cur_trial - 1);
+								tf_threshold.setText(String.valueOf(threshold_val));
+								tf_filter.setText(String.valueOf(filter_val));
+								
+							}
 							try {
 								threshold_array.pop();
 							} catch (Exception ee) {
@@ -2863,8 +2881,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 		ee = d.length;
 
-		threshold_val = Double.parseDouble(tf_threshold.getText().toString());
-		filter_val = Double.parseDouble(tf_filter.getText().toString());
+		temp_threshold_val = Double.parseDouble(tf_threshold.getText().toString());
+		temp_filter_val = Double.parseDouble(tf_filter.getText().toString());
 
 		// System.out.println("Size = " + ee);
 
@@ -2876,7 +2894,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		}
 		data1 = new double[ee];
 
-		t = (filter_val / 5) * delta;
+		t = (temp_filter_val / 5) * delta;
 		k1 = delta / (t + delta);
 		k2 = t / (t + delta);
 		data1 = new double[ee];
@@ -2931,7 +2949,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				}
 				diff[10] = (data1[10] - data1[5]) * 60;
 				delta = 0.6;
-				t = filter_val * delta * 5;
+				t = temp_filter_val * delta * 5;
 				k1 = delta / (t + delta);
 				k2 = t / (t + delta);
 				diff[10] = diff[9] * k2 + diff[10] * k1;
@@ -2953,7 +2971,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				if (diff2 < 0) {
 					diff2 = -diff2;
 				}
-				if ((diff1 > threshold_val) && (diff0 < diff1) && (diff1 > diff2)) {
+				if ((diff1 > temp_threshold_val) && (diff0 < diff1) && (diff1 > diff2)) {
 					// System.out.println("indise if " + diff1);
 					if (slope < Math.abs(diff[8])) {
 						end_count = (int) c2;
