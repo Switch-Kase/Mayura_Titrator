@@ -112,7 +112,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 	static DefaultTableModel method_model;
 	static JRadioButton b, b1;
 	static JTextField tf_threshold, tf_filter, textField;;
-	static JButton button_dvdl, button_exit, button_generate_result, viewReport, button_saveReport, button_stop,
+	static JButton button_dvdl, button_esc, button_generate_result, viewReport, button_saveReport, button_stop,
 			button_continue, button_start, button_update_blank_vol, blankRun, button_refresh;
 	static JLabel mv_display_pot, vol_filled, vol_pre_dosed, vol_dosed, l_formula, l_formula2, l_formula3,
 			formula_header, info;;
@@ -201,6 +201,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		
 
 		update_front_end = true;
+		
+		System.out.println("Current process = "+dg_current_process);
 
 		if (dg_current_process.matches("blank_run_started_dose") || dg_current_process.matches("trial_started_dose")) {
 			double temp_val;
@@ -3383,22 +3385,29 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		add(button_saveReport);
 		button_saveReport.addActionListener(new ActionListener() {
 			@Override
-			public void actionPerformed(ActionEvent e) {
-				for (int i = 0; i < threshold_array.size(); i++)
-					System.out.println("Threshold Array [" + i + "] = " + threshold_array.get(i));
-				int result = JOptionPane.showConfirmDialog(frame1, "Save the result? You won't be able to revert!",
-						"Swing Tester", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
-				if (result == JOptionPane.YES_OPTION) {
+			public void actionPerformed(ActionEvent e) {				
 					if (select_column == true)
+					{
+						int result = JOptionPane.showConfirmDialog(frame1, "Save the result? You won't be able to revert!",
+								"Swing Tester", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+						if (result == JOptionPane.YES_OPTION) {
 						save_report();
-					else {
-						call_formula_report();
+						}
+					}else {
+						System.out.println(Integer.parseInt(variables[8]) + ": "+model.getRowCount());
+						if(Integer.parseInt(variables[8]) == model.getRowCount()) {
+							int result = JOptionPane.showConfirmDialog(frame1, "Save the result? You won't be able to revert!",
+									"Swing Tester", JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
+							if (result == JOptionPane.YES_OPTION) {
+							call_formula_report();
+							}
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Please complete all trials before saving!");
+						}
 					}
 					report_saved = 2;
-				} else if (result == JOptionPane.NO_OPTION) {
-				} else {
-				}
-			}
+				} 
 		});
 		button_saveReport.setEnabled(false);
 
@@ -3626,15 +3635,15 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		});
 		button_continue.setEnabled(false);
 
-		button_exit = new JButton("ESC");
-		button_exit.setBounds((int) Math.round(0.366 * wid), (int) Math.round(0.539 * hei),
+		button_esc = new JButton("ESC");
+		button_esc.setBounds((int) Math.round(0.366 * wid), (int) Math.round(0.539 * hei),
 				(int) Math.round(0.052 * wid), (int) Math.round(0.0392 * hei));
-		button_exit.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
+		button_esc.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
 
-		add(button_exit);
-		button_exit.setEnabled(false);
+		add(button_esc);
+		button_esc.setEnabled(false);
 
-		button_exit.addActionListener(new ActionListener() {
+		button_esc.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				dg_current_process = "";
@@ -3652,16 +3661,37 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				blankRun.setEnabled(false);	
 
 				afill_first = false;
-
+				
 				try {
 					Thread.sleep(100);
-					output_dg.print("<8888>ESCP*");
+					output_dg.print("<8888>STPM*");
 					output_dg.flush();
-					ReformatBuffer.current_state = "dg_kf_escp";
+					ReformatBuffer.current_state = "";
+					ReformatBuffer.current_exp = "";
 				} catch (InterruptedException ex) {
 				} catch (NullPointerException ee) {
 					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
 				}
+				
+				try {
+					Thread.sleep(800);
+					output_dg.print("<8888>ESCP*");
+					output_dg.flush();
+					
+				} catch (InterruptedException ex) {
+				} catch (NullPointerException ee) {
+					// JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+				}
+				
+				try {
+					Thread.sleep(100);
+					output_dg.print("<8888>DOSR,020*");
+					output_dg.flush();
+				} catch (InterruptedException ex) {
+				} catch (NullPointerException ee) {
+					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+				}
+				ReformatBuffer.current_state = "dg_pot_home_dosr";
 			}
 		});
 
@@ -6453,7 +6483,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				int rc, checked = 0;
-				System.out.println("Closingggg POTTTT");
+				System.out.println("Closa	aingggg POTTTT");
 				if (report_saved == 1) {
 					int result = JOptionPane.showConfirmDialog(null, "Save report ? ", "Report not Saved!",
 							JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
@@ -6470,6 +6500,19 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 					}
 				}
+				
+				try {
+					Thread.sleep(100);
+					output_dg.print("<8888>STPM*");
+					output_dg.flush();
+					ReformatBuffer.current_state = "";
+					ReformatBuffer.current_exp = "";
+
+				} catch (InterruptedException ex) {
+				} catch (NullPointerException ee) {
+					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+				}
+				
 				try {
 					Thread.sleep(400);
 					output_dg.print("<8888>ESCP*");

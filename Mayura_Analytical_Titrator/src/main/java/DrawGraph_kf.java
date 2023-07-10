@@ -648,7 +648,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		PreparedStatement ps = null;
 		try {
 			String sql = null;
-			sql = "UPDATE kf_methods SET Value = ? WHERE Trial_name = ?";
+			sql = "UPDATE kf_methods SET blank_vol = ? WHERE method_name = ?";
 			System.out.println("Checking");
 			ps = con.prepareStatement(sql);
 			ps.setString(1, temp_update);
@@ -709,9 +709,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		Connection con = DbConnection.connect();
 		PreparedStatement ps = null;
 		try {
-			String sql = "UPDATE kf_methods SET Value = ? WHERE Trial_name = ?";
+			String sql = "UPDATE kf_methods SET kf_factor = ? WHERE method_name = ?";
 			ps = con.prepareStatement(sql);
-			ps.setString(1, temp_update);
+			ps.setString(1, String.format("%.2f", kff));
 			ps.setString(2, metd_name);
 			ps.executeUpdate();
 			JOptionPane.showMessageDialog(null, "KF Factor Updated Successfully to method file!");
@@ -2249,6 +2249,19 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
 				System.out.println("Clossinnggggg KF");
+				
+				try {
+					Thread.sleep(100);
+					output_dg.print("<8888>STPM*");
+					output_dg.flush();
+					ReformatBuffer.current_state = "";
+					ReformatBuffer.current_exp = "";
+
+				} catch (InterruptedException ex) {
+				} catch (NullPointerException ee) {
+					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
+				}
+				
 				try {
 					Thread.sleep(500);
 					output_dg.print("<8888>ESCP*");

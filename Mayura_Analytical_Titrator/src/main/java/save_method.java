@@ -271,10 +271,12 @@ public class save_method extends JFrame {
 	}
 	
 	private boolean methodName_exists(String cur_method_name) {
+		
 		Connection con1 = DbConnection.connect();
 		PreparedStatement ps1 = null;
-		rs1 = null;
-		String sql1 =null ;
+		ResultSet rs1 = null;
+		String sql1 =null;
+		boolean found = false;
 		try {
 			if(exp.matches("pot")) {
 				sql1 = "SELECT * FROM potentiometry_methods where method_name = '"+cur_method_name+"'";
@@ -282,26 +284,31 @@ public class save_method extends JFrame {
 			else if(exp.matches("karl")) {
 				sql1 = "SELECT * FROM kf_methods where method_name = '"+cur_method_name+"'";
 			}
-			ps1 = con1.prepareStatement(sql1);
-			rs1 = ps1.executeQuery();
-
-			if(null!= rs1 && rs1.getRow()>0)
-				return true;
+			if(null != sql1) {
+				ps1 = con1.prepareStatement(sql1);
+				rs1 = ps1.executeQuery();
+				
+				if(null!= rs1.getString("created_by")) {
+					found =  true;
+				}
+			}
 		}
 		catch(SQLException e1) {
-			JOptionPane.showMessageDialog(null,e1);
+		//	JOptionPane.showMessageDialog(null,"Error Resultset");
 		}
 		finally {
 		    try{
-		    ps1.close();
-		    con1.close();
+		    	if(null!= ps1 && null!= con1) {
+		    		ps1.close();
+			    	con1.close();
+		    	}
 		    } 
 		    catch(SQLException e1) 
 		    {
 		      System.out.println(e1.toString());
 		    }
 		}
-		return false;
+		return found;
 	}
 	
 	

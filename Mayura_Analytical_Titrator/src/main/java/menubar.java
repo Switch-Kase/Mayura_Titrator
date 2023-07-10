@@ -796,9 +796,9 @@ public class menubar extends JPanel implements ItemListener {
 		pot_tf_maxvol.setText("100");
 		pot_tf_blankvol.setText("0");
 		pot_tf_burette.setText("1");
-		pot_cb_threshold.setSelectedItem("1");
+		pot_cb_threshold.setSelectedItem("100");
 		pot_cb_filter.setSelectedItem("1");
-		pot_cb_dosagerate.setSelectedItem("0.5");
+		pot_cb_dosagerate.setSelectedItem("4.0");
 		pot_cb_nooftrials.setSelectedItem("1");
 		pot_tf_factor1.setText("1");
 		pot_tf_factor2.setText("1");
@@ -2263,9 +2263,9 @@ public class menubar extends JPanel implements ItemListener {
 					pot_tf_maxvol.setText("100");
 					pot_tf_blankvol.setText("0");
 					pot_tf_burette.setText("1");
-					pot_cb_threshold.setSelectedItem("1");
+					pot_cb_threshold.setSelectedItem("100");
 					pot_cb_filter.setSelectedItem("1");
-					pot_cb_dosagerate.setSelectedItem("0.5");
+					pot_cb_dosagerate.setSelectedItem("4.0");
 					pot_cb_nooftrials.setSelectedItem("1");
 					pot_tf_factor1.setText("1");
 					pot_tf_factor2.setText("1");

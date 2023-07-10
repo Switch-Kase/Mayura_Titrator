@@ -36,10 +36,10 @@ public class ReformatBuffer {
 
         	
         	if(!bufferReadToString.contains("T") && !bufferReadToString.contains("N")) {
-        		//System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
+        		//System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state+" : CUR_EXP = "+current_exp);
         	}
         	if(bufferReadToString.contains("END")) {
-        		//System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state);
+        	   // System.out.println("GOT SIGNAL= " + bufferReadToString+" : State = "+current_state+" : CUR_EXP = "+current_exp);
         	}
         	
         	
@@ -81,8 +81,9 @@ public class ReformatBuffer {
         		}
         	}
         	
-        	if(current_state.matches("mb_start") && bufferReadToString.contains("END")) {
+        	if(current_state.matches("mb_start") && bufferReadToString.contains("OK") || current_state.matches("mb_start") && bufferReadToString.contains("END")) {
             	menubar.comport_success();
+				current_state = "";
             } 
         	else if(current_state.matches("menubar_rate") && bufferReadToString.contains("OK")) {
 				JOptionPane.showMessageDialog(null, "Data Rate configured successfully!");
