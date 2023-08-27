@@ -14,6 +14,7 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class user_device_data extends JFrame {
+public class user_device_data extends JDialog {
 
 	private JPanel contentPane;
 
@@ -94,6 +95,11 @@ public class user_device_data extends JFrame {
 		setBounds(100, 200, 520, 500);
 		setTitle("Input Data");
 		setLocationRelativeTo(null);
+		setModal(true);
+		
+		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
+		setIconImage(img.getImage());
+		
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

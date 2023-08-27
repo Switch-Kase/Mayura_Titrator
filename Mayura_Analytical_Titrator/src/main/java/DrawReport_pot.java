@@ -529,6 +529,8 @@ public class DrawReport_pot extends JPanel{
 		parameter = parameter+",Formula No. : "+table2.getValueAt(18, 1);
 		parameter = parameter+","+table2.getValueAt(0, 1);
 		parameter = parameter+","+table2.getValueAt(28, 1);
+		parameter = parameter+","+table2.getValueAt(19, 1);
+		
 		String[] remarks_final = remarks.split(","); 
 		try {
 			boolean graph_print = false;
@@ -934,7 +936,7 @@ public class DrawReport_pot extends JPanel{
 			  for(int i=0;i<result_arr.length;i++) {
 					String[] temp_arr = result_arr[i].split(",");
 					if(i==0) {
-						result_header1.setText("Result1 : "+temp_arr[0]);
+						result_header1.setText("Result1 : "+temp_arr[0]+" "+params_data[19]);
 						rsd1.setText("RSD1 : "+temp_arr[1]+" %");
 						result_header2.setVisible(false);
 						rsd2.setVisible(false);
@@ -944,14 +946,14 @@ public class DrawReport_pot extends JPanel{
 					if(i==1) {
 						result_header2.setVisible(true);
 						rsd2.setVisible(true);
-						result_header2.setText("Result2 : "+temp_arr[0]);
+						result_header2.setText("Result2 : "+temp_arr[0]+" "+params_data[19]);
 						rsd2.setText("RSD2 : "+temp_arr[1]+" %");
 					}
 					if(i==2) {
 						result_header3.setVisible(true);
 						rsd3.setVisible(true);
 					
-						result_header3.setText("Result3 : "+temp_arr[0]);
+						result_header3.setText("Result3 : "+temp_arr[0]+" "+params_data[19]);
 						rsd3.setText("RSD3 : "+temp_arr[1]+" %");
 					}
 			  }
@@ -1370,6 +1372,11 @@ public class DrawReport_pot extends JPanel{
 				default:
 					return String.class;
 				}
+			}
+			
+			@Override
+			public boolean isCellEditable(int row, int column) {
+				return false;
 			}
 		};
 		table2.setModel(model2);

@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -37,7 +38,7 @@ import java.awt.Color;
 import java.awt.Desktop;  
 
 
-public class popup_stirtime extends JFrame {
+public class popup_stirtime extends JDialog{
 
 	private static JPanel contentPane;
 	static popup_stirtime frame;
@@ -61,8 +62,7 @@ public class popup_stirtime extends JFrame {
 				try {
 					frame = new popup_stirtime();
 					frame.setVisible(true);
-					ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
-					frame.setIconImage(img.getImage());
+					
 
 				} catch (Exception e) {
 					e.printStackTrace();
@@ -85,6 +85,11 @@ public class popup_stirtime extends JFrame {
 		setBounds(100, 200, 350, 200);
 		setTitle("Stirring in Progress");
 		setLocationRelativeTo(null);
+		setModal(true);
+		
+		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
+		setIconImage(img.getImage());
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

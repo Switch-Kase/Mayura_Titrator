@@ -19,12 +19,13 @@ import javax.swing.DefaultListModel;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 import javax.swing.JPasswordField;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.awt.event.ActionEvent;
 
-public class select_comport extends JFrame {
+public class select_comport extends JDialog {
 
 	private JPanel contentPane;
 	private JTextField textField;
@@ -60,6 +61,8 @@ public class select_comport extends JFrame {
 		setIconImage(img.getImage());
 		setLocationRelativeTo(null);
 		setResizable(false);
+		setModal(true);
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

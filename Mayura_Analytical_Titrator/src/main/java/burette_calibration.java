@@ -72,10 +72,10 @@ public class burette_calibration extends JPanel {
 	static String f_date, t_date, c_dat;
 	static PrintWriter output_bc;
 	static SerialPort serialPort_bc;
-	static JLabel vol_fill, vol_dose, burette_factor;
+	static JLabel vol_fill, vol_dose, burette_factor, legend_w1, legend_w2;
 	static ScheduledExecutorService exec_bc_fill, exec_bc_dose;
 	static int row_cnt = 0, arrow = 1;
-	static double dose = 0, dose_counter = 0, b_factor = 0;
+	static double dose = 5, dose_counter = 0, b_factor = 0;
 	static JButton btn_test_buretter_calibration, btn_update_buretter_factor;
 
 	static float prev_burette_factor = 0;
@@ -85,6 +85,7 @@ public class burette_calibration extends JPanel {
 	
 	static String str_format = "%.4f";
 	static String double_format = "#.####";
+	static JRadioButton radioButton_5ml,radioButton_10ml,radioButton_15ml;    
 
 	public burette_calibration() {
 		setLayout(null);
@@ -136,7 +137,7 @@ public class burette_calibration extends JPanel {
 	
 	public static void send_afil() {
 		System.out.println("Inside send AFILL bc");
-		if (row_cnt <= 8) {
+		if (row_cnt <= 2) {
 			try {
 				Thread.sleep(500);
 				output_bc.print("<8888>AFIL*");
@@ -148,13 +149,13 @@ public class burette_calibration extends JPanel {
 			}
 		} else{
 			b_factor = 0;
-			for (int i = 0; i < 9; i++) { 
+			for (int i = 0; i < 3; i++) { 
 				double temp_bfactor = (double) model.getValueAt(i, 5);
 				DecimalFormat df = new DecimalFormat(double_format);  
 				temp_bfactor = Double.valueOf(df.format(temp_bfactor));
 				b_factor = b_factor+temp_bfactor;
 			}			
-			b_factor = ((b_factor) / 9);
+			b_factor = ((b_factor) / 3);
 			burette_factor.setText("Burette Factor : " + String.format(str_format, b_factor));
 			btn_test_buretter_calibration.setEnabled(true);
 			btn_update_buretter_factor.setEnabled(true);
@@ -210,21 +211,21 @@ public class burette_calibration extends JPanel {
 	}
 	
 	public static void input_popup() {
-		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 (Empty Weight)",
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
 			model.setValueAt(w1, row_cnt, 2);
 			model.fireTableDataChanged();
-			if (row_cnt == 0 || row_cnt == 1 || row_cnt == 2) {
-				dose = 5;
-			}
-			if (row_cnt == 3 || row_cnt == 4 || row_cnt == 5) {
-				dose = 10;
-			}
-			if (row_cnt == 6 || row_cnt == 7 || row_cnt == 8) {
-				dose = 15;
-			}
+//			if (row_cnt == 0 || row_cnt == 1 || row_cnt == 2) {
+//				dose = 5;
+//			}
+//			if (row_cnt == 3 || row_cnt == 4 || row_cnt == 5) {
+//				dose = 10;
+//			}
+//			if (row_cnt == 6 || row_cnt == 7 || row_cnt == 8) {
+//				dose = 15;
+//			}
 			send_dose();
 		} catch (NullPointerException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a value!");
@@ -280,7 +281,7 @@ public class burette_calibration extends JPanel {
 	
 
 	public static void bc_stpm_ok_received() {
-		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 (Weight with Water)",
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			DecimalFormat df = new DecimalFormat(double_format);  
@@ -299,14 +300,14 @@ public class burette_calibration extends JPanel {
 			model.fireTableDataChanged();
 			
 			row_cnt++;
-			if(row_cnt<=9)
+			if(row_cnt<=3)
 				send_cvop();
 		} catch (NullPointerException ne) {
 			JOptionPane.showMessageDialog(null, "Please enter a value!");
 		} catch (NumberFormatException e) {
 			JOptionPane.showMessageDialog(null, "Please enter a valid value!");
 		}
-			if(row_cnt<9)
+			if(row_cnt<3)
 				send_afil();
 	}
 
@@ -345,6 +346,19 @@ public class burette_calibration extends JPanel {
 		frame.getContentPane().repaint();
 		four_column();
 
+		
+		legend_w1 = new JLabel("W1 - Weight of Empty Beaker");
+		legend_w1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.01 * wid)));
+		legend_w1.setBounds((int) Math.round(0.12 * wid), (int) Math.round(0.45 * hei), (int) Math.round(0.35 * wid),
+				(int) Math.round(0.0428 * hei));
+		frame.getContentPane().add(legend_w1);
+		
+		legend_w2 = new JLabel("W2 - Weight of Beaker with dosed Water");
+		legend_w2.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.01 * wid)));
+		legend_w2.setBounds((int) Math.round(0.12 * wid), (int) Math.round(0.5 * hei), (int) Math.round(0.35 * wid),
+				(int) Math.round(0.0428 * hei));
+		frame.getContentPane().add(legend_w2);
+		
 		vol_fill = new JLabel("Filling");
 		vol_fill.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
 		vol_fill.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.04 * hei), (int) Math.round(0.15 * wid),
@@ -362,10 +376,71 @@ public class burette_calibration extends JPanel {
 		burette_factor.setBounds((int) Math.round(0.55 * wid), (int) Math.round(0.04 * hei),
 				(int) Math.round(0.2 * wid), (int) Math.round(0.0428 * hei));
 		frame.getContentPane().add(burette_factor);
+		
+		radioButton_5ml=new JRadioButton("5 mL");    
+		radioButton_5ml.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
+		radioButton_5ml.setBounds((int) Math.round(0.75 * wid), (int) Math.round(0.04 * hei),
+				(int) Math.round(0.05 * wid), (int) Math.round(0.0428 * hei));
+		radioButton_5ml.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//JOptionPane.showMessageDialog(null, "Selected 5 mL");
+				dose = 5;
+				for(int row_count =0; row_count<3; row_count++) {
+					model.setValueAt("5", row_count, 1);			
+					model.fireTableDataChanged();
+				}
+			}
+		});
+		
+		radioButton_10ml=new JRadioButton("10 mL");   
+		radioButton_10ml.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
+		radioButton_10ml.setBounds((int) Math.round(0.825 * wid), (int) Math.round(0.04 * hei),
+				(int) Math.round(0.05 * wid), (int) Math.round(0.0428 * hei));
+		radioButton_10ml.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//JOptionPane.showMessageDialog(null, "Selected 10 mL");
+				dose = 10;
+				for(int row_count =0; row_count<3; row_count++) {
+					model.setValueAt("10", row_count, 1);			
+					model.fireTableDataChanged();
+				}
+			}
+		});
+		
+		radioButton_15ml=new JRadioButton("15 mL");   
+		radioButton_15ml.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
+		radioButton_15ml.setBounds((int) Math.round(0.9 * wid), (int) Math.round(0.04 * hei),
+				(int) Math.round(0.1 * wid), (int) Math.round(0.0428 * hei)); 
+		radioButton_15ml.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				//JOptionPane.showMessageDialog(null, "Selected 15 mL");
+				dose = 15;
+				for(int row_count =0; row_count<3; row_count++) {
+					model.setValueAt("15", row_count, 1);			
+					model.fireTableDataChanged();
+				}
+			}
+		});
+		
+		ButtonGroup bg=new ButtonGroup();    
+		bg.add(radioButton_5ml);
+		bg.add(radioButton_10ml); 
+		bg.add(radioButton_15ml); 
+		
+		radioButton_5ml.setSelected(true);
+		
+		
+		frame.getContentPane().add(radioButton_5ml);
+		frame.getContentPane().add(radioButton_10ml);
+		frame.getContentPane().add(radioButton_15ml);
+
 
 		JButton btn_start = new JButton("Start >>>");
 		btn_start.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				radioButton_5ml.setEnabled(false);
+				radioButton_10ml.setEnabled(false);
+				radioButton_15ml.setEnabled(false);
 				btn_start.setEnabled(false);
 				send_cvop();
 			}
@@ -429,7 +504,7 @@ public class burette_calibration extends JPanel {
 	public static void four_column() {
 		scrollPane = new JScrollPane();
 		scrollPane.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.1 * hei), (int) Math.round(0.95 * wid),
-				(int) Math.round(0.75 * hei));
+				(int) Math.round(0.294 * hei));
 		frame.getContentPane().add(scrollPane);
 		table1 = new JTable();
 		table1.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
@@ -450,14 +525,18 @@ public class burette_calibration extends JPanel {
 					return String.class;
 				}
 			}
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
 		};
 		table1.setModel(model);
 		table1.setDefaultEditor(Object.class, null);
 		model.addColumn("Trials");
-		model.addColumn("Demanded Volume in mL");
-		model.addColumn("Weight of Empty Flask(gms){W1}");
-		model.addColumn("Weight of Flask with H20(gms){W2}");
-		model.addColumn("Weight of H2O dispensed(gms){W2-W1}");
+		model.addColumn("Volume");
+		model.addColumn("W1");
+		model.addColumn("W2");
+		model.addColumn("W2-W1");
 		model.addColumn("Burrete Factor");
 
 		table1.setRowHeight((int) Math.round(0.076 * hei));
@@ -490,12 +569,7 @@ public class burette_calibration extends JPanel {
 		add_row_to_four_column( 0, "5", "", "", "","");
 		add_row_to_four_column( 1, "5", "", "", "","");
 		add_row_to_four_column( 2, "5", "", "", "","");
-		add_row_to_four_column( 3, "10", "", "", "","");
-		add_row_to_four_column( 4, "10", "", "", "","");
-		add_row_to_four_column( 5, "10", "", "", "","");
-		add_row_to_four_column( 6, "15", "", "", "","");
-		add_row_to_four_column( 7, "15", "", "", "","");
-		add_row_to_four_column( 8, "15", "", "", "","");
+	
 	}
 
 	public static void main(String[] args) {
@@ -522,15 +596,15 @@ public class burette_calibration extends JPanel {
 		frame.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent windowEvent) {
-				try {
-					Thread.sleep(500);
-					output_bc.print("<8888>ESCP*");
-					output_bc.flush();
-					Thread.sleep(200);
-				} catch (NullPointerException ne) {
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
+//					try {
+//						Thread.sleep(500);
+//						output_bc.print("<8888>ESCP*");
+//						output_bc.flush();
+//						Thread.sleep(200);
+//					} catch (NullPointerException ne) {
+//					} catch (InterruptedException e) {
+//						e.printStackTrace();
+//					}
 				try {
 					serialPort_bc.closePort();
 				} catch (NullPointerException ne) {

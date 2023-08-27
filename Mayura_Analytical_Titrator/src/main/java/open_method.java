@@ -31,6 +31,7 @@ import java.awt.Toolkit;
 import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFormattedTextField.AbstractFormatter;
 
 import java.awt.event.ActionListener;
@@ -47,7 +48,7 @@ import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
-public class open_method extends JFrame {
+public class open_method extends JDialog{
 
 	private JPanel contentPane;
 	private JTextField user;
@@ -81,10 +82,15 @@ public class open_method extends JFrame {
 	}
 	public open_method() {
 		//setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 200, 720, 525);		
+		setBounds(100, 200, 720, 525);
+		setLocationRelativeTo(null);
+		
+		setResizable(false);
+		setModal(true);
+		
+
 		
 		setTitle("Open Method File");
-		setLocationRelativeTo(null);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
