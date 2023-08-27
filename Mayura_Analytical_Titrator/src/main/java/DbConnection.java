@@ -178,8 +178,8 @@ public class DbConnection {
         
 		String formula1 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','1','N= \\frac {W*(1-\\frac{M}{100})*F_3*F_4}{(V_1-V_B_L_K)*F_1*F_2}')";
 		String formula2 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','2','Analyte= \\frac {V_1*N*F_1*F_2*Unit}{W*F_3*F_4}')";
-		String formula3 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','3','Analyte= \\frac {(V_1-V_B_L_K)*N*F_1*F_2*Unit}{W*(1-\\frac {M}{1000})*F_3*F_4}')";
-		String formula4 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','4','Analyte= \\frac {(V_2-V_1)*N*F_1*F_2*Unit}{W*(1-\\frac {M}{1000})*F_3*F_4}')";
+		String formula3 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','3','Analyte= \\frac {(V_1-V_B_L_K)*N*F_1*F_2*Unit}{W*(1-\\frac {M}{100})*F_3*F_4}')";
+		String formula4 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','4','Analyte= \\frac {(V_2-V_1)*N*F_1*F_2*Unit}{W*(1-\\frac {M}{100})*F_3*F_4}')";
 		String formula5 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','5','Analyte A= \\frac {V_1*N*F_1*Unit}{W*F_3},Analyte B= \\frac {(V_2-V_1)*N*F_2*Unit}{W*F_4}')";
 		String formula6 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','6','Analyte A= \\frac {V_1*N*F_1*F_2*Unit}{W*F_3*F_4},Analyte B= \\frac {(V_2-V_1)*N*F_1*F_2*Unit}{W*F_3*F_4},Analyte C= \\frac {(V_3-V_2)*N*F_1*F_2*Unit}{W*F_3*F_4}')";
 		String formula7 = "INSERT OR IGNORE INTO config_param(cnfg_param_group,cnfg_param_name,cnfg_param_value) VALUES('formulas','7','Carbonate= \\frac {(V_2-2V_1)*N*F_1*Unit}{W*F_3},Alkali= \\frac {2(V_2-V_1)*N*F_2*Unit}{W*F_4}')";

@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
@@ -25,7 +26,7 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class popup_input extends JFrame {
+public class popup_input extends JDialog {
 
 	private JPanel contentPane;
 	
@@ -86,6 +87,9 @@ public class popup_input extends JFrame {
 		setBounds(100, 200, 520, 550);
 		setTitle("Input Data");
 		setLocationRelativeTo(null);
+		
+		setResizable(false);
+		setModal(true);
 		
 		ImageIcon img = new ImageIcon(("C:\\SQLite\\logo\\logo.png"));
 		setIconImage(img.getImage());

@@ -25,7 +25,7 @@ public class ReformatBuffer {
         
 //        DateFormat dateFormat244 = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss:SSS");
 //		String date_time244 = dateFormat244.format(new Date()).toString();
-		//System.out.println("Dattaaaaa = "+s+"   -   Time = "+ date_time244);
+		//System.out.println("Dattaaaaa = "+s);
 
           
         if(s.contains("*")){
@@ -60,7 +60,7 @@ public class ReformatBuffer {
         			DrawGraph_kf.update_mv_kf(bufferReadToString); 
         		}
         		else if(current_exp.matches("calibrate")) {
-        			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        			calibrateElectrode.update_calibrate_mv(bufferReadToString);
         			menubar.update_mv_main(bufferReadToString);
         		}
         	}
@@ -76,7 +76,7 @@ public class ReformatBuffer {
         			DrawGraph_kf.update_mv_kf(bufferReadToString); 
         		}  
         		else if(current_exp.matches("calibrate")) {
-        			calibrate_electrode.update_calibrate_mv(bufferReadToString);
+        			calibrateElectrode.update_calibrate_mv(bufferReadToString);
         			menubar.update_mv_main(bufferReadToString);
         		}
         	}

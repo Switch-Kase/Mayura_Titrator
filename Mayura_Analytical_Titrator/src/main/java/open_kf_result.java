@@ -363,8 +363,7 @@ public class open_kf_result extends JPanel
     	
     	if(args.length != 0 )
     	{
-    		System.out.println("User Name = "+args[0]);
-    		System.out.println("permissions = "+args[1]);
+    		
     		user_name = args[0];
     		permission = args[1];
     	}

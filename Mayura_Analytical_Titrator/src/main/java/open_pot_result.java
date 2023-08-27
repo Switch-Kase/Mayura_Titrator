@@ -57,7 +57,8 @@ import org.jfree.ui.FloatDimension;
 import com.fazecast.jSerialComm.SerialPort;
 
 public class open_pot_result extends JPanel {
-	static JFrame frame ;
+	
+	static JFrame frame = new JFrame();
 	private JTextField user;
 	private JTextField password;
 	static JTable table1 = new JTable();
@@ -70,6 +71,7 @@ public class open_pot_result extends JPanel {
 	static String f_date, t_date, c_date;
 	static JPanel p = new JPanel();
 	static String u_name = "" ,permission = "";
+	
 	public open_pot_result() {
 		setLayout(null);
 		initialize();
@@ -363,7 +365,6 @@ public class open_pot_result extends JPanel {
 	}
 
 	public static void main(String[] args) {
-		frame = new JFrame();
 
 		if (args.length != 0) {
 			u_name = args[0];

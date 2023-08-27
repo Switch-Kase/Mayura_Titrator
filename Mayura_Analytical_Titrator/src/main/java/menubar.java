@@ -30,7 +30,6 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
@@ -86,6 +85,7 @@ public class menubar extends JPanel implements ItemListener {
 	public static SerialPort[] ports;
 	SerialPort firstAvailableComPort;
 	String data;
+	
 
 	private static JTextField textField_11, textField_12;
 	public static String selected_experiment = "", selected_methodfile = null;
@@ -297,7 +297,7 @@ public class menubar extends JPanel implements ItemListener {
 	public static void open_electrode_calibration(String[] aa) {
 
 		if (serial_port1 != null) {
-			calibrate_electrode.main(aa);
+			calibrateElectrode.main(aa);
 		} else {
 			JOptionPane.showMessageDialog(null, "Please select a ComPort!");
 		}
@@ -771,9 +771,9 @@ public class menubar extends JPanel implements ItemListener {
 		}
 		int int_temp_mv = Integer.parseInt(mv_val_str);
 		if (msg.contains("T")) {
-			jlabel_mv_Value.setText((int_temp_mv-e_calibration) + " mV");
+			jlabel_mv_Value.setText((int_temp_mv) + " mV");
 		} else if (msg.contains("N")) {
-			jlabel_mv_Value.setText(((int_temp_mv * (-1)) -e_calibration)+ " mV");
+			jlabel_mv_Value.setText(((int_temp_mv * (-1)))+ " mV");
 		}
 		//System.out.println("Menubar MV Raw = "+int_temp_mv);
 	}
@@ -1017,7 +1017,6 @@ public class menubar extends JPanel implements ItemListener {
 		if(!comport_success) {
 			comport_success = true;
 			JOptionPane.showMessageDialog(null, "ComPort Connected Succesfully!");
-	
 			try {
 				ReformatBuffer.current_exp = "main";
 				output.print("<8888>CVOL*");
@@ -1296,11 +1295,11 @@ public class menubar extends JPanel implements ItemListener {
 					try {
 						if (Float.parseFloat(pot_tf_maxvol.getText().toString()) < 0
 								|| Float.parseFloat(pot_tf_maxvol.getText().toString()) > 200) {
-							JOptionPane.showMessageDialog(null, "Stir Time must be between 0 to 100!");
+							JOptionPane.showMessageDialog(null, "Max Volume must be between 0 to 200!");
 							pot_tf_maxvol.setText("100");
 						}
 					} catch (NumberFormatException nfe) {
-						JOptionPane.showMessageDialog(null, "Stir Time must be between 0 to 100!");
+						JOptionPane.showMessageDialog(null, "Max Volume must be between 0 to 200!");
 						pot_tf_maxvol.setText("100");
 					}
 				}
@@ -1313,8 +1312,60 @@ public class menubar extends JPanel implements ItemListener {
 
 		pot_tf_blankvol = new JTextField();
 		pot_tf_blankvol.setText("0");
+		pot_tf_blankvol.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_blankvol.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_blankvol.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_blankvol.getText().toString()) > 200) {
+							JOptionPane.showMessageDialog(null, "Blank Volume must be between 0 to 200!");
+							pot_tf_blankvol.setText("100");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Blank Volume must be between 0 to 200!");
+						pot_tf_blankvol.setText("100");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		
 		pot_tf_burette = new JTextField();
 		pot_tf_burette.setText("1");
+		pot_tf_burette.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_burette.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_burette.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_burette.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid value");
+							pot_tf_burette.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid value");
+						pot_tf_burette.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
 
 		String[] pot_threshold_arr = new String[1000];
 		for (int i = 0; i < 1000; i++) {
@@ -1373,12 +1424,119 @@ public class menubar extends JPanel implements ItemListener {
 
 		pot_tf_factor1 = new JTextField();
 		pot_tf_factor1.setText("1");
+		pot_tf_factor1.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_factor1.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_factor1.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_factor1.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid value");
+							pot_tf_factor1.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid value");
+						pot_tf_factor1.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		
 		pot_tf_factor2 = new JTextField();
 		pot_tf_factor2.setText("1");
+		
+		pot_tf_factor2.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_factor2.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_factor2.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_factor2.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid value");
+							pot_tf_factor2.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid value");
+						pot_tf_factor2.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
 		pot_tf_factor3 = new JTextField();
 		pot_tf_factor3.setText("1");
+		
+		pot_tf_factor3.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_factor3.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_factor3.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_factor3.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid value");
+							pot_tf_factor3.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid value");
+						pot_tf_factor3.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
 		pot_tf_factor4 = new JTextField();
 		pot_tf_factor4.setText("1");
+		
+		pot_tf_factor4.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!pot_tf_factor4.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(pot_tf_factor4.getText().toString()) < 0
+								|| Float.parseFloat(pot_tf_factor4.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter a valid value");
+							pot_tf_factor4.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter a valid value");
+						pot_tf_factor4.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
 		
 		String[] pot_epselect_arr = { "Auto", "Manual", "Autostat" };
 		pot_cb_epselect = new JComboBox(pot_epselect_arr);
@@ -1579,7 +1737,7 @@ public class menubar extends JPanel implements ItemListener {
 							kf_tf_maxvol.setText("50");
 						}
 					} catch (NumberFormatException nfe) {
-						JOptionPane.showMessageDialog(null, "Max Volume must be between 0 to 500!");
+						JOptionPane.showMessageDialog(null, "Max Volume must be between 0 to 200!");
 						kf_tf_maxvol.setText("50");
 					}
 				}
@@ -1607,7 +1765,7 @@ public class menubar extends JPanel implements ItemListener {
 							kf_tf_blankvol.setText("50");
 						}
 					} catch (NumberFormatException nfe) {
-						JOptionPane.showMessageDialog(null, "Blank Volume must be between 0 to 500!");
+						JOptionPane.showMessageDialog(null, "Blank Volume must be between 0 to 200!");
 						kf_tf_blankvol.setText("50");
 					}
 				}
@@ -1620,12 +1778,120 @@ public class menubar extends JPanel implements ItemListener {
 
 		kf_tf_burette = new JTextField();
 		kf_tf_burette.setText("1");
+		
+		kf_tf_burette.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!kf_tf_burette.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(kf_tf_burette.getText().toString()) < 0
+								|| Float.parseFloat(kf_tf_burette.getText().toString()) > 1000000) {
+							JOptionPane.showMessageDialog(null, "Please enter correct value for Burette Factor");
+							kf_tf_burette.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter correct value for Burette Factor");
+						kf_tf_burette.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		
 		kf_tf_density = new JTextField();
 		kf_tf_density.setText("1");
+		kf_tf_density.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!kf_tf_density.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(kf_tf_density.getText().toString()) < 0
+								|| Float.parseFloat(kf_tf_density.getText().toString()) > 10000000) {
+							JOptionPane.showMessageDialog(null, "Please enter correct value for Density");
+							kf_tf_density.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter correct value for Density");
+						kf_tf_density.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		
+		
 		kf_tf_factor = new JTextField();
 		kf_tf_factor.setText("5");
+		kf_tf_factor.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!kf_tf_factor.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(kf_tf_factor.getText().toString()) < 0
+								|| Float.parseFloat(kf_tf_factor.getText().toString()) > 10000000) {
+							JOptionPane.showMessageDialog(null, "Please enter correct value for KF Factor");
+							kf_tf_factor.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter correct value for KF Factor");
+						kf_tf_factor.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
+		
+		
 		kf_tf_endpoint = new JTextField();
 		kf_tf_endpoint.setText("30");
+		kf_tf_endpoint.addKeyListener(new KeyListener() {
+			@Override
+			public void keyTyped(KeyEvent e) {
+			}
+
+			@Override
+			public void keyReleased(KeyEvent e) {
+				if (!kf_tf_endpoint.getText().toString().matches("")) {
+					try {
+						if (Float.parseFloat(kf_tf_endpoint.getText().toString()) < 0
+								|| Float.parseFloat(kf_tf_endpoint.getText().toString()) > 10000000) {
+							JOptionPane.showMessageDialog(null, "Please enter correct value for End Point");
+							kf_tf_endpoint.setText("1");
+						}
+					} catch (NumberFormatException nfe) {
+						JOptionPane.showMessageDialog(null, "Please enter correct value for End Point");
+						kf_tf_endpoint.setText("1");
+					}
+				}
+			}
+
+			@Override
+			public void keyPressed(KeyEvent e) {
+			}
+		});
 
 		String[] kf_dosage_arr = { "0.5", "1.0", "2.0", "3.0", "4.0", "5.0", "6.0", "8.0", "10.0", "12.0", "14.0",
 				"16.0" };

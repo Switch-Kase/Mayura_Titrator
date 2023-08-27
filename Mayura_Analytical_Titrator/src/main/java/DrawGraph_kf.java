@@ -189,7 +189,9 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		double_mv_val = Double.parseDouble(mv_val_str);
 		if (msg.contains("N"))
 			int_mv_val = -int_mv_val;
-		int_mv_val = int_mv_val - e_calib;
+//		int_mv_val = int_mv_val;
+//		double_mv_val = double_mv_val;
+
 		kf_mv_display.setText((int_mv_val)  + " mV");
 		if (current_process.matches("pre_run_started") || current_process.matches("blank_run_started")) {
 			check_mv(int_mv_val);
@@ -230,7 +232,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void afill_ok_received() {
-		System.out.println("KKKKFFFF  AFILLL OK Recieved");
+		//System.out.println("KKKKFFFF  AFILLL OK Recieved");
 		exec_dg_kf_fill = Executors.newSingleThreadScheduledExecutor();
 		exec_dg_kf_fill.scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -243,6 +245,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void afill_end_received() {
+		System.out.println("EndPoint = "+Integer.parseInt(end_point)+"  :  MV Val = "+(int) double_mv_val);
 		exec_dg_kf_fill.shutdown();
 		if (current_process.matches("pre_run") || current_process.matches("pre_run_started_afill")) {
 			if ((int) double_mv_val < Integer.parseInt(end_point))// && pre_run_completed == true
@@ -444,8 +447,8 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 						vol_dosed.setText("Volume dosed : 0.00 mL");
 						vol_filled.setText("Volume filled : 0.00 mL");
 						delay_timer.setText("Delay Timer : " + 0 + " sec");
-						update_result_scroll("\nPre-Run Completed!");
-						db_details = db_details + "[ " + get_time() + " ]  Pre-Run Completed,";
+						//update_result_scroll("\nPre-Run Completed!");
+						//db_details = db_details + "[ " + get_time() + " ]  Pre-Run Completed,";
 						update_result_text("Pre-Run Completed!");
 						JOptionPane.showMessageDialog(null, "Pre-Run Completed!");
 						try {
@@ -1062,14 +1065,12 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			if (result_unit.matches("%")) {
 				temp_factor = 100;
 			} else if (result_unit.toLowerCase().matches("ppm")) {
-				temp_factor = 1000000;
+				temp_factor = 1000;
 			}
 			if (dosage == 0) {
 				result_moisture = 0;
 			} else {
-				result_moisture = (( Math.abs(Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol))
-						/ Double.parseDouble(df.format(sample_weight))) ) * (Double.parseDouble(kf_factor))
-						* (temp_factor);
+				result_moisture = ((Math.abs(Double.parseDouble(df.format(dosage)) - Double.parseDouble(blank_vol))) * (Double.parseDouble(kf_factor))* (temp_factor)) / Double.parseDouble(df.format(sample_weight));
 			}
 			System.out.println("MOISTURE Variables = Dosage = "+Double.parseDouble(df.format(dosage)));
 			System.out.println("MOISTURE Variables = Blank Volume = "+Double.parseDouble((blank_vol)));

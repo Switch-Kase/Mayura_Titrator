@@ -1,16 +1,15 @@
 package main.java;
 
-import java.awt.*;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.Frame;
+import java.awt.Insets;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -18,34 +17,25 @@ import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Date;
-import java.util.concurrent.Executors;
-import java.util.concurrent.Future;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
-import javax.management.modelmbean.ModelMBean;
-import javax.swing.*;
-import javax.swing.border.Border;
-import javax.swing.plaf.DimensionUIResource;
+import javax.swing.ButtonGroup;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JCheckBox;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JScrollPane;
+import javax.swing.JTable;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
+import javax.swing.ScrollPaneConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
-import org.jfree.chart.ChartFactory;
-import org.jfree.chart.ChartFrame;
-import org.jfree.chart.ChartPanel;
-import org.jfree.chart.ChartUtilities;
-import org.jfree.chart.JFreeChart;
-import org.jfree.data.category.DefaultCategoryDataset;
-import org.jfree.data.xy.XYDataset;
-import org.jfree.ui.FloatDimension;
-
-import com.fazecast.jSerialComm.SerialPort;
 import com.itextpdf.text.DocumentException;
 
 public class DrawReport_kf extends JPanel {
@@ -362,7 +352,7 @@ public class DrawReport_kf extends JPanel {
 			value = kff_trials;
 			String[] temparr = kff_results.split(",");
 			result = temparr[0];	
-			rsd = temparr[1]+"%";
+			rsd = temparr[1]+" %";
 			parameter = parameter +",Rea.Mfgr : "+table2.getValueAt(20, 1);
 			parameter = parameter +",Date : "+table2.getValueAt(1, 1);
 			parameter = parameter +",Batch No : "+table2.getValueAt(17, 1);
@@ -378,6 +368,8 @@ public class DrawReport_kf extends JPanel {
 			parameter = parameter+","+report_name;
 			parameter = parameter+","+table2.getValueAt(0, 1);
 			parameter = parameter+","+table2.getValueAt(22, 1);
+			parameter = parameter+","+table2.getValueAt(13, 1);
+
 			try {
 				audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Printing "+report_name+" - Standardization Report");
 			} catch (ParseException e1) {e1.printStackTrace();}
@@ -390,7 +382,7 @@ public class DrawReport_kf extends JPanel {
 			value = moisture_trials;
 			String[] temparr = moisture_results.split(",");
 			result = temparr[0];	
-			rsd = temparr[1]+"%";	
+			rsd = temparr[1]+" %";	
 			parameter = parameter +",Sample Name : "+table2.getValueAt(18, 1);
 			parameter = parameter +",Date-Time : "+table2.getValueAt(1, 1)+"-"+table2.getValueAt(2, 1);
 			parameter = parameter +",Batch No : "+table2.getValueAt(17, 1);
@@ -406,6 +398,8 @@ public class DrawReport_kf extends JPanel {
 			parameter = parameter+","+report_name;
 			parameter = parameter+","+table2.getValueAt(0, 1);
 			parameter = parameter+","+table2.getValueAt(22, 1);
+			parameter = parameter+","+table2.getValueAt(13, 1);
+
 			try {
 				audit_log_push.push_to_audit(get_date(), get_time() ,user_name,"Printing "+report_name+" - Analysis Report");
 			} catch (ParseException e1) {e1.printStackTrace();}
@@ -585,12 +579,12 @@ public class DrawReport_kf extends JPanel {
 		try {
 			String[] kff_result = kff_results.split(",");
 			result_header.setText("KFF_Result : " + kff_result[0]);
-			rsd_header.setText("KFF_RSD : " + kff_result[1]);
+			rsd_header.setText("KFF_RSD : " + kff_result[1]+" %");
 		} catch (ArrayIndexOutOfBoundsException k) {}
 		try {
 			String[] moisture_result2 = moisture_results.split(",");
-			result_header1.setText("M_Result : " + moisture_result2[0]);
-			rsd_header1.setText("M_RSD : " + moisture_result2[1]);
+			result_header1.setText("M_Result : " + moisture_result2[0]+" "+table2.getValueAt(13, 1));
+			rsd_header1.setText("M_RSD : " + moisture_result2[1]+" %");
 		} catch (ArrayIndexOutOfBoundsException k) {}
 		
 		remarks_input.setText(remarks);

@@ -146,10 +146,10 @@ public class calibrate_electrode extends JPanel {
 		int_temp_mv = Integer.parseInt(mv_val_str);
 		if(stop_updating == false) {
 			if (msg.contains("T")) {
-				text_mV.setText("<html>mV <br/>" + (int_temp_mv-e_calib) + " mV</html>");
+				text_mV.setText("<html>mV <br/>" + (int_temp_mv) + " mV</html>");
 				text_ph.setText("<html>pH <br/>" +String.format("%.2f", (7-((float)(int_temp_mv-e_calib) / 54)))+ "</html>");
 			} else if (msg.contains("N")) {
-				text_mV.setText("<html>mV <br/> " + ((int_temp_mv*(-1))-e_calib)+ " mV</html>");
+				text_mV.setText("<html>mV <br/> " + ((int_temp_mv*(-1)))+ " mV</html>");
 				text_ph.setText("<html>pH <br/> " +String.format("%.2f", (7-((float)(int_temp_mv-e_calib) / 54)))+ "</html>");
 				int_temp_mv = int_temp_mv*(-1);
 			}
@@ -164,7 +164,7 @@ public class calibrate_electrode extends JPanel {
 		try {
 			String sql = "UPDATE config_param SET cnfg_param_value = ? WHERE cnfg_param_group =?  and cnfg_param_name = ?";
 			ps = con.prepareStatement(sql);
-			ps.setString(1, String.valueOf(e_calib + (int_temp_mv-e_calib)));
+			ps.setString(1, String.valueOf((int_temp_mv)));
 			ps.setString(2, "electrodeFactor");
 			ps.setString(3, "electrodeFactor");
 

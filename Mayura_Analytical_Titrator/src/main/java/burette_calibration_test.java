@@ -72,7 +72,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	static String f_date, t_date, c_dat;
 	static PrintWriter output_bc;
 	static SerialPort sp1;
-	static JLabel vol_fill, vol_dose, burette_factor;
+	static JLabel vol_fill, vol_dose, burette_factor, legend_w1, legend_w2;
 	static ScheduledExecutorService exec_bc_fill, exec_bc_dose;
 	static int row_cnt = 0, arrow = 1;
 	static double dose = 0, dose_counter = 0, b_factor = 0;
@@ -198,7 +198,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	}
 	
 	public static void input_popup() {
-		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W1 (Empty Weight)",
 				"Enter W1", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			double w1 = Double.parseDouble(result);
@@ -268,7 +268,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	
 
 	public static void bct_stpm_ok_received() {
-		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 and then PRESS OK!",
+		String result = (String) JOptionPane.showInputDialog(frame, "Enter the weight W2 (Weight with Water)",
 				"Enter W2", JOptionPane.PLAIN_MESSAGE, null, null, "");
 		try {
 			DecimalFormat df = new DecimalFormat(double_format);
@@ -324,6 +324,18 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 		frame.getContentPane().repaint();
 
 		test_four_column();
+		
+		legend_w1 = new JLabel("W1 - Weight of Empty Beaker");
+		legend_w1.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.01 * wid)));
+		legend_w1.setBounds((int) Math.round(0.12 * wid), (int) Math.round(0.45 * hei), (int) Math.round(0.35 * wid),
+				(int) Math.round(0.0428 * hei));
+		frame.getContentPane().add(legend_w1);
+		
+		legend_w2 = new JLabel("W2 - Weight of Beaker with dosed Water");
+		legend_w2.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.01 * wid)));
+		legend_w2.setBounds((int) Math.round(0.12 * wid), (int) Math.round(0.5 * hei), (int) Math.round(0.35 * wid),
+				(int) Math.round(0.0428 * hei));
+		frame.getContentPane().add(legend_w2);
 
 		vol_fill = new JLabel("Filling");
 		vol_fill.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.012 * wid)));
@@ -453,7 +465,7 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 	public static void test_four_column() {
 		scrollPane1 = new JScrollPane();
 		scrollPane1.setBounds((int) Math.round(0.013 * wid), (int) Math.round(0.1 * hei), (int) Math.round(0.95 * wid),
-				(int) Math.round(0.75 * hei));
+				(int) Math.round(0.32 * hei));
 		frame.getContentPane().add(scrollPane1);
 		table1 = new JTable();
 		table1.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.012 * wid)));
@@ -474,14 +486,18 @@ public class burette_calibration_test extends JPanel implements ItemListener {
 					return String.class;
 				}
 			}
+			@Override
+            public boolean isCellEditable(int row, int column) {
+                return false; // Make all cells non-editable
+            }
 		};
 		table1.setModel(model);
 		table1.setDefaultEditor(Object.class, null);
 		model.addColumn("Trials");
-		model.addColumn("Displayed Volume in mL");
-		model.addColumn("Weight of Empty Flask(gms){W1}");
-		model.addColumn("Weight of Flask with H20(gms){W2}");
-		model.addColumn("Weight of Actual Vol of H2O dispensed(gms){W2-W1}");
+		model.addColumn("Volume");
+		model.addColumn("W1");
+		model.addColumn("W2");
+		model.addColumn("W2-W1");
 
 		table1.setRowHeight((int) Math.round(0.076 * hei));
 

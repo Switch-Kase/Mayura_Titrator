@@ -11,6 +11,7 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import java.awt.event.ActionListener;
@@ -25,7 +26,7 @@ import java.util.Date;
 import java.awt.event.ActionEvent;
 import javax.swing.JPasswordField;
 
-public class popup_input_kf extends JFrame {
+public class popup_input_kf extends JDialog {
 
 	private JPanel contentPane;
 	
@@ -90,6 +91,9 @@ public class popup_input_kf extends JFrame {
 		setBounds(100, 200, 520, 430);
 		setTitle("Input Data KF");
 		setLocationRelativeTo(null);
+		
+		setResizable(false);
+		setModal(true);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

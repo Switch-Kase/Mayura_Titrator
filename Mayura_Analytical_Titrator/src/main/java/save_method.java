@@ -19,6 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
+import javax.swing.JDialog;
 
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -36,7 +37,7 @@ import java.awt.event.ActionEvent;
 import java.awt.Desktop;  
 
 
-public class save_method extends JFrame {
+public class save_method extends JDialog{
 
 	private static JPanel contentPane;
 	private JTextField method;
@@ -98,6 +99,9 @@ public class save_method extends JFrame {
 		setBounds(100, 200, 520, 450);
 		setTitle("Enter the Method Name");
 		setLocationRelativeTo(null);
+		
+		setResizable(false);
+		setModal(true);
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);

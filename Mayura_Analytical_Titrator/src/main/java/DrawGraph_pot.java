@@ -191,8 +191,8 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 	//	System.out.println("int_mv_val = "+int_mv_val+"  :   E calib = "+e_calib);
 		
-		int_mv_val = int_mv_val-e_calib;
-		double_mv_val = double_mv_val-e_calib;
+//		int_mv_val = int_mv_val-e_calib;
+//		double_mv_val = double_mv_val-e_calib;
 		
 	//	System.out.println("int_mv_val = "+int_mv_val);
 		
@@ -202,7 +202,7 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 
 		update_front_end = true;
 		
-		System.out.println("Current process = "+dg_current_process);
+		//System.out.println("Current process = "+dg_current_process);
 
 		if (dg_current_process.matches("blank_run_started_dose") || dg_current_process.matches("trial_started_dose")) {
 			double temp_val;
@@ -701,6 +701,10 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		table11.setEnabled(false);
 		table11.getColumnModel().getColumn(1).setPreferredWidth((int) Math.round(0.00651 * wid));
 		table11.getColumnModel().getColumn(2).setPreferredWidth((int) Math.round(0.01953 * wid));
+		
+		//Brahma
+		table11.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.01 * wid)));
+
 
 		db_details = db_details + "[ " + get_time() + " ]  Blank Run Started ,";
 		db_details = db_details + "[ " + get_time() + " ]  New Blank Volume = " + String.format("%.3f", bvolume) + " ,";
@@ -723,6 +727,9 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 		} catch (IllegalArgumentException ikju) {
 
 		}
+		
+		table2.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.01 * wid)));
+
 
 		tf_threshold.setText(variables[5]);
 		tf_filter.setText(variables[6]);
@@ -3941,27 +3948,27 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				if (math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					if (math_header[0].matches("N")) {
-						seven_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/gm", "Moisture", "Normality");
-						db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/gm,Moisture,Normality";
+						seven_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/mg", "Moisture", "Normality");
+						db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/mg,Moisture,Normality";
 					} else if (!math_header[0].contains("N")) {
-						eight_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/gm", "Normality", "Moisture",
+						eight_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/mg", "Normality", "Moisture",
 								math_header[0]);
-						db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/gm,Normality,Moisture";
+						db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/mg,Normality,Moisture";
 					}
 				} else if (!math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
-					nine_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/gm", "Normality", "Moisture", math_header[0],
+					nine_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/mg", "Normality", "Moisture", math_header[0],
 							math_header2[0]);
-					db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/gm,Normality,Moisture," + math_header[0] + ","
+					db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/mg,Normality,Moisture," + math_header[0] + ","
 							+ math_header2[0];
 				} else if (!math2.matches("") && !math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
 					String[] math_header3 = math3.split("=");
-					ten_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/gm", "Normality", "Moisture", math_header[0],
+					ten_column("Trial No", "V1 mL", "V2 mL", "V3 mL", "Wt/mg", "Normality", "Moisture", math_header[0],
 							math_header2[0], math_header3[0]);
-					db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/gm,Normality,Moisture," + math_header[0] + ","
+					db_header = "Trial No,V1 mL,V2 mL,V3 mL,Wt/mg,Normality,Moisture," + math_header[0] + ","
 							+ math_header2[0] + "," + math_header3[0];
 				}
 			} else if (math.contains("V_2") || math2.contains("V_2") || math3.contains("V_2")) {
@@ -3969,26 +3976,26 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				if (math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					if (math_header[0].matches("N")) {
-						six_column("Trial No", "V1 mL", "V2 mL", "Wt/gm", "Moisture", "Normality");
-						db_header = "Trial No,V1 mL,V2 mL,Wt/gm,Moisture,Normality";
+						six_column("Trial No", "V1 mL", "V2 mL", "Wt/mg", "Moisture", "Normality");
+						db_header = "Trial No,V1 mL,V2 mL,Wt/mg,Moisture,Normality";
 					} else if (!math_header[0].contains("N")) {
-						seven_column("Trial No", "V1 mL", "V2 mL", "Wt/gm", "Normality", "Moisture", math_header[0]);
-						db_header = "Trial No,V1 mL,V2 mL,Wt/gm,Normality,Moisture," + math_header[0];
+						seven_column("Trial No", "V1 mL", "V2 mL", "Wt/mg", "Normality", "Moisture", math_header[0]);
+						db_header = "Trial No,V1 mL,V2 mL,Wt/mg,Normality,Moisture," + math_header[0];
 					}
 				} else if (!math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
-					eight_column("Trial No", "V1 mL", "V2 mL", "Wt/gm", "Normality", "Moisture", math_header[0],
+					eight_column("Trial No", "V1 mL", "V2 mL", "Wt/mg", "Normality", "Moisture", math_header[0],
 							math_header2[0]);
-					db_header = "Trial No,V1 mL,V2 mL,Wt/gm,Normality,Moisture," + math_header[0] + ","
+					db_header = "Trial No,V1 mL,V2 mL,Wt/mg,Normality,Moisture," + math_header[0] + ","
 							+ math_header2[0];
 				} else if (!math2.matches("") && !math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
 					String[] math_header3 = math3.split("=");
-					nine_column("Trial No", "V1 mL", "V2 mL", "Wt/gm", "Normality", "Moisture", math_header[0],
+					nine_column("Trial No", "V1 mL", "V2 mL", "Wt/mg", "Normality", "Moisture", math_header[0],
 							math_header2[0], math_header3[0]);
-					db_header = "Trial No,V1 mL,V2 mL,Wt/gm,Normality,Moisture," + math_header[0] + ","
+					db_header = "Trial No,V1 mL,V2 mL,Wt/mg,Normality,Moisture," + math_header[0] + ","
 							+ math_header2[0] + "," + math_header3[0];
 				}
 			} else if (math.contains("V_1") || math2.contains("V_1") || math3.contains("V_1")) {
@@ -3996,25 +4003,25 @@ public class DrawGraph_pot extends JPanel implements ItemListener {
 				if (math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					if (math_header[0].matches("N")) {
-						five_column("Trial No", "V1 mL", "Wt/gm", "Moisture", "Normality");
-						db_header = "Trial No,V1 mL,Wt/gm,Moisture,Normality";
+						five_column("Trial No", "V1 mL", "Wt/mg", "Moisture", "Normality");
+						db_header = "Trial No,V1 mL,Wt/mg,Moisture,Normality";
 					} else if (!math_header[0].contains("N")) {
-						six_column("Trial No", "V1 mL", "Wt/gm", "Normality", "Moisture", math_header[0]);
-						db_header = "Trial No,V1 mL,Wt/gm,Normality,Moisture," + math_header[0];
+						six_column("Trial No", "V1 mL", "Wt/mg", "Normality", "Moisture", math_header[0]);
+						db_header = "Trial No,V1 mL,Wt/mg,Normality,Moisture," + math_header[0];
 					}
 				} else if (!math2.matches("") && math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
-					seven_column("Trial No", "V1 mL", "Wt/gm", "Normality", "Moisture", math_header[0],
+					seven_column("Trial No", "V1 mL", "Wt/mg", "Normality", "Moisture", math_header[0],
 							math_header2[0]);
-					db_header = "Trial No,V1 mL,Wt/gm,Normality,Moisture," + math_header[0] + "," + math_header2[0];
+					db_header = "Trial No,V1 mL,Wt/mg,Normality,Moisture," + math_header[0] + "," + math_header2[0];
 				} else if (!math2.matches("") && !math3.matches("")) {
 					String[] math_header = math.split("=");
 					String[] math_header2 = math2.split("=");
 					String[] math_header3 = math3.split("=");
-					eight_column("Trial No", "V1 mL", "Wt/gm", "Normality", "Moisture", math_header[0], math_header2[0],
+					eight_column("Trial No", "V1 mL", "Wt/mg", "Normality", "Moisture", math_header[0], math_header2[0],
 							math_header3[0]);
-					db_header = "Trial No,V1 mL,Wt/gm,Normality,Moisture," + math_header[0] + "," + math_header2[0]
+					db_header = "Trial No,V1 mL,Wt/mg,Normality,Moisture," + math_header[0] + "," + math_header2[0]
 							+ "," + math_header3[0];
 				}
 			}
