@@ -232,8 +232,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void afill_ok_received() {
-		//System.out.println("KKKKFFFF  AFILLL OK Recieved");
-		//button_esc.setEnabled(true);
+
 		exec_dg_kf_fill = Executors.newSingleThreadScheduledExecutor();
 		exec_dg_kf_fill.scheduleAtFixedRate(new Runnable() {
 			@Override

@@ -254,6 +254,7 @@ public class report {
 			else {
 				table3.addCell("Result	: " + result+" "+param[16]);
 			}
+
 			table3.addCell("RSD : " + rsd);
 			table3.addCell(" ");
 			table3.addCell(" ");
@@ -761,6 +762,172 @@ public class report {
 			e.printStackTrace();
 		}
 	}
+	
+	
+	
+	public static void generate_report_electrode_calib(String company_detail, String parameter, String header1,
+			String trials, String analyzed_by, String instrument_id1) throws FileNotFoundException, DocumentException {
+
+		// System.out.println("Generate Report Result = "+results);
+		// System.out.println("Generate Report2 = "+value);
+
+		parameters = parameter;
+		company_details = company_detail;
+		headers = header1;
+		String temp_val = "";
+
+		String company[] = company_details.split(">");
+		String param[] = parameters.split(",");
+		String header[] = headers.split(",");
+		instrument_id = instrument_id1;
+
+		int param_number = param.length;
+		Document document = new Document();
+		PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(
+				"C:\\SQLite\\Report\\Electrode Calibration Report - " + get_date() + "__" + get_time_bc() + ".pdf"));
+
+		String[] value_data = trials.split(":");
+		int row_number = value_data.length;
+		int col_number = value_data[0].split(",").length;
+
+		System.out.println("row= " + row_number + " col= " + col_number + " pnum = " + param_number);
+
+		try {
+			document.open();
+			com.itextpdf.text.Font f = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 25.0f,
+					com.itextpdf.text.Font.NORMAL, BaseColor.BLACK);
+			com.itextpdf.text.Font f1 = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.TIMES_ROMAN, 12.0f,
+					com.itextpdf.text.Font.NORMAL, BaseColor.BLACK);
+			com.itextpdf.text.Font f2 = new com.itextpdf.text.Font(com.itextpdf.text.Font.FontFamily.HELVETICA, 12.0f,
+					com.itextpdf.text.Font.NORMAL, BaseColor.BLACK);
+			
+
+			Image img = Image.getInstance("C:\\sqlite\\company_logo\\logo.png");
+			PdfPTable table12 = new PdfPTable(2);
+			table12.setWidthPercentage(100);
+			table12.setWidths(new int[] { 1, 12 });
+			table12.addCell(createImageCell(img));
+			Font fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.BOLD);
+
+			table12.addCell(createTextCell(company[0], fontH1));
+			PdfPCell cell = new PdfPCell();
+			Paragraph paragraph1 = new Paragraph("");
+			cell.addElement(paragraph1);
+			cell.setBorderColor(BaseColor.WHITE);
+			table12.addCell(cell);
+			fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 10, Font.NORMAL);
+			table12.addCell(createTextCell(company[1], fontH1));
+			table12.addCell(cell);
+			fontH1 = new Font(Font.FontFamily.TIMES_ROMAN, 20, Font.NORMAL);
+			// table12.addCell(createTextCell(param[0],fontH1));
+
+			document.add(table12);
+
+			PdfPTable table = new PdfPTable(2);
+
+			Paragraph p = new Paragraph(" ", f);
+			addEmptyLine(p, 0);
+			document.add(p);
+			
+
+			Paragraph paragraph21 = new Paragraph("               Electrode Calibration Report",f2);
+			document.add(paragraph21);
+			
+			Paragraph p22 = new Paragraph(" ", f);
+			addEmptyLine(p22, 0);
+			document.add(p22);
+
+			table.setWidths(new float[] { 2f, 1f });
+			table.getDefaultCell().setBorder(0);
+
+			table.setPaddingTop(5.0f);
+			int w = 1;
+			for (int l = 1; l < (param_number); l++) {
+				System.out.println("Param = " + param[l]);
+				table.addCell(param[l]);
+
+				if (w == 2) {
+					w = 0;
+					table.addCell(" ");
+					table.addCell(" ");
+				}
+				w++;
+
+			}
+			document.add(table);
+			addEmptyLine(p, 2);
+			document.add(p);
+
+			PdfPTable table1 = new PdfPTable(col_number);
+			for (int j = 0; j < col_number; j++) {
+				PdfPCell cell1 = new PdfPCell(new Phrase(header[j]));
+				cell1.setHorizontalAlignment(Element.ALIGN_CENTER);
+				table1.addCell(cell1);
+			}
+			table1.completeRow();
+
+			for (int i = 0; i < row_number; i++) {
+				int q = 1;
+				String row_value[] = value_data[i].split(",");
+				System.out.println(Arrays.toString(row_value));
+
+				for (int h = 0; h < col_number; h++) {
+					PdfPCell cell01 = new PdfPCell(new Phrase(String.valueOf(row_value[h])));
+					cell01.setHorizontalAlignment(Element.ALIGN_CENTER);
+					table1.addCell(cell01);
+				}
+				q++;
+				table1.completeRow();
+			}
+
+			document.add(table1);
+
+			Paragraph p2 = new Paragraph(" ", f1);
+
+			addEmptyLine(p2, 2);
+			document.add(p2);
+			
+			addEmptyLine(p2, 2);
+			document.add(p2);
+			document.add(p2);
+
+
+			
+
+			PdfPTable table4 = new PdfPTable(2);
+			table4.getDefaultCell().setBorderColor(BaseColor.WHITE);
+			table4.addCell("\nAnalyzed By");// +result
+			table4.addCell("\nChecked By ");// +rsd
+			table4.addCell(" ");
+			table4.addCell(" ");
+			table4.addCell(" ");
+			table4.addCell(" ");
+
+			document.add(table4);
+
+			addFooter(writer);
+
+			document.close();
+			writer.close();
+
+			try {
+				File file = new File("C:\\SQLite\\Report\\Electrode Calibration Report - " + get_date() + "__"
+						+ get_time_bc() + ".pdf");
+				if (!Desktop.isDesktopSupported()) {
+					System.out.println("not supported");
+					return;
+				}
+				Desktop desktop = Desktop.getDesktop();
+				if (file.exists())
+					desktop.open(file);
+			} catch (Exception ee) {
+				ee.printStackTrace();
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public static void generate_method_report(String company_detail, String parameter, String experiment,
 			String metd_name, String inst_id) throws FileNotFoundException, DocumentException {
@@ -1031,6 +1198,7 @@ public class report {
 
 				table3.addCell("Result:   " + temp_arr0[0]+" "+param[17]);
 				table3.addCell("RSD:   " + temp_arr0[1]+" %");
+
 				table3.addCell(" ");
 				table3.addCell(" ");
 				table3.addCell(" ");
