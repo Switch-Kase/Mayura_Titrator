@@ -518,14 +518,14 @@ public class DrawReport_pot extends JPanel{
 		parameter = parameter +",Date : "+table2.getValueAt(1, 1);
 		parameter = parameter +",Time : "+table2.getValueAt(2, 1);
 		parameter = parameter +",Method File : "+table2.getValueAt(3, 1);
-		parameter = parameter +",Batch Number : "+table2.getValueAt(23, 1);
-		parameter = parameter +",AR Number : "+table2.getValueAt(22, 1);
-		parameter = parameter +",Sample Name: "+table2.getValueAt(24, 1);
+		parameter = parameter +",Batch Number : "+table2.getValueAt(22, 1);
+		parameter = parameter +",AR Number : "+table2.getValueAt(21, 1);
+		parameter = parameter +",Sample Name: "+table2.getValueAt(23, 1);
 		parameter = parameter +",Dosage Speed : "+table2.getValueAt(11, 1);
 		parameter = parameter +",EP Select : "+table2.getValueAt(17, 1);
 		parameter = parameter +",No. of Trials : "+table2.getValueAt(12, 1);
 		parameter = parameter+",Titrant Name : "+table2.getValueAt(27, 1);
-		parameter = parameter+",Normality : "+table2.getValueAt(25, 1);
+		parameter = parameter+",Normality : "+table2.getValueAt(24, 1);
 		parameter = parameter+",Formula No. : "+table2.getValueAt(18, 1);
 		parameter = parameter+","+table2.getValueAt(0, 1);
 		parameter = parameter+","+table2.getValueAt(28, 1);
@@ -548,7 +548,8 @@ public class DrawReport_pot extends JPanel{
 			}
 			report.generate_report_pot(company_details_temp, parameter, header, trial_data,graph_print,results,remarks_final[0],
 					threshold,timings,table2.getValueAt(5, 1).toString(),table2.getValueAt(4, 1).toString(),
-					table2.getValueAt(3, 1).toString(),table2.getValueAt(11, 1).toString(),table2.getValueAt(17, 1).toString(),table2.getValueAt(27, 1).toString(),"Instrument ID: "+company_arr[0]);
+					table2.getValueAt(3, 1).toString(),table2.getValueAt(11, 1).toString(),table2.getValueAt(17, 1).toString(),
+					report_name,"Instrument ID: "+company_arr[0], table2.getValueAt(18, 1).toString());
 		} catch (FileNotFoundException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

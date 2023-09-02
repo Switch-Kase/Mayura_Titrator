@@ -232,7 +232,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 	}
 
 	public static void afill_ok_received() {
-		//System.out.println("KKKKFFFF  AFILLL OK Recieved");
+
 		exec_dg_kf_fill = Executors.newSingleThreadScheduledExecutor();
 		exec_dg_kf_fill.scheduleAtFixedRate(new Runnable() {
 			@Override
@@ -1065,7 +1065,7 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 			if (result_unit.matches("%")) {
 				temp_factor = 100;
 			} else if (result_unit.toLowerCase().matches("ppm")) {
-				temp_factor = 1000;
+				temp_factor = 1000*1000;
 			}
 			if (dosage == 0) {
 				result_moisture = 0;
@@ -1660,36 +1660,13 @@ public class DrawGraph_kf extends JPanel implements ItemListener {
 		button_esc.setFont(new Font("Times New Roman", Font.BOLD, (int) Math.round(0.0082 * wid)));
 		button_esc.setBounds((int) Math.round(0.45 * wid), (int) Math.round(0.5392 * hei),
 				(int) Math.round(0.052 * wid), (int) Math.round(0.0392 * hei));
-		add(button_esc);
+		//add(button_esc);
 		button_esc.setEnabled(false);
 		button_esc.addActionListener(new ActionListener() {
 
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				if (mv_check_state.matches("g_hundred")) {
-					exec_dg_kf_dosr.shutdown();
-				}
-				if (mv_check_state.matches("g_one")) {
-					exec_dg_kf_one.shutdown();
-				}
-				if (mv_check_state.matches("timer")) {
-					exec_dg_kf_timer.shutdown();
-				}
-				if (mv_check_state.matches("")) {
-					exec_dg_kf_fill.shutdown();
-				}
-				current_process = "";
-				try {
-					Thread.sleep(100);
-					output_dg.print("<8888>ESCP*");
-					output_dg.flush();
-					ReformatBuffer.current_state = "dg_kf_escp";
-				} catch (InterruptedException ex) {
-				} catch (NullPointerException ee) {
-					JOptionPane.showMessageDialog(null, "Please select the ComPort!");
-				}
-				current_process = "";
-				experiment_performing.setText("Experiment Performing : Escaped");
+				//afill_end_received();
 			}
 		});
 
