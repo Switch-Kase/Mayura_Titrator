@@ -59,6 +59,7 @@ import org.jfree.data.xy.XYDataset;
 import org.jfree.ui.FloatDimension;
 
 import com.fazecast.jSerialComm.SerialPort;
+import com.itextpdf.text.DocumentException;
 
 public class burette_calibration extends JPanel {
 	static JFrame frame = new JFrame();
@@ -76,7 +77,7 @@ public class burette_calibration extends JPanel {
 	static ScheduledExecutorService exec_bc_fill, exec_bc_dose;
 	static int row_cnt = 0, arrow = 1;
 	static double dose = 5, dose_counter = 0, b_factor = 0;
-	static JButton btn_test_buretter_calibration, btn_update_buretter_factor;
+	static JButton btn_buretter_calibration_print, btn_update_buretter_factor;
 
 	static float prev_burette_factor = 0;
 
@@ -86,6 +87,8 @@ public class burette_calibration extends JPanel {
 	static String str_format = "%.4f";
 	static String double_format = "#.####";
 	static JRadioButton radioButton_5ml,radioButton_10ml,radioButton_15ml;    
+	static DecimalFormat df = new DecimalFormat("0.000");
+
 
 	public burette_calibration() {
 		setLayout(null);
@@ -113,6 +116,91 @@ public class burette_calibration extends JPanel {
 			p = new JPanel();
 			p.revalidate();
 			p.repaint();
+		}
+	}
+	
+
+	public static String get_company_details() {
+		String data = "";
+		Connection con = DbConnection.connect();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String sql;
+		try {
+			sql = "SELECT * FROM company_data";
+			ps = con.prepareStatement(sql);
+			rs = ps.executeQuery();
+			data = data + rs.getString("instrument_id");
+			data = data + ">" + rs.getString("company_name");
+			data = data + ">" + rs.getString("company_address");
+		} catch (SQLException e1) {
+			// JOptionPane.showMessageDialog(null,e1);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException e1) {
+				System.out.println(e1.toString());
+			}
+		}
+		return data;
+	}
+	
+	public static double get_burette_factor() {
+		double temp_bf = 0;
+		Connection con = DbConnection.connect();
+		PreparedStatement ps = null;
+		String sql;
+
+		sql = "SELECT * FROM config_param WHERE cnfg_param_group = 'buretteFactor' and cnfg_param_name = 'buretteFactor'";
+
+		try {
+			ps = con.prepareStatement(sql);
+			ResultSet rs = ps.executeQuery();
+			temp_bf = Double.parseDouble(rs.getString("cnfg_param_value"));
+		} catch (SQLException e1) {
+			JOptionPane.showMessageDialog(null, e1);
+		} finally {
+			try {
+				ps.close();
+				con.close();
+			} catch (SQLException e1) {
+				System.out.println(e1.toString());
+			}
+		}
+
+		return temp_bf;
+	}
+	
+
+	public static void print_burette_calibration_report() {
+
+		String company_details = "";
+		String parameter = "", header = "", value = "", trials = "", result = "", rsd = "", instrument_id = "",
+				analyzed_by = "",result_kff="";
+		trials = "1,"+table1.getValueAt(0, 1).toString()+"," + table1.getValueAt(0, 2).toString()+","+ table1.getValueAt(0, 3).toString()+","+ table1.getValueAt(0, 4).toString()+","+ table1.getValueAt(0, 5).toString();
+		trials = trials+":";
+		trials = trials+"2," + table1.getValueAt(1, 1).toString()+ "," + table1.getValueAt(1, 2).toString()+","+ table1.getValueAt(1, 3).toString()+","+ table1.getValueAt(1, 4).toString()+","+ table1.getValueAt(1, 5).toString();
+		trials = trials+":";
+		trials = trials+"3," + table1.getValueAt(2, 1).toString()+"," + table1.getValueAt(2, 2).toString()+","+ table1.getValueAt(2, 3).toString()+","+ table1.getValueAt(2, 4).toString()+","+ table1.getValueAt(2, 5).toString();
+
+		company_details = get_company_details();
+		String[] company_arr = company_details.split(">");
+		parameter = "Burette Calibration Report,Date: " + get_date() + ",Time: " + get_time() + ",Instrument ID: "
+				+ company_arr[0] + ",User Name: " + menubar.user_name;
+		header = "Sl No,Volume,W1,W2,W2-W1,Burette Factor";
+
+		analyzed_by = menubar.user_name;
+		instrument_id = company_arr[0];
+
+		String company_details_temp = company_arr[1] + ">" + company_arr[2];
+		try {
+			report.generate_report_burette_calib(company_details_temp, parameter, header, trials, analyzed_by,
+					instrument_id);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (DocumentException e) {
+			e.printStackTrace();
 		}
 	}
 
@@ -157,8 +245,22 @@ public class burette_calibration extends JPanel {
 			}			
 			b_factor = ((b_factor) / 3);
 			burette_factor.setText("Burette Factor : " + String.format(str_format, b_factor));
-			btn_test_buretter_calibration.setEnabled(true);
+			btn_buretter_calibration_print.setEnabled(true);
 			btn_update_buretter_factor.setEnabled(true);
+			
+			int result = JOptionPane.showConfirmDialog(frame,"Update Burette Factor to => "+String.format(str_format, b_factor), "Swing Tester",
+		               JOptionPane.YES_NO_OPTION,
+		               JOptionPane.QUESTION_MESSAGE);
+		    if(result == JOptionPane.YES_OPTION){
+				update_burette_factor();
+				btn_update_buretter_factor.setEnabled(false);
+		    }else if (result == JOptionPane.NO_OPTION){
+				//btn_update_buretter_factor.setEnabled(false);
+		    }else {
+		    	//label.setText("None selected");
+		    }
+			btn_buretter_calibration_print.setEnabled(true);
+			
 		}
 	}
 
@@ -462,31 +564,17 @@ public class burette_calibration extends JPanel {
 		frame.getContentPane().add(btn_update_buretter_factor);
 		btn_update_buretter_factor.setEnabled(false);
 
-		btn_test_buretter_calibration = new JButton("Test Burette Calibration");
-		btn_test_buretter_calibration.addActionListener(new ActionListener() {
+		btn_buretter_calibration_print = new JButton("Print Burette Calibration Report");
+		btn_buretter_calibration_print.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String[] aa = {};
-				
-				if (serialPort_bc != null) {
-					try {
-						Thread.sleep(200);
-						output_bc.print("<8888>ESCP*");
-						output_bc.flush();
-					} catch (InterruptedException jkb) {}
-				}
-				burette_calibration_test.main(aa);
-				burette_calibration_test.port_setup_bct(serialPort_bc);
-				frame.dispose();
-				frame = new JFrame();
-				p = new JPanel();
-				p.revalidate();
-				p.repaint();
+				print_burette_calibration_report();
 			}
 		});
-		btn_test_buretter_calibration.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
-		btn_test_buretter_calibration.setBounds((int) Math.round(0.615 * wid), (int) Math.round(0.88 * hei),
+		btn_buretter_calibration_print.setFont(new Font("Arial", Font.BOLD, (int) Math.round(0.009 * wid)));
+		btn_buretter_calibration_print.setBounds((int) Math.round(0.64 * wid), (int) Math.round(0.88 * hei),
 				(int) Math.round(0.22 * wid), (int) Math.round(0.0428 * hei));
-		frame.getContentPane().add(btn_test_buretter_calibration);
+		frame.getContentPane().add(btn_buretter_calibration_print);
+		btn_buretter_calibration_print.setEnabled(false);
 		get_data();
 	}
 

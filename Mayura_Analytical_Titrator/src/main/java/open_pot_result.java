@@ -221,7 +221,7 @@ public class open_pot_result extends JPanel {
 				String[] aa = { value , u_name, permission };
 				frame.dispose();
 				frame = null;
-			//	frame = new JFrame();
+				frame = new JFrame();
 		        p=new JPanel();	
 		        p.invalidate();
 		        p.revalidate();
